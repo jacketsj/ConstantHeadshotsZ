@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <HighScores xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Score>
-    <float>8070</float>
+    <float>890</float>
     <float>0</float>
     <float>0</float>
     <float>0</float>
@@ -15,5 +15,5 @@
     <string xsi:nil="true" />
   </Name>
   <Count>5</Count>
-</HighScores>
+</HighScores>s>
 </HighScores>>

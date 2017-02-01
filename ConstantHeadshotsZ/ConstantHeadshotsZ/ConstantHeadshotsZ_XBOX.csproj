@@ -122,6 +122,7 @@
     <Content Include="GameThumbnail.png" />
     <Content Include="Player.ico" />
     <Content Include="Player.png" />
+    <Content Include="Todo.txt" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\LevelBuilder\LevelBuilder_XBOX.csproj">

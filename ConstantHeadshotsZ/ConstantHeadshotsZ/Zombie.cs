@@ -90,63 +90,45 @@ namespace ConstantHeadshotsZ
 
         public void SetX(float x, Level level)
         {
+            //Vector2 oldVector = sprite.vector;
+            //sprite.setX(x);
+            //Sprite uncollidable = level.zombieCollidesWithUncollidablePixel(this, oldVector);
+            //if (uncollidable != null)
+            //{
+            //    Sprite collisionSolid = (Sprite)uncollidable;
+            //    if (oldVector.X > x)
+            //    {
+            //        sprite.setX(collisionSolid.getX() + collisionSolid.getTexture().Width * 1.5f);
+            //    }
+            //    else if (oldVector.X < x)
+            //    {
+            //        sprite.setX(collisionSolid.getX() - collisionSolid.getTexture().Width / 2);
+            //    }
+            //}
             Vector2 oldVector = sprite.vector;
             sprite.setX(x);
-            Sprite uncollidable = level.zombieCollidesWithUncollidablePixel(this, oldVector);
-            if (uncollidable != null)
+            int ihat = (int)(Math.Abs(oldVector.X - x) / (oldVector.X - x));
+            Zombie zUnc = level.zombieCollidesWithZombies(this);
+            if (zUnc != null)
             {
-                //if (uncollidable.textureData[0].A <= 254)
-                //{
-                    Sprite collisionSolid = (Sprite)uncollidable;
-                    if (oldVector.X > x)
-                    {
-                        sprite.setX(collisionSolid.getX() + collisionSolid.getTexture().Width * 1.5f);
-                        //sprite.setX((collisionSolid.getX() + collisionSolid.getTexture().Width) + sprite.getTexture().Width / 2);
-                        //sprite.setX(sprite.vector.X = collidingSprite.vector.X + (float)Math.Cos(Math.Atan2(collidingSprite.getY() - sprite.getY(), collidingSprite.getX() - sprite.getX())) * sprite.getTexture().Width);
-                    }
-                    else if (oldVector.X < x)
-                    {
-                        sprite.setX(collisionSolid.getX() - collisionSolid.getTexture().Width / 2);
-                        //sprite.setX((collisionSolid.getX() - collisionSolid.getTexture().Width) + sprite.getTexture().Width / 2);
-                        //sprite.setX(sprite.vector.X = collidingSprite.vector.X + (float)Math.Cos(Math.Atan2(collidingSprite.getY() - sprite.getY(), collidingSprite.getX() - sprite.getX())) * sprite.getTexture().Width + collidingSprite.getTexture().Width);
-                    }
-                /*
-                }
-                else
-                {
-                    Sprite collisionSolid = uncollidable;
-                    if (oldVector.X < x)
-                    {
-                        sprite.setX(collisionSolid.getX() + collisionSolid.getTexture().Width / 2);
-                        //sprite.setX(sprite.vector.X = collidingSprite.vector.X + (float)Math.Sqrt((float)Math.Pow(collidingSprite.getTexture().Width, 2) - (float)Math.Pow(collidingSprite.vector.Y - sprite.vector.Y, 2)) * 2 / 2);
-                    }
-                    else if (oldVector.X > x)
-                    {
-                        sprite.setX(collisionSolid.getX() - collisionSolid.getTexture().Width * 1.5f);
-                        //sprite.setX(sprite.vector.X = collidingSprite.vector.X + collidingSprite.getTexture().Width - (float)Math.Sqrt((float)Math.Pow(collidingSprite.getTexture().Width, 2) - (float)Math.Pow(collidingSprite.vector.Y - sprite.vector.Y, 2)) * 2 / 2);
-                    }
-                }
-                 * */
-                /*
+                float newPos = (float)Math.Sqrt(Math.Abs(Math.Pow(sprite.getY() - zUnc.sprite.getY(), 2) - Math.Pow(sprite.getTexture().Width / 2 + zUnc.sprite.getTexture().Width / 2, 2)));
+                sprite.setX(zUnc.sprite.getX() + ihat * newPos);
+            }
+
+            //sprite.setX(x);
+            Solid uncollidableS = level.zombieCollidesWithSolidsPixel(this, oldVector);
+            if (uncollidableS != null)
+            {
+                Sprite uncollidable = uncollidableS.sprite;
+                Sprite collisionSolid = (Sprite)uncollidable;
                 if (oldVector.X > x)
                 {
-                    while (level.zombieCollidesWithUncollidablePixel(this))
-                    {
-                        sprite.setX(sprite.getX() + 1);
-                    }
+                    sprite.setX(collisionSolid.getX() + collisionSolid.getTexture().Width * 1.5f);
                 }
                 else if (oldVector.X < x)
                 {
-                    while (level.zombieCollidesWithUncollidablePixel(this))
-                    {
-                        sprite.setX(sprite.getX() - 1);
-                    }
+                    sprite.setX(collisionSolid.getX() - collisionSolid.getTexture().Width / 2);
                 }
-                else if (oldVector.X == x)
-                {
-
-                }
-                */
             }
         }
 
@@ -154,61 +136,28 @@ namespace ConstantHeadshotsZ
         {
             Vector2 oldVector = sprite.vector;
             sprite.setY(y);
-            Sprite uncollidable = level.zombieCollidesWithUncollidablePixel(this, oldVector);
-            if (uncollidable != null)
+            int jhat = (int) (Math.Abs(oldVector.Y - y) / (oldVector.Y - y));
+            Zombie zUnc = level.zombieCollidesWithZombies(this);
+            if (zUnc != null)
             {
-                //if (uncollidable.textureData[0].A <= 254)
-                //{
-                    Sprite collisionSolid = (Sprite)uncollidable;
-                    if (oldVector.Y < y)
-                    {
-                        sprite.setY(collisionSolid.getY() - collisionSolid.getTexture().Height / 2);
-                        //sprite.setY((collisionSolid.getY() - collisionSolid.getTexture().Height) + sprite.getTexture().Width / 2 + sprite.getTexture().Width * 2);
-                        //sprite.setY(sprite.vector.Y = collidingSprite.vector.Y + (float)Math.Sin(Math.Atan2(collidingSprite.getY() - sprite.getY(), collidingSprite.getY() - sprite.getY())) * sprite.getTexture().Width);
-                    }
-                    else if (oldVector.Y > y)
-                    {
-                        sprite.setY(collisionSolid.getY() + collisionSolid.getTexture().Height * 1.5f);
-                        //sprite.setY((collisionSolid.getY() + collisionSolid.getTexture().Height) + sprite.getTexture().Width / 2 - sprite.getTexture().Width * 2);
-                        //sprite.setY(sprite.vector.Y = collidingSprite.vector.Y + (float)Math.Sin(Math.Atan2(collidingSprite.getY() - sprite.getY(), collidingSprite.getY() - sprite.getY())) * sprite.getTexture().Width + collidingSprite.getTexture().Width);
-                    }
-                /*
-                }
-                else
-                {
-                    Sprite collisionSolid = uncollidable;
-                    if (oldVector.Y < y)
-                    {
-                        sprite.setY(collisionSolid.getY() - collisionSolid.getTexture().Height / 2);
-                        //sprite.setY(sprite.vector.Y = collidingSprite.vector.Y + (float)Math.Sqrt((float)Math.Pow(collidingSprite.getTexture().Width, 2) - (float)Math.Pow(collidingSprite.vector.X - sprite.vector.X, 2)) * 2 / 2);
-                    }
-                    else if (oldVector.Y > y)
-                    {
-                        sprite.setY(collisionSolid.getY() + collisionSolid.getTexture().Height * 1.5f);
-                        //sprite.setY(sprite.vector.Y = collidingSprite.vector.Y + collidingSprite.getTexture().Width - (float)Math.Sqrt((float)Math.Pow(collidingSprite.getTexture().Width, 2) - (float)Math.Pow(collidingSprite.vector.X - sprite.vector.X, 2)) * 2 / 2);
-                    }
-                }
-                 * */
-                /*
+                float newPos = (float)Math.Sqrt(Math.Abs(Math.Pow(sprite.getX() - zUnc.sprite.getX(), 2) - Math.Pow(sprite.getTexture().Width / 2 + zUnc.sprite.getTexture().Width / 2, 2)));
+                sprite.setY(zUnc.sprite.getY() + jhat * newPos);
+            }
+
+            //sprite.setY(y);
+            Solid uncollidableS = level.zombieCollidesWithSolidsPixel(this, oldVector);
+            if (uncollidableS != null)
+            {
+                Sprite uncollidable = uncollidableS.sprite;
+                Sprite collisionSolid = (Sprite)uncollidable;
                 if (oldVector.Y > y)
                 {
-                    while (level.zombieCollidesWithUncollidablePixel(this))
-                    {
-                        sprite.setY(sprite.getY() + 1);
-                    }
+                    sprite.setY(collisionSolid.getY() + collisionSolid.getTexture().Height * 1.5f);
                 }
                 else if (oldVector.Y < y)
                 {
-                    while (level.zombieCollidesWithUncollidablePixel(this))
-                    {
-                        sprite.setY(sprite.getY() - 1);
-                    }
+                    sprite.setY(collisionSolid.getY() - collisionSolid.getTexture().Height / 2);
                 }
-                else if (oldVector.Y == y)
-                {
-
-                }
-                */
             }
         }
     }

@@ -846,6 +846,26 @@ namespace ConstantHeadshotsZ
             return false;
         }
 
+        public Zombie zombieCollidesWithZombies(Zombie zombie)
+        {
+            foreach (Zombie currentZombie in zombies)
+            {
+                if (currentZombie.sprite != zombie.sprite)
+                {
+                    if (zombie.sprite.getTexture().Width / 2 + currentZombie.sprite.getTexture().Width / 2
+                        > Math.Sqrt(Math.Pow(zombie.sprite.getX() - currentZombie.sprite.getX(), 2) + Math.Pow(zombie.sprite.getY() - currentZombie.sprite.getY(), 2)))
+                    {
+                        return currentZombie;
+                    }
+                    //if (currentZombie.sprite.IntersectsPixelZombie(zombie.sprite))
+                    //{
+                    //    return true;
+                    //}
+                }
+            }
+            return null;
+        }
+
         public bool zombieCollidesWithSolidPixel(Zombie zombie)
         {
             foreach (Solid solid in solids)
