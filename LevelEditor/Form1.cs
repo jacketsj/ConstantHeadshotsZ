@@ -1,0 +1,569 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+using LevelBuilder;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.GamerServices;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
+using System.IO;
+
+namespace LevelEditor
+{
+    public partial class Form1 : Form
+    {
+        public LevelData level;
+        TextureBaseData[] textures;
+        bool selectedSolidTexture = false;
+        bool selectedBGTexture = false;
+        System.Drawing.Point levelPanelScrollPos;
+        bool movingScreen = false;
+        int selected = -1;
+        System.Drawing.Point oldMouse;
+        System.Drawing.Point newMouse;
+        bool textureMoved = false;
+
+        public Form1()
+        {
+            InitializeComponent();
+            level = new LevelData();
+            level.backgroundColor = Microsoft.Xna.Framework.Color.White;
+            level.backgroundReference = 0;
+            level.levelHeight = 1000;
+            level.levelWidth = 1000;
+            level.maxAmountOfZombies = 60;
+            level.playerSpawn = new Vector2(0, 0);
+            level.solids = new SolidData[0];
+            level.spawnTimer = 300;
+            level.textures = new TextureData[0];
+            level.zombieSpawners = new Vector2[0];
+
+            levelPanelScrollPos = new System.Drawing.Point(0, 0);
+
+            textures = new TextureBaseData[5]
+            {
+                new TextureBaseData(Properties.Resources.White, "White"),
+                new TextureBaseData(Properties.Resources.ZombieSpawner, "ZombieSpawner"),
+                new TextureBaseData(Properties.Resources.Player, "Player"),
+                new TextureBaseData(Properties.Resources.Block, "Block"),
+                new TextureBaseData(Properties.Resources.jacketsjlogo, "jacketsj Logo")
+            };
+
+            textBoxWidth.Text = level.levelWidth.ToString();
+            textBoxHeight.Text = level.levelHeight.ToString();
+
+            UpdateTextureLists();
+            PutPicturesInPanel();
+
+            comboBoxBackground.SelectedIndex = 0;
+            comboBoxSpawnAcceleration.SelectedIndex = 0;
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (level.zombieSpawners.Length > 0)
+            {
+                level.textures = new TextureData[textures.Length];
+                for (int i = 0; i < textures.Length; i++)
+                {
+                    level.textures[i] = textures[i].ToTextureData();
+                }
+                LevelData.SaveLevel(level);
+            }
+        }
+
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LevelData OpenedLevel = LevelData.LoadLevel();
+            if (OpenedLevel != null)
+            {
+                level = OpenedLevel;
+                textures = new TextureBaseData[level.textures.Length];
+                for (int i = 0; i < level.textures.Length; i++)
+                {
+                    textures[i] = new TextureBaseData(level.textures[i]);
+                }
+                UpdateTextureLists();
+                PutPicturesInPanel();
+
+                textBoxWidth.Text = level.levelWidth.ToString();
+                textBoxHeight.Text = level.levelHeight.ToString();
+                if (level.zombieSpawnAcceleration)
+                {
+                    comboBoxSpawnAcceleration.SelectedIndex = 0;
+                }
+                else
+                {
+                    comboBoxSpawnAcceleration.SelectedIndex = 1;
+                }
+
+
+            }
+        }
+
+        private void textBoxWidth_TextChanged(object sender, EventArgs e)
+        {
+            if (textBoxWidth.Text != "")
+            {
+                try
+                {
+                    level.levelWidth = Convert.ToInt32(textBoxWidth.Text);
+                }
+                catch (Exception ex)
+                {
+                    level.levelWidth = int.MaxValue;
+                    textBoxWidth.Text = int.MaxValue.ToString();
+                }
+            }
+            else
+            {
+                level.levelWidth = 0;
+            }
+            PutPicturesInPanel();
+        }
+
+        private void textBoxHeight_TextChanged(object sender, EventArgs e)
+        {
+            if (textBoxHeight.Text != "")
+            {
+                try
+                {
+                    level.levelHeight = Convert.ToInt32(textBoxHeight.Text);
+                }
+                catch (Exception ex)
+                {
+                    level.levelHeight = int.MaxValue;
+                    textBoxHeight.Text = int.MaxValue.ToString();
+                }
+            }
+            else
+            {
+                level.levelHeight = 0;
+            }
+            PutPicturesInPanel();
+        }
+
+        private void textBoxWidth_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar != (char)System.Windows.Forms.Keys.Back)
+            {
+                e.Handled = !char.IsDigit(e.KeyChar);
+            }
+        }
+
+        private void textBoxHeight_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar != (char)System.Windows.Forms.Keys.Back)
+            {
+                e.Handled = !char.IsDigit(e.KeyChar);
+            }
+        }
+
+        private void comboBoxBackground_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            level.backgroundReference = comboBoxBackground.SelectedIndex;
+            selectedBGTexture = true;
+            PutPicturesInPanel();
+        }
+
+        private void addToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //Stream myStream = null;
+            OpenFileDialog openFileDialog1 = new OpenFileDialog();
+
+            openFileDialog1.Title = "Open Image";
+            //openFileDialog1.InitialDirectory = "c:\\";
+            openFileDialog1.Filter = "PNG files (*.png)|*.png";
+            //openFileDialog1.FilterIndex = 2;
+            //openFileDialog1.RestoreDirectory = true;
+
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    TextureBaseData texture = new TextureBaseData(new Bitmap(openFileDialog1.FileName), openFileDialog1.SafeFileName);
+
+                    TextureBaseData[] newTextures = new TextureBaseData[textures.Length + 1];
+                    for (int i = 0; i < textures.Length; i++)
+                    {
+                        newTextures[i] = textures[i];
+                    }
+                    newTextures[textures.Length] = texture;
+                    textures = newTextures;
+                    UpdateTextureLists();
+                    comboBoxSolidTexture.SelectedIndex = textures.Length - 1;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error: Could not read file from disk. Original error: " + ex.Message);
+                }
+            }
+            openFileDialog1.Dispose();
+        }
+
+        public void UpdateTextureLists()
+        {
+            comboBoxBackground.Items.Clear();
+            comboBoxSolidTexture.Items.Clear();
+            foreach (TextureBaseData texture in textures)
+            {
+                comboBoxBackground.Items.Add(texture.Name);
+                comboBoxSolidTexture.Items.Add(texture.Name);
+            }
+        }
+
+        public void UpdatePanelWidthAndHeight()
+        {
+            
+        }
+
+        public void PutPicturesInPanel()
+        {
+            levelPanel.Controls.Clear();
+            levelPanel.AutoScrollPosition = levelPanelScrollPos;
+            //levelPanel.Controls
+            
+            foreach (SolidData solid in level.solids)
+            {
+                PictureBox pictureBox = new PictureBox();
+                pictureBox.BackColor = System.Drawing.Color.Transparent;
+                pictureBox.Image = textures[solid.textureNo].Image;
+                pictureBox.Width = pictureBox.Image.Width;
+                pictureBox.Height = pictureBox.Image.Height;
+                pictureBox.Location = new System.Drawing.Point((int)solid.position.X, (int)solid.position.Y);
+                levelPanel.Controls.Add(pictureBox);
+                pictureBox.MouseClick += new MouseEventHandler(levelPanel_Click);
+                pictureBox.MouseDown += new MouseEventHandler(levelPanel_MouseDown);
+                pictureBox.MouseMove += new MouseEventHandler(levelPanel_MouseMove);
+                pictureBox.MouseUp += new MouseEventHandler(levelPanel_MouseUp);
+            }
+
+            foreach (Vector2 spawner in level.zombieSpawners)
+            {
+                PictureBox pictureBox = new PictureBox();
+                pictureBox.BackColor = System.Drawing.Color.Transparent;
+                pictureBox.Image = textures[1].Image;
+                pictureBox.Width = pictureBox.Image.Width;
+                pictureBox.Height = pictureBox.Image.Height;
+                pictureBox.Location = new System.Drawing.Point((int)spawner.X, (int)spawner.Y);
+                levelPanel.Controls.Add(pictureBox);
+                pictureBox.MouseClick += new MouseEventHandler(levelPanel_Click);
+                pictureBox.MouseDown += new MouseEventHandler(levelPanel_MouseDown);
+                pictureBox.MouseMove += new MouseEventHandler(levelPanel_MouseMove);
+                pictureBox.MouseUp += new MouseEventHandler(levelPanel_MouseUp);
+            }
+
+            PictureBox PlayerPictureBox = new PictureBox();
+            PlayerPictureBox.BackColor = System.Drawing.Color.Transparent;
+            PlayerPictureBox.Image = textures[2].Image;
+            PlayerPictureBox.Width = PlayerPictureBox.Image.Width;
+            PlayerPictureBox.Height = PlayerPictureBox.Image.Height;
+            PlayerPictureBox.Location = new System.Drawing.Point((int)level.playerSpawn.X, (int)level.playerSpawn.Y);
+            levelPanel.Controls.Add(PlayerPictureBox);
+            PlayerPictureBox.MouseClick += new MouseEventHandler(levelPanel_Click);
+            PlayerPictureBox.MouseDown += new MouseEventHandler(levelPanel_MouseDown);
+            PlayerPictureBox.MouseMove += new MouseEventHandler(levelPanel_MouseMove);
+            PlayerPictureBox.MouseUp += new MouseEventHandler(levelPanel_MouseUp);
+
+            if (selectedBGTexture)
+            {
+                PictureBox bgPictureBox = new PictureBox();
+                bgPictureBox.BackColor = System.Drawing.Color.Transparent;
+                bgPictureBox.Image = textures[level.backgroundReference].Image;
+                bgPictureBox.Width = level.levelWidth;
+                bgPictureBox.Height = level.levelHeight;
+                bgPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+                bgPictureBox.Location = new System.Drawing.Point(0, 0);
+                levelPanel.Controls.Add(bgPictureBox);
+                bgPictureBox.MouseClick += new MouseEventHandler(levelPanel_Click);
+                bgPictureBox.MouseDown += new MouseEventHandler(levelPanel_MouseDown);
+                bgPictureBox.MouseMove += new MouseEventHandler(levelPanel_MouseMove);
+                bgPictureBox.MouseUp += new MouseEventHandler(levelPanel_MouseUp);
+            }
+            levelPanel.AutoScrollPosition = levelPanelScrollPos;
+        }
+
+        private void levelPanel_Paint(object sender, PaintEventArgs e)
+        {
+            if (movingScreen)
+            {
+                resetLevelPanelScroll();
+            }
+        }
+
+        private void levelPanel_Click(object sender, EventArgs e)
+        {
+            //levelPanel.AutoScrollPosition = levelPanelScrollPos;
+            levelPanelScrollPos = new System.Drawing.Point(levelPanel.AutoScrollPosition.X / -1, levelPanel.AutoScrollPosition.Y / -1);
+            //movingScreen = true;
+
+            if (comboBoxClickMode.SelectedIndex == 0)
+            {
+                if (selectedSolidTexture)
+                {
+                    SolidData[] newSolids = new SolidData[level.solids.Length + 1];
+                    for (int i = 0; i < level.solids.Length; i++)
+                    {
+                        newSolids[i] = level.solids[i];
+                    }
+                    System.Drawing.Point point = levelPanel.PointToClient(Cursor.Position);
+                    point.X += levelPanel.HorizontalScroll.Value;
+                    point.Y += levelPanel.VerticalScroll.Value;
+                    point.X -= textures[comboBoxSolidTexture.SelectedIndex].Image.Width / 2;
+                    point.Y -= textures[comboBoxSolidTexture.SelectedIndex].Image.Height / 2;
+                    newSolids[level.solids.Length] = new SolidData(new Vector2(point.X, point.Y), comboBoxSolidTexture.SelectedIndex, Microsoft.Xna.Framework.Color.White);
+                    level.solids = newSolids;
+                    PutPicturesInPanel();
+                }
+            }
+            if (comboBoxClickMode.SelectedIndex == 1)
+            {
+                bool deletedSomething = false;
+                for (int i = 0; i < level.solids.Length; i++)
+                {
+                    SolidData solid = level.solids[i];
+                    System.Drawing.Point mouse = levelPanel.PointToClient(Cursor.Position);
+                    mouse.X += levelPanel.HorizontalScroll.Value;
+                    mouse.Y += levelPanel.VerticalScroll.Value;
+                    if ((mouse.X >= solid.position.X) && (mouse.Y >= solid.position.Y) && (mouse.X <= solid.position.X + textures[solid.textureNo].Image.Width) && (mouse.Y <= solid.position.Y + textures[solid.textureNo].Image.Height))
+                    {
+                        int newLength = level.solids.Length - 1;
+                        SolidData[] newSolids = new SolidData[newLength];
+                        bool foundDeleted = false;
+                        for (int i2 = 0; i2 < level.solids.Length; i2++)
+                        {
+                            if (foundDeleted)
+                            {
+                                newSolids[i2 - 1] = level.solids[i2];
+                            }
+                            else
+                            {
+                                if (i == i2)
+                                {
+                                    foundDeleted = true;
+                                }
+                                else
+                                {
+                                    newSolids[i2] = level.solids[i2];
+                                }
+                            }
+                        }
+                        level.solids = newSolids;
+                        deletedSomething = true;
+                        break;
+                    }
+                }
+                if (!deletedSomething)
+                {
+                    for (int i2 = 0; i2 < level.zombieSpawners.Length; i2++)
+                    {
+                        Vector2 spawner = level.zombieSpawners[i2];
+                        System.Drawing.Point mouse = levelPanel.PointToClient(Cursor.Position);
+                        mouse.X += levelPanel.HorizontalScroll.Value;
+                        mouse.Y += levelPanel.VerticalScroll.Value;
+                        if ((mouse.X >= spawner.X) && (mouse.Y >= spawner.Y) && (mouse.X <= spawner.X + textures[2].Image.Width) && (mouse.Y <= spawner.Y + textures[2].Image.Height))
+                        {
+                            int newLength = level.zombieSpawners.Length - 1;
+                            Vector2[] newSpawners = new Vector2[newLength];
+                            bool foundDeleted = false;
+                            for (int i3 = 0; i3 < level.zombieSpawners.Length; i3++)
+                            {
+                                if (foundDeleted)
+                                {
+                                    newSpawners[i3 - 1] = level.zombieSpawners[i3];
+                                }
+                                else
+                                {
+                                    if (i2 == i3)
+                                    {
+                                        foundDeleted = true;
+                                    }
+                                    else
+                                    {
+                                        newSpawners[i3] = level.zombieSpawners[i3];
+                                    }
+                                }
+                            }
+                            level.zombieSpawners = newSpawners;
+                            break;
+                        }
+                    }
+                }
+                PutPicturesInPanel();
+            }
+            if (comboBoxClickMode.SelectedIndex == 2)
+            {
+                System.Drawing.Point point = levelPanel.PointToClient(Cursor.Position);
+                level.playerSpawn.X = (point.X - textures[2].Image.Width / 2) + levelPanel.HorizontalScroll.Value;
+                level.playerSpawn.Y = (point.Y - textures[2].Image.Height / 2) + levelPanel.VerticalScroll.Value;
+                PutPicturesInPanel();
+            }
+            if (comboBoxClickMode.SelectedIndex == 3)
+            {
+                Vector2[] newSpawns = new Vector2[level.zombieSpawners.Length + 1];
+                for (int i = 0; i < level.zombieSpawners.Length; i++)
+                {
+                    newSpawns[i] = level.zombieSpawners[i];
+                }
+                System.Drawing.Point point = levelPanel.PointToClient(Cursor.Position);
+                point.X += levelPanel.HorizontalScroll.Value;
+                point.Y += levelPanel.VerticalScroll.Value;
+                point.X -= textures[2].Image.Width / 2;
+                point.Y -= textures[2].Image.Height / 2;
+                newSpawns[level.zombieSpawners.Length] = new Vector2(point.X, point.Y);
+                level.zombieSpawners = newSpawns;
+                PutPicturesInPanel();
+            }
+        }
+
+        private void comboBoxSolidTexture_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            selectedSolidTexture = true;
+        }
+
+        private void comboBoxSpawnAcceleration_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBoxSpawnAcceleration.SelectedIndex == 0)
+            {
+                level.zombieSpawnAcceleration = true;
+            }
+            else if (comboBoxSpawnAcceleration.SelectedIndex == 1)
+            {
+                level.zombieSpawnAcceleration = false;
+            }
+        }
+
+        private void textBoxZombieMax_TextChanged(object sender, EventArgs e)
+        {
+            if (textBoxZombieMax.Text != "")
+            {
+                try
+                {
+                    level.maxAmountOfZombies = Convert.ToInt32(textBoxWidth.Text);
+                }
+                catch (Exception ex)
+                {
+                    level.maxAmountOfZombies = int.MaxValue;
+                    textBoxZombieMax.Text = int.MaxValue.ToString();
+                }
+            }
+            else
+            {
+                level.maxAmountOfZombies = 0;
+            }
+            PutPicturesInPanel();
+        }
+
+        private void textBoxZombieMax_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar != (char)System.Windows.Forms.Keys.Back)
+            {
+                e.Handled = !char.IsDigit(e.KeyChar);
+            }
+        }
+
+        private void resetLevelPanelScroll()
+        {
+            if (movingScreen)
+            {
+                levelPanel.AutoScrollPosition = levelPanelScrollPos;
+                movingScreen = false;
+            }
+        }
+
+        private void levelPanel_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (comboBoxClickMode.SelectedIndex == 4)
+            {
+                System.Drawing.Point mouse = levelPanel.PointToClient(Cursor.Position);
+                mouse.X += levelPanel.HorizontalScroll.Value;
+                mouse.Y += levelPanel.VerticalScroll.Value;
+                for (int i = 0; i < level.solids.Length; i++)
+                {
+                    if ((mouse.X >= level.solids[i].position.X) && (mouse.Y >= level.solids[i].position.Y) && (mouse.X <= level.solids[i].position.X + textures[level.solids[i].textureNo].Image.Width) && (mouse.Y <= level.solids[i].position.Y + textures[level.solids[i].textureNo].Image.Height))
+                    {
+                        selected = i;
+                        textureMoved = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        private void levelPanel_MouseUp(object sender, MouseEventArgs e)
+        {
+            selected = -1;
+            if (textureMoved)
+            {
+                textureMoved = false;
+                levelPanelScrollPos = new System.Drawing.Point(levelPanel.AutoScrollPosition.X / -1, levelPanel.AutoScrollPosition.Y / -1);
+                PutPicturesInPanel();
+            }
+        }
+
+        private void levelPanel_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (selected != -1)
+            {
+                /*
+                if (newMouse != null)
+                {
+                    oldMouse = new System.Drawing.Point(newMouse.X, newMouse.Y);
+                }
+                else
+                {
+                    oldMouse = new System.Drawing.Point(newMouse.X, newMouse.Y);
+                    newMouse = levelPanel.PointToClient(Cursor.Position);
+                }
+                */
+                oldMouse = new System.Drawing.Point(newMouse.X, newMouse.Y);
+                newMouse = levelPanel.PointToClient(Cursor.Position);
+                newMouse.X += levelPanel.HorizontalScroll.Value;
+                newMouse.Y += levelPanel.VerticalScroll.Value;
+
+                level.solids[selected].position += new Vector2(newMouse.X - oldMouse.X, newMouse.Y - oldMouse.Y);
+            }
+            else
+            {
+                newMouse = levelPanel.PointToClient(Cursor.Position);
+                newMouse.X += levelPanel.HorizontalScroll.Value;
+                newMouse.Y += levelPanel.VerticalScroll.Value;
+                oldMouse = new System.Drawing.Point(newMouse.X, newMouse.Y);
+            }
+        }
+
+        private void levelPanel_MouseLeave(object sender, EventArgs e)
+        {
+            selected = -1;
+            if (textureMoved)
+            {
+                textureMoved = false;
+                levelPanelScrollPos = new System.Drawing.Point(levelPanel.AutoScrollPosition.X / -1, levelPanel.AutoScrollPosition.Y / -1);
+                PutPicturesInPanel();
+            }
+        }
+
+        /*
+        private void levelPanel_Scroll(object sender, ScrollEventArgs e)
+        {
+            if (e.ScrollOrientation == ScrollOrientation.HorizontalScroll)
+            {
+                levelPanelScrollPos.X = e.NewValue;
+            }
+
+            if (e.ScrollOrientation == ScrollOrientation.VerticalScroll)
+            {
+                levelPanelScrollPos.Y = e.NewValue;
+            }
+        }
+        */
+    }
+}
