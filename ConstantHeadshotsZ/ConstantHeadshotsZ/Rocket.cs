@@ -250,7 +250,7 @@ namespace ConstantHeadshotsZ
                         int directionX = (int)(Math.Cos(randomDirectionRotation));
                         float randomDirectionChange = (float)random.NextDouble() * (2.7f - 0.1f) + 0.1f;
                         Vector2 vectorDirection = new Vector2(randomDirectionChange * ((float)Math.Cos(currentAmountOfNewParticles * amountOfNewParticles / 360)), randomDirectionChange * ((float)Math.Sin(currentAmountOfNewParticles * amountOfNewParticles / 360)));
-                        newParticles[amountOfOldParticles + currentAmountOfNewParticles] = new Particle(Color.DarkRed, level.zombies[i].sprite.vector, vectorDirection, Content, random.Next(60, 360));
+                        newParticles[amountOfOldParticles + currentAmountOfNewParticles] = new Particle(Game1.options.bldCol, level.zombies[i].sprite.vector, vectorDirection, Content, random.Next(60, 360));
                     }
                     level.bloodParticles = newParticles;
                     /*

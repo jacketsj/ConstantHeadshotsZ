@@ -289,33 +289,36 @@ namespace ConstantHeadshotsZ
             {
                 if (zombies.Length <= maxAmountOfZombies)
                 {
+                    //SPAWN NEW ZOMBIE
                     Zombie[] newZombies;
-                    if (zombies.Length != 0)
+                    //if (zombies.Length != 0)
+                    //{
+                    newZombies = new Zombie[zombies.Length + 1];
+                    int randomZombieSpawnerIndex = random.Next(0, zombieSpawners.Length);
+                    Vector2 randomZombieSpawner = zombieSpawners[randomZombieSpawnerIndex];
+                    randomZombieSpawner.X += Content.Load<Texture2D>("Player").Width / 2;
+                    randomZombieSpawner.Y += Content.Load<Texture2D>("Player").Height / 2;
+                    Zombie newZombie = new Zombie(new Sprite(Content.Load<Texture2D>("Player"), randomZombieSpawner, Color.Green), 0, Content);
+                    if (zombieCollidesWithZombies(newZombie) == null)
                     {
-                        newZombies = new Zombie[zombies.Length + 1];
-                        int randomZombieSpawnerIndex = random.Next(0, zombieSpawners.Length);
-                        Vector2 randomZombieSpawner = zombieSpawners[randomZombieSpawnerIndex];
-                        randomZombieSpawner.X += Content.Load<Texture2D>("Player").Width / 2;
-                        randomZombieSpawner.Y += Content.Load<Texture2D>("Player").Height / 2;
-                        Zombie newZombie = new Zombie(new Sprite(Content.Load<Texture2D>("Player"), randomZombieSpawner, Color.Green), 0, Content);
                         newZombies[0] = newZombie;
-                        int i;
-                        for (i = 0; i < zombies.Length; i++)
+                        for (int i = 0; i < zombies.Length; i++)
                         {
                             newZombies[i + 1] = zombies[i];
                         }
                         zombies = newZombies;
                     }
-                    else
-                    {
-                        zombies = new Zombie[1];
-                        int randomZombieSpawnerIndex = random.Next(0, zombieSpawners.Length);
-                        Vector2 randomZombieSpawner = zombieSpawners[randomZombieSpawnerIndex];
-                        randomZombieSpawner.X += Content.Load<Texture2D>("Player").Width / 2;
-                        randomZombieSpawner.Y += Content.Load<Texture2D>("Player").Height / 2;
-                        Zombie newZombie = new Zombie(new Sprite(Content.Load<Texture2D>("Player"), randomZombieSpawner, Color.Green), 0, Content);
-                        zombies[0] = newZombie;
-                    }
+                    //}
+                    //else
+                    //{
+                    //    zombies = new Zombie[1];
+                    //    int randomZombieSpawnerIndex = random.Next(0, zombieSpawners.Length);
+                    //    Vector2 randomZombieSpawner = zombieSpawners[randomZombieSpawnerIndex];
+                    //    randomZombieSpawner.X += Content.Load<Texture2D>("Player").Width / 2;
+                    //    randomZombieSpawner.Y += Content.Load<Texture2D>("Player").Height / 2;
+                    //    Zombie newZombie = new Zombie(new Sprite(Content.Load<Texture2D>("Player"), randomZombieSpawner, Color.Green), 0, Content);
+                    //    zombies[0] = newZombie;
+                    //}
                     timesSpawned += 1;
                 }
                 if (zombieSpawnAcceleration)
@@ -526,33 +529,36 @@ namespace ConstantHeadshotsZ
             {
                 if(zombies.Length <= maxAmountOfZombies)
                 {
+                    //SPAWN NEW ZOMBIE
                     Zombie[] newZombies;
-                    if (zombies.Length != 0)
+                    //if (zombies.Length != 0)
+                    //{
+                    newZombies = new Zombie[zombies.Length + 1];
+                    int randomZombieSpawnerIndex = random.Next(0, zombieSpawners.Length);
+                    Vector2 randomZombieSpawner = zombieSpawners[randomZombieSpawnerIndex];
+                    randomZombieSpawner.X += Content.Load<Texture2D>("Player").Width / 2;
+                    randomZombieSpawner.Y += Content.Load<Texture2D>("Player").Height / 2;
+                    Zombie newZombie = new Zombie(new Sprite(Content.Load<Texture2D>("Player"), randomZombieSpawner, Color.Green), 0, Content);
+                    if (zombieCollidesWithZombies(newZombie) == null)
                     {
-                        newZombies = new Zombie[zombies.Length + 1];
-                        int randomZombieSpawnerIndex = random.Next(0, zombieSpawners.Length);
-                        Vector2 randomZombieSpawner = zombieSpawners[randomZombieSpawnerIndex];
-                        randomZombieSpawner.X += Content.Load<Texture2D>("Player").Width / 2;
-                        randomZombieSpawner.Y += Content.Load<Texture2D>("Player").Height / 2;
-                        Zombie newZombie = new Zombie(new Sprite(Content.Load<Texture2D>("Player"), randomZombieSpawner, Color.Green), 0, Content);
                         newZombies[0] = newZombie;
-                        int i;
-                        for (i = 0; i < zombies.Length; i++)
+                        for (int i = 0; i < zombies.Length; i++)
                         {
                             newZombies[i + 1] = zombies[i];
                         }
                         zombies = newZombies;
                     }
-                    else
-                    {
-                        zombies = new Zombie[1];
-                        int randomZombieSpawnerIndex = random.Next(0, zombieSpawners.Length);
-                        Vector2 randomZombieSpawner = zombieSpawners[randomZombieSpawnerIndex];
-                        randomZombieSpawner.X += Content.Load<Texture2D>("Player").Width / 2;
-                        randomZombieSpawner.Y += Content.Load<Texture2D>("Player").Height / 2;
-                        Zombie newZombie = new Zombie(new Sprite(Content.Load<Texture2D>("Player"), randomZombieSpawner, Color.Green), 0, Content);
-                        zombies[0] = newZombie;
-                    }
+                    //}
+                    //else
+                    //{
+                    //    zombies = new Zombie[1];
+                    //    int randomZombieSpawnerIndex = random.Next(0, zombieSpawners.Length);
+                    //    Vector2 randomZombieSpawner = zombieSpawners[randomZombieSpawnerIndex];
+                    //    randomZombieSpawner.X += Content.Load<Texture2D>("Player").Width / 2;
+                    //    randomZombieSpawner.Y += Content.Load<Texture2D>("Player").Height / 2;
+                    //    Zombie newZombie = new Zombie(new Sprite(Content.Load<Texture2D>("Player"), randomZombieSpawner, Color.Green), 0, Content);
+                    //    zombies[0] = newZombie;
+                    //}
                     timesSpawned += 1;
                 }
                 if (zombieSpawnAcceleration)

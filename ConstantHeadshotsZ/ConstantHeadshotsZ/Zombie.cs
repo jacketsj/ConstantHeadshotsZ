@@ -109,15 +109,29 @@ namespace ConstantHeadshotsZ
             sprite.setX(x);
             int ihat = (int)(Math.Abs(oldVector.X - x) / (oldVector.X - x));
             Zombie zUnc = level.zombieCollidesWithZombies(this);
-            if (zUnc != null)
+            List<Zombie> detected = new List<Zombie>();
+            detected.Add(zUnc);
+            while (zUnc != null)
             {
-                float newPos = (float)Math.Sqrt(Math.Abs(Math.Pow(sprite.getY() - zUnc.sprite.getY(), 2) - Math.Pow(sprite.getTexture().Width / 2 + zUnc.sprite.getTexture().Width / 2, 2)));
+                float newPos = (float)Math.Ceiling(Math.Sqrt(Math.Abs(Math.Pow(sprite.getY() - zUnc.sprite.getY(), 2) - Math.Pow(sprite.getTexture().Width / 2 + zUnc.sprite.getTexture().Width / 2, 2))));
                 sprite.setX(zUnc.sprite.getX() + ihat * newPos);
+                zUnc = level.zombieCollidesWithZombies(this);
+                if (detected.Contains(zUnc))
+                {
+                    zUnc = null;
+                }
+                detected.Add(zUnc);
+
+                if (oldVector.X * ihat < sprite.getX() * ihat)
+                {
+                    sprite.vector = oldVector;
+                    break;
+                }
             }
 
             //sprite.setX(x);
             Solid uncollidableS = level.zombieCollidesWithSolidsPixel(this, oldVector);
-            if (uncollidableS != null)
+            while (uncollidableS != null)
             {
                 Sprite uncollidable = uncollidableS.sprite;
                 Sprite collisionSolid = (Sprite)uncollidable;
@@ -129,6 +143,7 @@ namespace ConstantHeadshotsZ
                 {
                     sprite.setX(collisionSolid.getX() - collisionSolid.getTexture().Width / 2);
                 }
+                uncollidableS = level.zombieCollidesWithSolidsPixel(this, oldVector);
             }
         }
 
@@ -138,15 +153,29 @@ namespace ConstantHeadshotsZ
             sprite.setY(y);
             int jhat = (int) (Math.Abs(oldVector.Y - y) / (oldVector.Y - y));
             Zombie zUnc = level.zombieCollidesWithZombies(this);
-            if (zUnc != null)
+            List<Zombie> detected = new List<Zombie>();
+            detected.Add(zUnc);
+            while (zUnc != null)
             {
-                float newPos = (float)Math.Sqrt(Math.Abs(Math.Pow(sprite.getX() - zUnc.sprite.getX(), 2) - Math.Pow(sprite.getTexture().Width / 2 + zUnc.sprite.getTexture().Width / 2, 2)));
+                float newPos = (float)Math.Ceiling(Math.Sqrt(Math.Abs(Math.Pow(sprite.getX() - zUnc.sprite.getX(), 2) - Math.Pow(sprite.getTexture().Width / 2 + zUnc.sprite.getTexture().Width / 2, 2))));
                 sprite.setY(zUnc.sprite.getY() + jhat * newPos);
+                zUnc = level.zombieCollidesWithZombies(this);
+                if (detected.Contains(zUnc))
+                {
+                    zUnc = null;
+                }
+                detected.Add(zUnc);
+
+                if (oldVector.Y * jhat < sprite.getY() * jhat)
+                {
+                    sprite.vector = oldVector;
+                    break;
+                }
             }
 
             //sprite.setY(y);
             Solid uncollidableS = level.zombieCollidesWithSolidsPixel(this, oldVector);
-            if (uncollidableS != null)
+            while (uncollidableS != null)
             {
                 Sprite uncollidable = uncollidableS.sprite;
                 Sprite collisionSolid = (Sprite)uncollidable;
@@ -158,6 +187,7 @@ namespace ConstantHeadshotsZ
                 {
                     sprite.setY(collisionSolid.getY() - collisionSolid.getTexture().Height / 2);
                 }
+                uncollidableS = level.zombieCollidesWithSolidsPixel(this, oldVector);
             }
         }
     }

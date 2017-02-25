@@ -234,6 +234,8 @@ namespace ConstantHeadshotsZ
         bool justPressedPauseButton = false;
         bool justClickedOnscreenButton = false;
         bool justPressedControllerButton = false;
+        bool justPressedRotationCameraButton = false;
+        bool detectedRotationCameraButton = false;
 
         /// <summary>
         /// Allows the game to run logic such as updating the world,
@@ -246,7 +248,21 @@ namespace ConstantHeadshotsZ
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
-            
+            if (Keyboard.GetState().IsKeyDown(Keys.F) && !justPressedRotationCameraButton && !detectedRotationCameraButton)
+            {
+                justPressedRotationCameraButton = true;
+                detectedRotationCameraButton = true;
+            }
+            else if (Keyboard.GetState().IsKeyUp(Keys.F))
+            {
+                justPressedRotationCameraButton = false;
+                detectedRotationCameraButton = false;
+            }
+            else
+            {
+                justPressedRotationCameraButton = false;
+            }
+
             if (Keyboard.GetState().IsKeyDown(Keys.F11))
             {
                 if (!justPressedFullscreenButton)
@@ -1242,6 +1258,14 @@ namespace ConstantHeadshotsZ
                 }
                 else
                 {
+                    if (justPressedRotationCameraButton)
+                    {
+                        options.player1CameraRotation = !options.player1CameraRotation;
+                        if (!options.player1CameraRotation)
+                        {
+                            players[0].camera.setRotation(0);
+                        }
+                    }
                     if (oldMouse.ScrollWheelValue > Mouse.GetState().ScrollWheelValue)
                     {
                         players[0].camera.setZoom(players[0].camera.getZoom() / 1.1f);
@@ -1341,115 +1365,175 @@ namespace ConstantHeadshotsZ
                     */
                     if (options.player1CameraRotation)
                     {
-                        if (players[0].aiming)
+                        Vector2 toMove = Vector2.Zero;
+                        if (Keyboard.GetState().IsKeyDown(Keys.W))
                         {
-                            Vector2 positionChange = new Vector2(0, 0);
-                            if (Keyboard.GetState().IsKeyDown(Keys.W))
-                            {
-                                //movementY -= 1;
-                                positionChange.Y -= 5 * (1 / 5f);
-                            }
-                            if (Keyboard.GetState().IsKeyDown(Keys.A))
-                            {
-                                //movementX -= 1;
-                                positionChange.X -= 5 * (1 / 5f);
-                            }
-                            if (Keyboard.GetState().IsKeyDown(Keys.S))
-                            {
-                                //movementY += 1;
-                                positionChange.Y += 5 * (1 / 5f);
-                            }
-                            if (Keyboard.GetState().IsKeyDown(Keys.D))
-                            {
-                                //movementX += 1;
-                                positionChange.X += 5 * (1 / 5f);
-                            }
-                            //Vector2 rotationChange = new Vector2((float)Math.Cos(players[0].playerRotation), (float)Math.Sin(players[0].playerRotation));
-                            //positionChange = new Vector2(positionChange.X * (float)Math.Cos(players[0].playerRotation) - positionChange.Y * (float)Math.Sin(players[0].playerRotation), positionChange.X * (float)Math.Sin(players[0].playerRotation) + positionChange.Y * (float)Math.Cos(players[0].playerRotation));
-                            //Vector2 newPositionChange = RotateVector2(positionChange, MathHelper.ToRadians(players[0].playerRotation), Vector2.Zero);
-                            Vector2 newPos = RotateVector2(players[0].sprite.vector + positionChange, players[0].playerRotation, players[0].sprite.vector);
-                            players[0].SetX(newPos.X, currentLevel);
-                            players[0].SetY(newPos.Y, currentLevel);
+                            toMove.Y--;
                         }
-                        else
+                        if (Keyboard.GetState().IsKeyDown(Keys.A))
                         {
-                            Vector2 positionChange = new Vector2(0, 0);
-                            if (Keyboard.GetState().IsKeyDown(Keys.W))
-                            {
-                                //movementY -= 1;
-                                positionChange.Y -= 7;
-                            }
-                            if (Keyboard.GetState().IsKeyDown(Keys.A))
-                            {
-                                //movementX -= 1;
-                                positionChange.X -= 7;
-                            }
-                            if (Keyboard.GetState().IsKeyDown(Keys.S))
-                            {
-                                //movementY += 1;
-                                positionChange.Y += 7;
-                            }
-                            if (Keyboard.GetState().IsKeyDown(Keys.D))
-                            {
-                                //movementX += 1;
-                                positionChange.X += 7;
-                            }
-                            //Vector2 rotationChange = new Vector2((float)Math.Cos(players[0].playerRotation), (float)Math.Sin(players[0].playerRotation));
-                            //positionChange = new Vector2(positionChange.X * (float)Math.Cos(players[0].playerRotation) - positionChange.Y * (float)Math.Sin(players[0].playerRotation), positionChange.X * (float)Math.Sin(players[0].playerRotation) + positionChange.Y * (float)Math.Cos(players[0].playerRotation));
-                            //Vector2 newPositionChange = RotateVector2(positionChange, MathHelper.ToRadians(players[0].playerRotation), Vector2.Zero);
-                            Vector2 newPos = RotateVector2(players[0].sprite.vector + positionChange, players[0].playerRotation, players[0].sprite.vector);
-                            players[0].SetX(newPos.X, currentLevel);
-                            players[0].SetY(newPos.Y, currentLevel);
+                            toMove.X--;
                         }
+                        if (Keyboard.GetState().IsKeyDown(Keys.S))
+                        {
+                            toMove.Y++;
+                        }
+                        if (Keyboard.GetState().IsKeyDown(Keys.D))
+                        {
+                            toMove.X++;
+                        }
+                        if (toMove != Vector2.Zero)
+                        {
+                            toMove.Normalize();
+                        }
+                        float speed = (5 * (1 / 5f));
+                        if (!players[0].aiming)
+                        {
+                            speed = 7;
+                        }
+                        toMove *= speed;
+                        Vector2 newPos = RotateVector2(players[0].sprite.vector + toMove, players[0].playerRotation, players[0].sprite.vector);
+                        players[0].SetX(newPos.X, currentLevel);
+                        players[0].SetY(newPos.Y, currentLevel);
+                        //players[0].SetX(players[0].sprite.getX() + toMove.X * speed, currentLevel);
+                        //players[0].SetY(players[0].sprite.getY() + toMove.Y * speed, currentLevel);
+                        //if (players[0].aiming)
+                        //{
+                        //    Vector2 positionChange = new Vector2(0, 0);
+                        //    if (Keyboard.GetState().IsKeyDown(Keys.W))
+                        //    {
+                        //        //movementY -= 1;
+                        //        positionChange.Y -= 5 * (1 / 5f);
+                        //    }
+                        //    if (Keyboard.GetState().IsKeyDown(Keys.A))
+                        //    {
+                        //        //movementX -= 1;
+                        //        positionChange.X -= 5 * (1 / 5f);
+                        //    }
+                        //    if (Keyboard.GetState().IsKeyDown(Keys.S))
+                        //    {
+                        //        //movementY += 1;
+                        //        positionChange.Y += 5 * (1 / 5f);
+                        //    }
+                        //    if (Keyboard.GetState().IsKeyDown(Keys.D))
+                        //    {
+                        //        //movementX += 1;
+                        //        positionChange.X += 5 * (1 / 5f);
+                        //    }
+                        //    //Vector2 rotationChange = new Vector2((float)Math.Cos(players[0].playerRotation), (float)Math.Sin(players[0].playerRotation));
+                        //    //positionChange = new Vector2(positionChange.X * (float)Math.Cos(players[0].playerRotation) - positionChange.Y * (float)Math.Sin(players[0].playerRotation), positionChange.X * (float)Math.Sin(players[0].playerRotation) + positionChange.Y * (float)Math.Cos(players[0].playerRotation));
+                        //    //Vector2 newPositionChange = RotateVector2(positionChange, MathHelper.ToRadians(players[0].playerRotation), Vector2.Zero);
+                        //    Vector2 newPos = RotateVector2(players[0].sprite.vector + positionChange, players[0].playerRotation, players[0].sprite.vector);
+                        //    players[0].SetX(newPos.X, currentLevel);
+                        //    players[0].SetY(newPos.Y, currentLevel);
+                        //}
+                        //else
+                        //{
+                        //    Vector2 positionChange = new Vector2(0, 0);
+                        //    if (Keyboard.GetState().IsKeyDown(Keys.W))
+                        //    {
+                        //        //movementY -= 1;
+                        //        positionChange.Y -= 7;
+                        //    }
+                        //    if (Keyboard.GetState().IsKeyDown(Keys.A))
+                        //    {
+                        //        //movementX -= 1;
+                        //        positionChange.X -= 7;
+                        //    }
+                        //    if (Keyboard.GetState().IsKeyDown(Keys.S))
+                        //    {
+                        //        //movementY += 1;
+                        //        positionChange.Y += 7;
+                        //    }
+                        //    if (Keyboard.GetState().IsKeyDown(Keys.D))
+                        //    {
+                        //        //movementX += 1;
+                        //        positionChange.X += 7;
+                        //    }
+                        //    //Vector2 rotationChange = new Vector2((float)Math.Cos(players[0].playerRotation), (float)Math.Sin(players[0].playerRotation));
+                        //    //positionChange = new Vector2(positionChange.X * (float)Math.Cos(players[0].playerRotation) - positionChange.Y * (float)Math.Sin(players[0].playerRotation), positionChange.X * (float)Math.Sin(players[0].playerRotation) + positionChange.Y * (float)Math.Cos(players[0].playerRotation));
+                        //    //Vector2 newPositionChange = RotateVector2(positionChange, MathHelper.ToRadians(players[0].playerRotation), Vector2.Zero);
+                        //    Vector2 newPos = RotateVector2(players[0].sprite.vector + positionChange, players[0].playerRotation, players[0].sprite.vector);
+                        //    players[0].SetX(newPos.X, currentLevel);
+                        //    players[0].SetY(newPos.Y, currentLevel);
+                        //}
                     }
                     else
                     {
-                        if (players[0].aiming)
+                        Vector2 toMove = Vector2.Zero;
+                        if (Keyboard.GetState().IsKeyDown(Keys.W))
                         {
-                            if (Keyboard.GetState().IsKeyDown(Keys.W))
-                            {
-                                //movementY -= 1;
-                                players[0].SetY(players[0].sprite.getY() + -1 * (5 * (1 / 5f)), currentLevel);
-                            }
-                            if (Keyboard.GetState().IsKeyDown(Keys.A))
-                            {
-                                //movementX -= 1;
-                                players[0].SetX(players[0].sprite.getX() + -1 * (5 * (1 / 5f)), currentLevel);
-                            }
-                            if (Keyboard.GetState().IsKeyDown(Keys.S))
-                            {
-                                //movementY += 1;
-                                players[0].SetY(players[0].sprite.getY() + 1 * (5 * (1 / 5f)), currentLevel);
-                            }
-                            if (Keyboard.GetState().IsKeyDown(Keys.D))
-                            {
-                                //movementX += 1;
-                                players[0].SetX(players[0].sprite.getX() + 1 * (5 * (1 / 5f)), currentLevel);
-                            }
+                            toMove.Y--;
                         }
-                        else
+                        if (Keyboard.GetState().IsKeyDown(Keys.A))
                         {
-                            if (Keyboard.GetState().IsKeyDown(Keys.W))
-                            {
-                                //movementY -= 1;
-                                players[0].SetY(players[0].sprite.getY() + -1 * 7, currentLevel);
-                            }
-                            if (Keyboard.GetState().IsKeyDown(Keys.A))
-                            {
-                                //movementX -= 1;
-                                players[0].SetX(players[0].sprite.getX() + -1 * 7, currentLevel);
-                            }
-                            if (Keyboard.GetState().IsKeyDown(Keys.S))
-                            {
-                                //movementY += 1;
-                                players[0].SetY(players[0].sprite.getY() + 1 * 7, currentLevel);
-                            }
-                            if (Keyboard.GetState().IsKeyDown(Keys.D))
-                            {
-                                //movementX += 1;
-                                players[0].SetX(players[0].sprite.getX() + 1 * 7, currentLevel);
-                            }
+                            toMove.X--;
                         }
+                        if (Keyboard.GetState().IsKeyDown(Keys.S))
+                        {
+                            toMove.Y++;
+                        }
+                        if (Keyboard.GetState().IsKeyDown(Keys.D))
+                        {
+                            toMove.X++;
+                        }
+                        if (toMove != Vector2.Zero)
+                        {
+                            toMove.Normalize();
+                        }
+                        float speed = (5 * (1 / 5f));
+                        if (!players[0].aiming)
+                        {
+                            speed = 7;
+                        }
+                        players[0].SetX(players[0].sprite.getX() + toMove.X * speed, currentLevel);
+                        players[0].SetY(players[0].sprite.getY() + toMove.Y * speed, currentLevel);
+                        //if (players[0].aiming)
+                        //{
+                        //    if (Keyboard.GetState().IsKeyDown(Keys.W))
+                        //    {
+                        //        //movementY -= 1;
+                        //        players[0].SetY(players[0].sprite.getY() + -1 * (5 * (1 / 5f)), currentLevel);
+                        //    }
+                        //    if (Keyboard.GetState().IsKeyDown(Keys.A))
+                        //    {
+                        //        //movementX -= 1;
+                        //        players[0].SetX(players[0].sprite.getX() + -1 * (5 * (1 / 5f)), currentLevel);
+                        //    }
+                        //    if (Keyboard.GetState().IsKeyDown(Keys.S))
+                        //    {
+                        //        //movementY += 1;
+                        //        players[0].SetY(players[0].sprite.getY() + 1 * (5 * (1 / 5f)), currentLevel);
+                        //    }
+                        //    if (Keyboard.GetState().IsKeyDown(Keys.D))
+                        //    {
+                        //        //movementX += 1;
+                        //        players[0].SetX(players[0].sprite.getX() + 1 * (5 * (1 / 5f)), currentLevel);
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    if (Keyboard.GetState().IsKeyDown(Keys.W))
+                        //    {
+                        //        //movementY -= 1;
+                        //        players[0].SetY(players[0].sprite.getY() + -1 * 7, currentLevel);
+                        //    }
+                        //    if (Keyboard.GetState().IsKeyDown(Keys.A))
+                        //    {
+                        //        //movementX -= 1;
+                        //        players[0].SetX(players[0].sprite.getX() + -1 * 7, currentLevel);
+                        //    }
+                        //    if (Keyboard.GetState().IsKeyDown(Keys.S))
+                        //    {
+                        //        //movementY += 1;
+                        //        players[0].SetY(players[0].sprite.getY() + 1 * 7, currentLevel);
+                        //    }
+                        //    if (Keyboard.GetState().IsKeyDown(Keys.D))
+                        //    {
+                        //        //movementX += 1;
+                        //        players[0].SetX(players[0].sprite.getX() + 1 * 7, currentLevel);
+                        //    }
+                        //}
                     }
                     //float movementRotation = (float)Math.Atan2(movementX, -movementY);
                     /*
