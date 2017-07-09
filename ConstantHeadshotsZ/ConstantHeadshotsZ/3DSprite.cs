@@ -59,9 +59,9 @@ namespace ConstantHeadshotsZ
         public void Draw(QuadDrawer quadDrawer, Vector3 cameraPosition,
                          Matrix view, Matrix projection)
         {
-            Matrix world = Matrix.CreateTranslation(0, 1, 0) * Matrix.CreateScale(800) * Matrix.CreateConstrainedBillboard(Position, cameraPosition, Up, null, null);
+            //Matrix world = Matrix.CreateTranslation(0, 1, 0) * Matrix.CreateScale(800) * Matrix.CreateConstrainedBillboard(Position, cameraPosition, Up, null, null);
 
-            quadDrawer.DrawQuad(Texture, 1, world, view, projection);
+            quadDrawer.DrawQuad(Texture, 1, Matrix.Identity, view, projection);
         }
 
         /// <summary>
@@ -71,8 +71,8 @@ namespace ConstantHeadshotsZ
                          Matrix view, Matrix projection, Matrix world)
         {
             quadDrawer.DrawQuad(Texture, 1,
-                world
-                    * Matrix.CreateRotationX(Up.X) * Matrix.CreateRotationY(Up.Y) * Matrix.CreateRotationZ(Up.Z)
+                world * Matrix.CreateScale(texture.Width, texture.Height, 1)
+                    * Matrix.CreateRotationX(Up.X) * Matrix.CreateRotationY(Up.Y) * Matrix.CreateRotationZ(Up.Z) * Matrix.CreateRotationZ(MathHelper.Pi)
                     * (Matrix.CreateTranslation(position))
                 , view, projection);
         }

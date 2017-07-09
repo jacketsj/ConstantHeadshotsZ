@@ -1319,7 +1319,7 @@ namespace ConstantHeadshotsZ
                 }
                 else
                 {
-                    threeD.Draw(GraphicsDevice, currentLevel, players, false, 1, Content);
+                    threeD.Draw(GraphicsDevice, currentLevel, players, false, 1, Content, options);
                 }
                 GraphicsDevice.Viewport = overlayView;
                 spriteBatch.Begin();
@@ -1378,7 +1378,7 @@ namespace ConstantHeadshotsZ
                 }
                 else
                 {
-                    threeD.Draw(GraphicsDevice, currentLevel, players, false, 1, Content);
+                    threeD.Draw(GraphicsDevice, currentLevel, players, false, 1, Content, options);
                 }
 
                 GraphicsDevice.Viewport = overlayView;
@@ -1413,7 +1413,7 @@ namespace ConstantHeadshotsZ
                 }
                 else
                 {
-                    threeD.Draw(GraphicsDevice, currentLevel, players, true, 1, Content);
+                    threeD.Draw(GraphicsDevice, currentLevel, players, true, 1, Content, options);
                 }
 
 
@@ -1429,7 +1429,7 @@ namespace ConstantHeadshotsZ
                 }
                 else
                 {
-                    threeD.Draw(GraphicsDevice, currentLevel, players, true, 2, Content);
+                    threeD.Draw(GraphicsDevice, currentLevel, players, true, 2, Content, options);
                 }
 
 
@@ -1474,7 +1474,7 @@ namespace ConstantHeadshotsZ
                 }
                 else
                 {
-                    threeD.Draw(GraphicsDevice, currentLevel, players, true, 1, Content);
+                    threeD.Draw(GraphicsDevice, currentLevel, players, true, 1, Content, options);
                 }
 
 
@@ -1504,7 +1504,7 @@ namespace ConstantHeadshotsZ
                 }
                 else
                 {
-                    threeD.Draw(GraphicsDevice, currentLevel, players, true, 1, Content);
+                    threeD.Draw(GraphicsDevice, currentLevel, players, true, 1, Content, options);
                 }
 
 
@@ -1548,7 +1548,7 @@ namespace ConstantHeadshotsZ
                 }
                 else
                 {
-                    threeD.Draw(GraphicsDevice, currentLevel, players, true, 1, Content);
+                    threeD.Draw(GraphicsDevice, currentLevel, players, true, 1, Content, options);
                 }
 
                 GraphicsDevice.Viewport = leftOverlayView;
@@ -1588,7 +1588,7 @@ namespace ConstantHeadshotsZ
                 }
                 else
                 {
-                    threeD.Draw(GraphicsDevice, currentLevel, players, true, 2, Content);
+                    threeD.Draw(GraphicsDevice, currentLevel, players, true, 2, Content, options);
                 }
 
                 GraphicsDevice.Viewport = rightOverlayView;
@@ -1622,7 +1622,7 @@ namespace ConstantHeadshotsZ
                 }
                 else
                 {
-                    threeD.Draw(GraphicsDevice, currentLevel, players, false, 1, Content);
+                    threeD.Draw(GraphicsDevice, currentLevel, players, false, 1, Content, options);
                 }
 
 
