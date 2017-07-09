@@ -225,12 +225,128 @@ namespace LevelEditor
             
         }
 
+        public void renderBoxOntoMap(Graphics g, Image pBox, System.Drawing.Point location)
+        {
+            g.DrawImage(pBox, location);
+        }
+
+        public void renderBoxOntoMap(Graphics g, Image pBox, System.Drawing.Point location, Size size)
+        {
+            //g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
+            Bitmap pBmp = new Bitmap(pBox, size);
+            //g.DrawImage(pBmp, location);
+            renderBoxOntoMap(g, pBmp, location);
+            //pBox.Image.(bmp, new System.Drawing.Rectangle(Math.Max(location.X, 0), Math.Max(location.Y, 0), Math.Min(location.X + pBox.Width, level.levelWidth), Math.Min(location.Y + pBox.Height, level.levelWidth)));
+        }
+
         public void PutPicturesInPanel()
         {
-            levelPanel.Controls.Clear();
-            levelPanel.AutoScrollPosition = levelPanelScrollPos;
+            List<Control> newControls = new List<Control>();
+            //levelPanel.Controls.Clear();
+            //levelPanel.AutoScrollPosition = levelPanelScrollPos;
             //levelPanel.Controls
+            Bitmap render = new Bitmap(level.levelWidth, level.levelHeight);
+            PictureBox drawn = new PictureBox();
+            drawn.MouseClick += new MouseEventHandler(levelPanel_Click);
+            drawn.MouseDown += new MouseEventHandler(levelPanel_MouseDown);
+            drawn.MouseMove += new MouseEventHandler(levelPanel_MouseMove);
+            drawn.MouseUp += new MouseEventHandler(levelPanel_MouseUp);
+            drawn.Location = new System.Drawing.Point(0,0);
+            drawn.Width = level.levelHeight;
+            drawn.Height = level.levelWidth;
+            Graphics g = Graphics.FromImage(render);
+            g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.AssumeLinear;
+            //g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
 
+            if (selectedBGTexture)
+            {
+                //PictureBox bgPictureBox = new PictureBox();
+                //bgPictureBox.BackColor = System.Drawing.Color.Transparent;
+                //bgPictureBox.Image = textures[level.backgroundReference].Image;
+                //bgPictureBox.Width = level.levelWidth;
+                //bgPictureBox.Height = level.levelHeight;
+                //bgPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+                //bgPictureBox.Location = new System.Drawing.Point(0, 0);
+                renderBoxOntoMap(g, textures[level.backgroundReference].Image, new System.Drawing.Point(0, 0), new Size(level.levelWidth, level.levelHeight));
+                //bgPictureBox.MouseClick += new MouseEventHandler(levelPanel_Click);
+                //bgPictureBox.MouseDown += new MouseEventHandler(levelPanel_MouseDown);
+                //bgPictureBox.MouseMove += new MouseEventHandler(levelPanel_MouseMove);
+                //bgPictureBox.MouseUp += new MouseEventHandler(levelPanel_MouseUp);
+            }
+
+            //PictureBox PlayerPictureBox = new PictureBox();
+            //PlayerPictureBox.BackColor = System.Drawing.Color.Transparent;
+            //PlayerPictureBox.Image = textures[2].Image;
+            //PlayerPictureBox.Width = PlayerPictureBox.Image.Width;
+            //PlayerPictureBox.Height = PlayerPictureBox.Image.Height;
+            //PlayerPictureBox.Location = new System.Drawing.Point((int)level.playerSpawn.X, (int)level.playerSpawn.Y);
+            renderBoxOntoMap(g, textures[2].Image, new System.Drawing.Point((int)level.playerSpawn.X, (int)level.playerSpawn.Y));
+            //PlayerPictureBox.MouseClick += new MouseEventHandler(levelPanel_Click);
+            //PlayerPictureBox.MouseDown += new MouseEventHandler(levelPanel_MouseDown);
+            //PlayerPictureBox.MouseMove += new MouseEventHandler(levelPanel_MouseMove);
+            //PlayerPictureBox.MouseUp += new MouseEventHandler(levelPanel_MouseUp);
+
+            foreach (Vector2 spawner in level.zombieSpawners)
+            {
+                //PictureBox pictureBox = new PictureBox();
+                //pictureBox.BackColor = System.Drawing.Color.Transparent;
+                //pictureBox.Image = textures[1].Image;
+                //pictureBox.Width = pictureBox.Image.Width;
+                //pictureBox.Height = pictureBox.Image.Height;
+                //pictureBox.Location = new System.Drawing.Point((int)spawner.X, (int)spawner.Y);
+                renderBoxOntoMap(g, textures[1].Image, new System.Drawing.Point((int)spawner.X, (int)spawner.Y));
+                //pictureBox.MouseClick += new MouseEventHandler(levelPanel_Click);
+                //pictureBox.MouseDown += new MouseEventHandler(levelPanel_MouseDown);
+                //pictureBox.MouseMove += new MouseEventHandler(levelPanel_MouseMove);
+                //pictureBox.MouseUp += new MouseEventHandler(levelPanel_MouseUp);
+            }
+
+            foreach (SolidData solid in level.solids)
+            {
+                //PictureBox pictureBox = new PictureBox();
+                //pictureBox.BackColor = System.Drawing.Color.Transparent;
+                //pictureBox.Image = textures[solid.textureNo].Image;
+                //pictureBox.Width = pictureBox.Image.Width;
+                //pictureBox.Height = pictureBox.Image.Height;
+                //pictureBox.Location = new System.Drawing.Point((int)solid.position.X, (int)solid.position.Y);
+                renderBoxOntoMap(g, textures[solid.textureNo].Image, new System.Drawing.Point((int)solid.position.X, (int)solid.position.Y));
+                //pictureBox.MouseClick += new MouseEventHandler(levelPanel_Click);
+                //pictureBox.MouseDown += new MouseEventHandler(levelPanel_MouseDown);
+                //pictureBox.MouseMove += new MouseEventHandler(levelPanel_MouseMove);
+                //pictureBox.MouseUp += new MouseEventHandler(levelPanel_MouseUp);
+            }
+
+            if (checkBoxShowGrid.Checked)
+            {
+                //draw vertical lines
+                Bitmap lineImage = new Bitmap(1, 1);
+                lineImage.SetPixel(0, 0, System.Drawing.Color.Black);
+                for (int i = 0; i < level.levelWidth; i += (int)numericUpDownGrid.Value)
+                {
+                    //PictureBox linePictureBox = new PictureBox();
+                    //linePictureBox.Image = lineImage; //the black texture
+                    //linePictureBox.Width = 2;
+                    //linePictureBox.Height = level.levelHeight;
+                    //linePictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+                    //linePictureBox.Location = new System.Drawing.Point(i - 1, 0);
+                    //renderBoxOntoMap(g, lineImage, new System.Drawing.Point(i - 1, 0), new Size(2, level.levelHeight));
+                    g.DrawRectangle(new Pen(System.Drawing.Color.Black), i - 1, 0, 1, level.levelHeight);
+                }
+                //draw horizontal lines
+                for (int i = 0; i < level.levelWidth; i += (int)numericUpDownGrid.Value)
+                {
+                    //PictureBox linePictureBox = new PictureBox();
+                    //linePictureBox.Image = lineImage; //the black texture
+                    //linePictureBox.Width = level.levelWidth;
+                    //linePictureBox.Height = 2;
+                    //linePictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+                    //linePictureBox.Location = new System.Drawing.Point(0, i - 1);
+                    //renderBoxOntoMap(g, lineImage, new System.Drawing.Point(0, i - 1), new Size(level.levelWidth, 2));
+                    g.DrawRectangle(new Pen(System.Drawing.Color.Black), 0, i - 1, level.levelWidth, 1);
+                }
+            }
+
+            /*
             if (checkBoxShowGrid.Checked)
             {
                 //draw vertical lines
@@ -244,7 +360,7 @@ namespace LevelEditor
                     linePictureBox.Height = level.levelHeight;
                     linePictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
                     linePictureBox.Location = new System.Drawing.Point(i - 1, 0);
-                    levelPanel.Controls.Add(linePictureBox);
+                    newControls.Add(linePictureBox);
                 }
                 //draw horizontal lines
                 for (int i = 0; i < level.levelWidth; i += (int)numericUpDownGrid.Value)
@@ -255,7 +371,7 @@ namespace LevelEditor
                     linePictureBox.Height = 2;
                     linePictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
                     linePictureBox.Location = new System.Drawing.Point(0, i - 1);
-                    levelPanel.Controls.Add(linePictureBox);
+                    newControls.Add(linePictureBox);
                 }
             }
             
@@ -267,7 +383,7 @@ namespace LevelEditor
                 pictureBox.Width = pictureBox.Image.Width;
                 pictureBox.Height = pictureBox.Image.Height;
                 pictureBox.Location = new System.Drawing.Point((int)solid.position.X, (int)solid.position.Y);
-                levelPanel.Controls.Add(pictureBox);
+                newControls.Add(pictureBox);
                 pictureBox.MouseClick += new MouseEventHandler(levelPanel_Click);
                 pictureBox.MouseDown += new MouseEventHandler(levelPanel_MouseDown);
                 pictureBox.MouseMove += new MouseEventHandler(levelPanel_MouseMove);
@@ -282,7 +398,7 @@ namespace LevelEditor
                 pictureBox.Width = pictureBox.Image.Width;
                 pictureBox.Height = pictureBox.Image.Height;
                 pictureBox.Location = new System.Drawing.Point((int)spawner.X, (int)spawner.Y);
-                levelPanel.Controls.Add(pictureBox);
+                newControls.Add(pictureBox);
                 pictureBox.MouseClick += new MouseEventHandler(levelPanel_Click);
                 pictureBox.MouseDown += new MouseEventHandler(levelPanel_MouseDown);
                 pictureBox.MouseMove += new MouseEventHandler(levelPanel_MouseMove);
@@ -295,7 +411,7 @@ namespace LevelEditor
             PlayerPictureBox.Width = PlayerPictureBox.Image.Width;
             PlayerPictureBox.Height = PlayerPictureBox.Image.Height;
             PlayerPictureBox.Location = new System.Drawing.Point((int)level.playerSpawn.X, (int)level.playerSpawn.Y);
-            levelPanel.Controls.Add(PlayerPictureBox);
+            newControls.Add(PlayerPictureBox);
             PlayerPictureBox.MouseClick += new MouseEventHandler(levelPanel_Click);
             PlayerPictureBox.MouseDown += new MouseEventHandler(levelPanel_MouseDown);
             PlayerPictureBox.MouseMove += new MouseEventHandler(levelPanel_MouseMove);
@@ -310,13 +426,49 @@ namespace LevelEditor
                 bgPictureBox.Height = level.levelHeight;
                 bgPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
                 bgPictureBox.Location = new System.Drawing.Point(0, 0);
-                levelPanel.Controls.Add(bgPictureBox);
+                newControls.Add(bgPictureBox);
                 bgPictureBox.MouseClick += new MouseEventHandler(levelPanel_Click);
                 bgPictureBox.MouseDown += new MouseEventHandler(levelPanel_MouseDown);
                 bgPictureBox.MouseMove += new MouseEventHandler(levelPanel_MouseMove);
                 bgPictureBox.MouseUp += new MouseEventHandler(levelPanel_MouseUp);
             }
+            */
+
+            //levelPanel.AutoScrollPosition = levelPanelScrollPos;
+            //List<Control> toRemove = new List<Control>();
+            //foreach (Control control in levelPanel.Controls)
+            //{
+            //    if (!newControls.Contains(control))
+            //    {
+            //        toRemove.Add(control);
+            //    }
+            //}
+            //newControls.RemoveAll(delegate(Control c){return !levelPanel.Controls.Contains(c);});
+            //foreach (Control control in newControls)
+            //{
+            //    if (!levelPanel.Controls.Contains(control))
+            //    {
+            //        newControls.Remove(control);
+            //    }
+            //}
+            //foreach (Control control in toRemove)
+            //{
+            //    levelPanel.Controls.Remove(control);
+            //}
+            drawn.Image = render;
+            g.Dispose();
+            ControlPause.SuspendDrawing(levelPanel);
+            //levelPanel.AutoScrollPosition = levelPanelScrollPos;
+            levelPanel.Controls.Clear();
+            levelPanel.Controls.Add(drawn);
+            //levelPanel.Controls.AddRange(newControls.ToArray());
             levelPanel.AutoScrollPosition = levelPanelScrollPos;
+            ControlPause.ResumeDrawing(levelPanel);
+            //foreach (Control control in newControls)
+            //{
+            //    levelPanel.Controls.Add(control);
+            //}
+            //levelPanel.AutoScrollPosition = levelPanelScrollPos;
             levelPanel.Focus();
         }
 
@@ -328,12 +480,22 @@ namespace LevelEditor
             }
         }
 
+        private void updateScrollPos()
+        {
+            levelPanelScrollPos = new System.Drawing.Point(levelPanel.AutoScrollPosition.X / -1, levelPanel.AutoScrollPosition.Y / -1);
+        }
+
         private void levelPanel_Click(object sender, EventArgs e)
         {
             //levelPanel.AutoScrollPosition = levelPanelScrollPos;
-            levelPanelScrollPos = new System.Drawing.Point(levelPanel.AutoScrollPosition.X / -1, levelPanel.AutoScrollPosition.Y / -1);
             //movingScreen = true;
 
+            alterLevelElement(levelPanelScrollPos);
+        }
+
+        private void alterLevelElement(System.Drawing.Point levelPanelScrollPos)
+        {
+            updateScrollPos();
             if (comboBoxClickMode.SelectedIndex == 0)
             {
                 if (selectedSolidTexture)
@@ -563,7 +725,44 @@ namespace LevelEditor
                 newMouse.X += levelPanel.HorizontalScroll.Value;
                 newMouse.Y += levelPanel.VerticalScroll.Value;
                 oldMouse = new System.Drawing.Point(newMouse.X, newMouse.Y);
+
+                if (checkBoxSnap.Checked && Mouse.GetState().LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
+                {
+                    bool canDragPlace = true;
+                    for (int i = 0; i < level.solids.Length && canDragPlace; i++)
+                    {
+                        SolidData solid = level.solids[i];
+                        System.Drawing.Point mouse = levelPanel.PointToClient(Cursor.Position);
+                        mouse.X += levelPanel.HorizontalScroll.Value;
+                        mouse.Y += levelPanel.VerticalScroll.Value;
+
+                        if ((mouse.X >= solid.position.X) && (mouse.Y >= solid.position.Y) && (mouse.X <= solid.position.X + textures[solid.textureNo].Image.Width) && (mouse.Y <= solid.position.Y + textures[solid.textureNo].Image.Height))
+                        {
+                            canDragPlace = false;
+                        }
+                    }
+                    for (int i2 = 0; i2 < level.zombieSpawners.Length && canDragPlace; i2++)
+                    {
+                        Vector2 spawner = level.zombieSpawners[i2];
+                        System.Drawing.Point mouse = levelPanel.PointToClient(Cursor.Position);
+                        mouse.X += levelPanel.HorizontalScroll.Value;
+                        mouse.Y += levelPanel.VerticalScroll.Value;
+                        if ((mouse.X >= spawner.X) && (mouse.Y >= spawner.Y) && (mouse.X <= spawner.X + textures[2].Image.Width) && (mouse.Y <= spawner.Y + textures[2].Image.Height))
+                        {
+                            canDragPlace = false;
+                        }
+                    }
+                    if (comboBoxClickMode.SelectedIndex == 1)
+                    {
+                        canDragPlace = true;
+                    }
+                    if (canDragPlace)
+                    {
+                        alterLevelElement(newMouse);
+                    }
+                }
             }
+
         }
 
         private void levelPanel_MouseLeave(object sender, EventArgs e)
