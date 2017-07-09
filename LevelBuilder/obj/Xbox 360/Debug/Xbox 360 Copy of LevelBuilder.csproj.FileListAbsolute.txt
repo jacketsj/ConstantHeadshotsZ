@@ -1,6 +1,0 @@
-C:\Users\jacketsj\Documents\Visual Studio 2010\Projects\Zombie Shooter\LevelBuilder\bin\Xbox 360\Debug\LevelBuilder.dll
-C:\Users\jacketsj\Documents\Visual Studio 2010\Projects\Zombie Shooter\LevelBuilder\bin\Xbox 360\Debug\LevelBuilder.pdb
-C:\Users\jacketsj\Documents\Visual Studio 2010\Projects\Zombie Shooter\LevelBuilder\obj\Xbox 360\Debug\ResolveAssemblyReference.cache
-C:\Users\jacketsj\Documents\Visual Studio 2010\Projects\Zombie Shooter\LevelBuilder\obj\Xbox 360\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
-C:\Users\jacketsj\Documents\Visual Studio 2010\Projects\Zombie Shooter\LevelBuilder\obj\Xbox 360\Debug\LevelBuilder.dll
-C:\Users\jacketsj\Documents\Visual Studio 2010\Projects\Zombie Shooter\LevelBuilder\obj\Xbox 360\Debug\LevelBuilder.pdb
