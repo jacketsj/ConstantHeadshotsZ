@@ -2,3 +2,8 @@
 Change zombie to collide with solids normally
 do same for player
 reset wave size in level
+Add snapping to level editor
+Add audio effects
+Fix comments
+Refactor game class
+Add abstracted/configurable inputs

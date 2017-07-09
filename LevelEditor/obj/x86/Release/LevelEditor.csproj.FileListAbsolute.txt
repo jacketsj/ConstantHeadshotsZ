@@ -1,0 +1,10 @@
+K:\content\cod\VS\VS2010\ConstantHeadshotsZ\LevelEditor\bin\Release\LevelEditor.exe
+K:\content\cod\VS\VS2010\ConstantHeadshotsZ\LevelEditor\bin\Release\LevelEditor.pdb
+K:\content\cod\VS\VS2010\ConstantHeadshotsZ\LevelEditor\bin\Release\LevelBuilder.dll
+K:\content\cod\VS\VS2010\ConstantHeadshotsZ\LevelEditor\bin\Release\LevelBuilder.pdb
+K:\content\cod\VS\VS2010\ConstantHeadshotsZ\LevelEditor\obj\x86\Release\LevelEditor.csprojResolveAssemblyReference.cache
+K:\content\cod\VS\VS2010\ConstantHeadshotsZ\LevelEditor\obj\x86\Release\LevelEditor.Form1.resources
+K:\content\cod\VS\VS2010\ConstantHeadshotsZ\LevelEditor\obj\x86\Release\LevelEditor.Properties.Resources.resources
+K:\content\cod\VS\VS2010\ConstantHeadshotsZ\LevelEditor\obj\x86\Release\LevelEditor.csproj.GenerateResource.Cache
+K:\content\cod\VS\VS2010\ConstantHeadshotsZ\LevelEditor\obj\x86\Release\LevelEditor.exe
+K:\content\cod\VS\VS2010\ConstantHeadshotsZ\LevelEditor\obj\x86\Release\LevelEditor.pdb

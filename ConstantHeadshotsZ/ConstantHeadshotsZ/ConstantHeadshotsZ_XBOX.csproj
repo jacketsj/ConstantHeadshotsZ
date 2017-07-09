@@ -64,6 +64,7 @@
     <Compile Include="BasicWeaponBullet.cs" />
     <Compile Include="Button.cs" />
     <Compile Include="Camera.cs" />
+    <Compile Include="CHZ.cs" />
     <Compile Include="Circle.cs" />
     <Compile Include="Drop.cs" />
     <Compile Include="Hammer.cs" />
@@ -76,7 +77,6 @@
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Game1.cs" />
     <Compile Include="QuadDrawer.cs" />
     <Compile Include="Rocket.cs" />
     <Compile Include="RocketLauncher.cs" />

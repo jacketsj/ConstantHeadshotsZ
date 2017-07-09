@@ -1103,11 +1103,11 @@ namespace ConstantHeadshotsZ
                 {
                     if (playerNo == 1)
                     {
-                        if (Game1.options.player1CameraRotation)
+                        if (CHZ.options.player1CameraRotation)
                         {
                             String health = zombies[i].health.ToString();
                             Vector2 healthOrigin = zombies[i].Font.MeasureString(health) / 2;
-                            spriteBatch.DrawString(zombies[i].Font, health, Game1.RotateVector2(new Vector2(zombies[i].sprite.getX(), zombies[i].sprite.getY() + zombies[i].sprite.getTexture().Height / 4 * 3), player.playerRotation, new Vector2(zombies[i].sprite.getX(), zombies[i].sprite.getY())), Color.Black, player.playerRotation, healthOrigin, 1.0f, SpriteEffects.None, 0.5f);
+                            spriteBatch.DrawString(zombies[i].Font, health, CHZ.RotateVector2(new Vector2(zombies[i].sprite.getX(), zombies[i].sprite.getY() + zombies[i].sprite.getTexture().Height / 4 * 3), player.playerRotation, new Vector2(zombies[i].sprite.getX(), zombies[i].sprite.getY())), Color.Black, player.playerRotation, healthOrigin, 1.0f, SpriteEffects.None, 0.5f);
                         }
                         else
                         {
@@ -1118,11 +1118,11 @@ namespace ConstantHeadshotsZ
                     }
                     else if (playerNo == 2)
                     {
-                        if (Game1.options.player2CameraRotation)
+                        if (CHZ.options.player2CameraRotation)
                         {
                             String health = zombies[i].health.ToString();
                             Vector2 healthOrigin = zombies[i].Font.MeasureString(health) / 2;
-                            spriteBatch.DrawString(zombies[i].Font, health, Game1.RotateVector2(new Vector2(zombies[i].sprite.getX(), zombies[i].sprite.getY() + zombies[i].sprite.getTexture().Height / 4 * 3), player.playerRotation, new Vector2(zombies[i].sprite.getX(), zombies[i].sprite.getY())), Color.Black, player.playerRotation, healthOrigin, 1.0f, SpriteEffects.None, 0.5f);
+                            spriteBatch.DrawString(zombies[i].Font, health, CHZ.RotateVector2(new Vector2(zombies[i].sprite.getX(), zombies[i].sprite.getY() + zombies[i].sprite.getTexture().Height / 4 * 3), player.playerRotation, new Vector2(zombies[i].sprite.getX(), zombies[i].sprite.getY())), Color.Black, player.playerRotation, healthOrigin, 1.0f, SpriteEffects.None, 0.5f);
                         }
                         else
                         {

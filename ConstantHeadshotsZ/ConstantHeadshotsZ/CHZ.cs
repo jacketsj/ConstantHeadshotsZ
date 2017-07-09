@@ -15,9 +15,9 @@ using Microsoft.Xna.Framework.Storage;
 namespace ConstantHeadshotsZ
 {
     /// <summary>
-    /// This is the main type for your game
+    /// Effective main class (the "game" class) - singleton
     /// </summary>
-    public class Game1 : Microsoft.Xna.Framework.Game
+    public class CHZ : Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
@@ -48,7 +48,6 @@ namespace ConstantHeadshotsZ
         MouseState oldMouse;
         BasicEffect batchRotation;
 
-        //360
 #if XBOX
         IAsyncResult storageResult;
         StorageDevice storageDevice;
@@ -71,7 +70,7 @@ namespace ConstantHeadshotsZ
         GameState CurrentGameState = GameState.CHOOSINGSTORAGEDEVICEBEGIN;
         #endif
 
-        public Game1()
+        public CHZ()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -134,13 +133,12 @@ namespace ConstantHeadshotsZ
         }
 
         /// <summary>
-        /// LoadContent will be called once per game and is the place to load
-        /// all of your content.
+        /// LoadContent will be called once per game and is the place where all content is loaded.
         /// </summary>
         protected override void LoadContent()
         {
             oldMouse = Mouse.GetState();
-            // Create a new SpriteBatch, which can be used to draw textures.
+            // Create a new SpriteBatch to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
              graphics.PreferredBackBufferHeight = screenHeight;
@@ -206,8 +204,7 @@ namespace ConstantHeadshotsZ
         }
 
         /// <summary>
-        /// UnloadContent will be called once per game and is the place to unload
-        /// all content.
+        /// UnloadContent will be called once per game and is the place where all content is unloaded.
         /// </summary>
         protected override void UnloadContent()
         {

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<HighScores xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Score>
+    <float>20000</float>
+    <float>18000</float>
+    <float>11000</float>
+    <float>9000</float>
+    <float>100</float>
+  </Score>
+  <Name>
+    <string>jacketsj</string>
+    <string>jacketsj</string>
+    <string>jacketsj</string>
+    <string>jacketsj</string>
+    <string>jacketsj</string>
+  </Name>
+  <Count>5</Count>
+</HighScores>

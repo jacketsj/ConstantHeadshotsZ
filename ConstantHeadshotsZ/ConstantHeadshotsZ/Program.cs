@@ -11,7 +11,7 @@ namespace ConstantHeadshotsZ
         [STAThread]
         static void Main(string[] args)
         {
-            using (Game1 game = new Game1())
+            using (CHZ game = new CHZ())
             {
                 game.Run();
             }
