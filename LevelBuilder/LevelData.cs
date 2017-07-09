@@ -37,7 +37,7 @@ namespace LevelBuilder
 
         public LevelData()
         {
-
+            //Do nothing
         }
 
         /*

@@ -392,44 +392,6 @@ namespace LevelEditor
                 }
                 if (!deletedSomething)
                 {
-                    for (int i = 0; i < level.backSolids.Length; i++)
-                    {
-                        SolidData solid = level.backSolids[i];
-                        System.Drawing.Point mouse = levelPanel.PointToClient(Cursor.Position);
-                        mouse.X += levelPanel.HorizontalScroll.Value;
-                        mouse.Y += levelPanel.VerticalScroll.Value;
-                        if ((mouse.X >= solid.position.X) && (mouse.Y >= solid.position.Y) && (mouse.X <= solid.position.X + textures[solid.textureNo].Image.Width) && (mouse.Y <= solid.position.Y + textures[solid.textureNo].Image.Height))
-                        {
-                            int newLength = level.backSolids.Length - 1;
-                            SolidData[] newSolids = new SolidData[newLength];
-                            bool foundDeleted = false;
-                            for (int i2 = 0; i2 < level.backSolids.Length; i2++)
-                            {
-                                if (foundDeleted)
-                                {
-                                    newSolids[i2 - 1] = level.backSolids[i2];
-                                }
-                                else
-                                {
-                                    if (i == i2)
-                                    {
-                                        foundDeleted = true;
-                                    }
-                                    else
-                                    {
-                                        newSolids[i2] = level.backSolids[i2];
-                                    }
-                                }
-                            }
-                            level.backSolids = newSolids;
-                            deletedSomething = true;
-                            break;
-                        }
-                    }
-                }
-                
-                if (!deletedSomething)
-                {
                     for (int i = 0; i < level.foreSolids.Length; i++)
                     {
                         SolidData solid = level.foreSolids[i];
@@ -497,6 +459,43 @@ namespace LevelEditor
                                 }
                             }
                             level.zombieSpawners = newSpawners;
+                            break;
+                        }
+                    }
+                }
+                if (!deletedSomething)
+                {
+                    for (int i = 0; i < level.backSolids.Length; i++)
+                    {
+                        SolidData solid = level.backSolids[i];
+                        System.Drawing.Point mouse = levelPanel.PointToClient(Cursor.Position);
+                        mouse.X += levelPanel.HorizontalScroll.Value;
+                        mouse.Y += levelPanel.VerticalScroll.Value;
+                        if ((mouse.X >= solid.position.X) && (mouse.Y >= solid.position.Y) && (mouse.X <= solid.position.X + textures[solid.textureNo].Image.Width) && (mouse.Y <= solid.position.Y + textures[solid.textureNo].Image.Height))
+                        {
+                            int newLength = level.backSolids.Length - 1;
+                            SolidData[] newSolids = new SolidData[newLength];
+                            bool foundDeleted = false;
+                            for (int i2 = 0; i2 < level.backSolids.Length; i2++)
+                            {
+                                if (foundDeleted)
+                                {
+                                    newSolids[i2 - 1] = level.backSolids[i2];
+                                }
+                                else
+                                {
+                                    if (i == i2)
+                                    {
+                                        foundDeleted = true;
+                                    }
+                                    else
+                                    {
+                                        newSolids[i2] = level.backSolids[i2];
+                                    }
+                                }
+                            }
+                            level.backSolids = newSolids;
+                            deletedSomething = true;
                             break;
                         }
                     }

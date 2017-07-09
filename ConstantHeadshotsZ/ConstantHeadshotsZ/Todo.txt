@@ -7,3 +7,18 @@ Add audio effects
 Fix comments
 Refactor game class
 Add abstracted/configurable inputs
+Get 3d-view functioning
+Editor:
+-zooming
+-block preview
+-dual tool/tile (left and right mouse)
+-alphabetize textures
+-allow for mass texture addition/removal
+-prompt for save on exit
+-undo/redo system
+-refactor "selected index"
+-fix background scaling preview (currently gives "shadow" effect on small images)
+-add replace tool, with exclusivity mode for fore/back/solid
+-allow deletion/viewing of certain tile-types only
+-remove ".png" from preview name in texture list
+-auto-check for duplicate textures
