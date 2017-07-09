@@ -21,7 +21,6 @@ namespace ConstantHeadshotsZ
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        //TEST Texture2D testBallTexture;
         Button buttonPlay;
         Button buttonResume;
         Button buttonMainMenu;
@@ -37,8 +36,8 @@ namespace ConstantHeadshotsZ
         Level currentLevel;
         public static Options options;
         public static readonly string highscoresFilename = "highscores.xml";
-        int logoTime = 150;
-        int maxLogoTime = 150;
+        TimeSpan logoTime;
+        TimeSpan maxLogoTime;
         Viewport leftView;
         Viewport leftOverlayView;
         Viewport rightView;
@@ -63,7 +62,6 @@ namespace ConstantHeadshotsZ
 #if XBOX
             CHOOSINGSTORAGEDEVICEBEGIN, CHOOSINGSTORAGEDEVICEEND,
 #endif
-            //TYPINGMAPURLBEGIN, TYPINGMAPURLEND
         }
 
         #if WINDOWS
@@ -87,10 +85,6 @@ namespace ConstantHeadshotsZ
         /// </summary>
         protected override void Initialize()
         {
-            //Components.Add(new GamerServicesComponent(this));
-
-            // TODO: Add your initialization logic here
-
             batchRotation = new BasicEffect(graphics.GraphicsDevice)
             {
                 TextureEnabled = true,
@@ -121,25 +115,20 @@ namespace ConstantHeadshotsZ
 
             options = new Options();
 
-
-            //graphics.PreferredBackBufferHeight = graphics.GraphicsDevice.DisplayMode.Height;
-            //graphics.PreferredBackBufferWidth = graphics.GraphicsDevice.DisplayMode.Width;
-            //screenHeight = graphics.PreferredBackBufferHeight;
-            //screenWidth = graphics.PreferredBackBufferWidth;
             currentLevel = new Level(new Solid[4], new Vector2[4], Content, Color.LightGreen, new Vector2(1000, 1000), new Vector2(150f, 150f));
             currentLevel.solids[0] = new Solid(new Sprite(Content.Load<Texture2D>("Block"), new Vector2(10, 7)));
             currentLevel.solids[1] = new Solid(new Sprite(Content.Load<Texture2D>("Block"), new Vector2(300, 702)));
             currentLevel.solids[2] = new Solid(new Sprite(Content.Load<Texture2D>("Block"), new Vector2(602, 300)));
             currentLevel.solids[3] = new Solid(new Sprite(Content.Load<Texture2D>("Block"), new Vector2(503, 850)));
-            //currentLevel.solids[4] = new Solid(new Sprite(Content.Load<Texture2D>("TestLevelWidth"), new Vector2(0, -(Content.Load<Texture2D>("TestLevelWidth").Height))));
-            //currentLevel.solids[5] = new Solid(new Sprite(Content.Load<Texture2D>("TestLevelHeight"), new Vector2(-(Content.Load<Texture2D>("TestLevelHeight").Width), 0)));
-            //currentLevel.solids[6] = new Solid(new Sprite(Content.Load<Texture2D>("TestLevelWidth"), new Vector2(0, currentLevel.levelHeight)));
-            //currentLevel.solids[7] = new Solid(new Sprite(Content.Load<Texture2D>("TestLevelHeight"), new Vector2(currentLevel.levelWidth, 0)));
+            
             currentLevel.zombieSpawners[0] = new Vector2(170, 20);
             currentLevel.zombieSpawners[1] = new Vector2(20, 170);
             currentLevel.zombieSpawners[2] = new Vector2(700, 200);
             currentLevel.zombieSpawners[3] = new Vector2(400, 700);
             threeD = new _3DView(graphics.GraphicsDevice);
+
+            logoTime = new TimeSpan(0, 0, 6);
+            maxLogoTime = new TimeSpan(logoTime.Ticks);
 
             base.Initialize();
         }
@@ -154,9 +143,7 @@ namespace ConstantHeadshotsZ
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
-
-            graphics.PreferredBackBufferHeight = screenHeight;
+             graphics.PreferredBackBufferHeight = screenHeight;
             graphics.PreferredBackBufferWidth = screenWidth;
             graphics.ApplyChanges();
 
@@ -176,9 +163,6 @@ namespace ConstantHeadshotsZ
         {
             buttonPlay = new Button(new Sprite(Content.Load<Texture2D>("PlayButton"), new Vector2()));
             buttonPlay.sprite.vector = new Vector2(((screenWidth / 2) - (buttonPlay.sprite.getTexture().Width / 2)), (screenHeight / 3 + (screenHeight / 6)));
-
-            //buttonOptions = new Button(new Sprite(Content.Load<Texture2D>("OptionsButton"), new Vector2()));
-            //buttonOptions.sprite.vector = new Vector2(((screenWidth / 2) - (buttonOptions.sprite.getTexture().Width / 2)), (screenHeight / 3 + (screenHeight / 3)));
 
             button2PlayerSplitscreen = new Button(new Sprite(Content.Load<Texture2D>("2PlayerSplitscreenButton"), new Vector2()));
             button2PlayerSplitscreen.sprite.vector = new Vector2(((screenWidth / 2) - (button2PlayerSplitscreen.sprite.getTexture().Width / 2)), (screenHeight / 3 + (screenHeight / 3)));
@@ -227,7 +211,7 @@ namespace ConstantHeadshotsZ
         /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+            // Unload any non ContentManager content here if needed
         }
 
         bool justPressedFullscreenButton = false;
@@ -280,8 +264,7 @@ namespace ConstantHeadshotsZ
                     }
                     screenWidth = graphics.PreferredBackBufferWidth;
                     screenHeight = graphics.PreferredBackBufferHeight;
-                    //GraphicsDevice.Viewport = new Viewport(GraphicsDevice.Viewport.X, GraphicsDevice.Viewport.Y, screenWidth, screenHeight);
-                    //GraphicsDevice.Viewport.Height = screenHeight;
+
                     graphics.ApplyChanges();
                     UpdateViewports();
                     UpdateButtons();
@@ -294,8 +277,8 @@ namespace ConstantHeadshotsZ
             }
             if (CurrentGameState == GameState.LOGO)
             {
-                logoTime -= 1;
-                if (logoTime <= 0)
+                logoTime -= gameTime.ElapsedGameTime;
+                if (logoTime <= TimeSpan.Zero || Mouse.GetState().LeftButton == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Space) || justPressedControllerButton || justPressedPauseButton)
                 {
                     CurrentGameState = GameState.MAINMENU;
                 }
@@ -316,30 +299,6 @@ namespace ConstantHeadshotsZ
                 }
             }
 #endif
-            //else if (CurrentGameState == GameState.TYPINGMAPURLBEGIN)
-            //{
-            //    mapurlResult = Guide.BeginShowKeyboardInput(PlayerIndex.One, "Map URL", "Type in the URL for your .chz map.", "http://", null, null);
-            //    CurrentGameState = GameState.TYPINGMAPURLEND;
-            //}
-            //else if (CurrentGameState == GameState.TYPINGMAPURLEND)
-            //{
-            //    if (mapurlResult.IsCompleted)
-            //    {
-            //        mapurl = Guide.EndShowKeyboardInput(mapurlResult);
-
-            //        LevelData levelData = null;
-            //        //LevelData levelData = LevelData.LoadLevel360(mapurl);
-            //        if (levelData != null)
-            //        {
-            //            currentLevel = new Level(levelData, graphics.GraphicsDevice);
-            //            players[0].sprite.vector = currentLevel.playerSpawn + new Vector2(players[0].sprite.getTexture().Width / 2, players[0].sprite.getTexture().Height / 2);
-            //            Vector2 player2Spawn = currentLevel.playerSpawn;
-            //            player2Spawn.X += Content.Load<Texture2D>("Player").Width;
-            //            players[1].sprite.vector = player2Spawn;
-            //        }
-            //        CurrentGameState = GameState.MAINMENU;
-            //    }
-            //}
             else if (CurrentGameState == GameState.TWOPLAYERLOSE)
             {
                 IsMouseVisible = true;
@@ -409,14 +368,6 @@ namespace ConstantHeadshotsZ
                     justClickedOnscreenButton = true;
                     CurrentGameState = GameState.SINGLEPLAYER;
                 }
-                /*
-                else if ((buttonOptions.clicked == true || GamePad.GetState(PlayerIndex.One).Buttons.Y == ButtonState.Pressed) && !justClickedOnscreenButton)
-                {
-                    buttonOptions.clicked = false;
-                    justClickedOnscreenButton = true;
-                    CurrentGameState = GameState.OPTIONS;
-                }
-                */
                 else if ((button2PlayerSplitscreen.clicked == true || GamePad.GetState(PlayerIndex.One).Buttons.Y == ButtonState.Pressed) && !justClickedOnscreenButton)
                 {
                     button2PlayerSplitscreen.clicked = false;
@@ -466,71 +417,6 @@ namespace ConstantHeadshotsZ
                         player2Spawn.X += Content.Load<Texture2D>("Player").Width;
                         players[1].sprite.vector = player2Spawn;
                     }
-                    
-                    /*
-                    LevelData levelData = new LevelData();
-                    levelData.backgroundColor = currentLevel.backgroundColor;
-                    levelData.levelHeight = currentLevel.levelHeight;
-                    levelData.levelWidth = currentLevel.levelWidth;
-                    levelData.maxAmountOfZombies = currentLevel.maxAmountOfZombies;
-                    levelData.playerSpawn = currentLevel.playerSpawn;
-                    levelData.solids = new SolidData[currentLevel.solids.Length];
-                    levelData.textures = new TextureData[0];
-                    Color[] BackgroundTextureData = new Color[currentLevel.background.Width * currentLevel.background.Height];
-                    currentLevel.background.GetData(BackgroundTextureData);
-                    int textureReference2 = 0;
-                    bool foundMatch2 = false;
-                    for (int i5 = 0; i5 < levelData.textures.Length; i5++)
-                    {
-                        if (levelData.textures[i5].Colors == BackgroundTextureData)
-                        {
-                            textureReference2 = i5;
-                            foundMatch2 = true;
-                        }
-                    }
-                    if (!foundMatch2)
-                    {
-                        TextureData[] newTextureData = new TextureData[levelData.textures.Length + 1];
-                        for (int i4 = 0; i4 < levelData.textures.Length; i4++)
-                        {
-                            newTextureData[i4] = levelData.textures[i4];
-                        }
-                        newTextureData[levelData.textures.Length] = new TextureData(BackgroundTextureData, currentLevel.background.Width, currentLevel.background.Height);
-                        textureReference2 = levelData.textures.Length;
-                        levelData.textures = newTextureData;
-                    }
-                    levelData.backgroundReference = textureReference2;
-                    for (int i = 0; i < levelData.solids.Length; i++)
-                    {
-                        currentLevel.solids[i].sprite.UpdateTextureData();
-                        int textureReference = 0;
-                        bool foundMatch = false;
-                        for (int i2 = 0; i2 < levelData.textures.Length; i2++)
-                        {
-                            if (levelData.textures[i2].Colors == currentLevel.solids[i].sprite.textureData)
-                            {
-                                textureReference = i2;
-                                foundMatch = true;
-                            }
-                        }
-                        if (!foundMatch)
-                        {
-                            TextureData[] newTextureData = new TextureData[levelData.textures.Length + 1];
-                            for (int i3 = 0; i3 < levelData.textures.Length; i3++)
-                            {
-                                newTextureData[i3] = levelData.textures[i3];
-                            }
-                            newTextureData[levelData.textures.Length] = new TextureData(currentLevel.solids[i].sprite.textureData, currentLevel.solids[i].sprite.getTexture().Width, currentLevel.solids[i].sprite.getTexture().Height);
-                            textureReference = levelData.textures.Length;
-                            levelData.textures = newTextureData;
-                        }
-                        levelData.solids[i] = new SolidData(currentLevel.solids[i].sprite.vector, textureReference, currentLevel.solids[i].sprite.getTint());
-                    }
-                    levelData.spawnTimer = currentLevel.spawnTimer;
-                    levelData.zombieSpawnAcceleration = currentLevel.zombieSpawnAcceleration;
-                    levelData.zombieSpawners = currentLevel.zombieSpawners;
-                    LevelData.SaveLevel(levelData);
-                    */
 
                     buttonLoadLevel.Update(Mouse.GetState());
                     justClickedOnscreenButton = true;
@@ -799,72 +685,16 @@ namespace ConstantHeadshotsZ
                             if (players[0].aiming)
                             {
                                 Vector2 positionChange = new Vector2(GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Left.X * (5 * (GamePad.GetState(PlayerIndex.One).Triggers.Left / 5f)), -(GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Left.Y * (5 * (GamePad.GetState(PlayerIndex.One).Triggers.Left / 5f))));
-                                //Vector2 rotationChange = new Vector2((float)Math.Cos(players[0].playerRotation), (float)Math.Sin(players[0].playerRotation));
-                                //positionChange = new Vector2(positionChange.X * (float)Math.Cos(players[0].playerRotation) - positionChange.Y * (float)Math.Sin(players[0].playerRotation), positionChange.X * (float)Math.Sin(players[0].playerRotation) + positionChange.Y * (float)Math.Cos(players[0].playerRotation));
-                                //Vector2 newPositionChange = RotateVector2(positionChange, MathHelper.ToRadians(players[0].playerRotation), Vector2.Zero);
                                 Vector2 newPos = RotateVector2(players[0].sprite.vector + positionChange, players[0].playerRotation, players[0].sprite.vector);
                                 players[0].SetX(newPos.X, currentLevel);
                                 players[0].SetY(newPos.Y, currentLevel);
-                                //players[0].SetX(players[0].sprite.getX() + (GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Left.X * (5 * (GamePad.GetState(PlayerIndex.One).Triggers.Left / 5f))) * (float)Math.Cos(players[0].playerRotation), currentLevel);
-                                //players[0].SetY(players[0].sprite.getY() - (GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Left.Y * (5 * (GamePad.GetState(PlayerIndex.One).Triggers.Left / 5f))) * (float)Math.Sin(players[0].playerRotation), currentLevel);
-                                /*
-                                float addedX = GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Left.X;
-                                float multipliedX = (5 * (GamePad.GetState(PlayerIndex.One).Triggers.Left / 5f));
-                                float addedY = GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Left.Y;
-                                float multipliedY = (5 * (GamePad.GetState(PlayerIndex.One).Triggers.Left / 5f));
-                                float newX = players[0].sprite.getX();
-                                float newY = players[0].sprite.getY();
-                                float rotation = MathHelper.ToDegrees((float)Math.Atan2(addedY, addedX));
-                                rotation += players[0].playerRotation;
-                                //rotation += 300;
-                                while (rotation > 359)
-                                {
-                                    rotation -= 360;
-                                }
-                                while (rotation < 0)
-                                {
-                                    rotation += 360;
-                                }
-                                players[0].SetX(newX + (float)Math.Cos(MathHelper.ToRadians(rotation)), currentLevel);
-                                players[0].SetY(newY - (float)Math.Sin(MathHelper.ToRadians(rotation)), currentLevel);
-                                //players[0].SetX(players[0].sprite.getX() + GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Left.X * (5 * (GamePad.GetState(PlayerIndex.One).Triggers.Left / 5f)), currentLevel);
-                                //players[0].SetY(players[0].sprite.getY() - GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Left.Y * (5 * (GamePad.GetState(PlayerIndex.One).Triggers.Left / 5f)), currentLevel);
-                                */
                             }
                             else
                             {
                                 Vector2 positionChange = new Vector2(GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Left.X * 7, -(GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Left.Y * 7));
-                                //Vector2 rotationChange = new Vector2((float)Math.Cos(players[0].playerRotation), (float)Math.Sin(players[0].playerRotation));
-                                //positionChange = new Vector2(positionChange.X * (float)Math.Cos(players[0].playerRotation) - positionChange.Y * (float)Math.Sin(players[0].playerRotation), positionChange.X * (float)Math.Sin(players[0].playerRotation) + positionChange.Y * (float)Math.Cos(players[0].playerRotation));
-                                //Vector2 newPositionChange = RotateVector2(positionChange, MathHelper.ToRadians(players[0].playerRotation), Vector2.Zero);
                                 Vector2 newPos = RotateVector2(players[0].sprite.vector + positionChange, players[0].playerRotation, players[0].sprite.vector);
                                 players[0].SetX(newPos.X, currentLevel);
                                 players[0].SetY(newPos.Y, currentLevel);
-                                //players[0].SetX(players[0].sprite.getX() + newPositionChange.X, currentLevel);
-                                //players[0].SetY(players[0].sprite.getY() - newPositionChange.Y, currentLevel);
-                                /*
-                                float addedX = GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Left.X;
-                                float multipliedX = 7;
-                                float addedY = GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Left.Y;
-                                float multipliedY = 7;
-                                float newX = players[0].sprite.getX();
-                                float newY = players[0].sprite.getY();
-                                float rotation = MathHelper.ToDegrees((float)Math.Atan2(addedY, addedX));
-                                rotation += players[0].playerRotation;
-                                //rotation += 300;
-                                while (rotation > 359)
-                                {
-                                    rotation -= 360;
-                                }
-                                while (rotation < 0)
-                                {
-                                    rotation += 360;
-                                }
-                                players[0].SetX(newX + (float)Math.Cos(MathHelper.ToRadians(rotation)) * multipliedX, currentLevel);
-                                players[0].SetY(newY - (float)Math.Sin(MathHelper.ToRadians(rotation)) * multipliedY, currentLevel);
-                                //players[0].SetX(players[0].sprite.getX() + GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Left.X * 7, currentLevel);
-                                //players[0].SetY(players[0].sprite.getY() - GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Left.Y * 7, currentLevel);
-                                */
                             }
                         }
                         else
@@ -888,72 +718,16 @@ namespace ConstantHeadshotsZ
                             if (players[1].aiming)
                             {
                                 Vector2 positionChange = new Vector2(GamePad.GetState(PlayerIndex.Two, GamePadDeadZone.Circular).ThumbSticks.Left.X * (5 * (GamePad.GetState(PlayerIndex.Two).Triggers.Left / 5f)), -(GamePad.GetState(PlayerIndex.Two, GamePadDeadZone.Circular).ThumbSticks.Left.Y * (5 * (GamePad.GetState(PlayerIndex.Two).Triggers.Left / 5f))));
-                                //Vector2 rotationChange = new Vector2((float)Math.Cos(players[1].playerRotation), (float)Math.Sin(players[1].playerRotation));
-                                //positionChange = new Vector2(positionChange.X * (float)Math.Cos(players[1].playerRotation) - positionChange.Y * (float)Math.Sin(players[1].playerRotation), positionChange.X * (float)Math.Sin(players[1].playerRotation) + positionChange.Y * (float)Math.Cos(players[1].playerRotation));
-                                //Vector2 newPositionChange = RotateVector2(positionChange, MathHelper.ToRadians(players[1].playerRotation), Vector2.Zero);
                                 Vector2 newPos = RotateVector2(players[1].sprite.vector + positionChange, players[1].playerRotation, players[1].sprite.vector);
                                 players[1].SetX(newPos.X, currentLevel);
                                 players[1].SetY(newPos.Y, currentLevel);
-                                //players[1].SetX(players[1].sprite.getX() + (GamePad.GetState(PlayerIndex.Two, GamePadDeadZone.Circular).ThumbSticks.Left.X * (5 * (GamePad.GetState(PlayerIndex.Two).Triggers.Left / 5f))) * (float)Math.Cos(players[1].playerRotation), currentLevel);
-                                //players[1].SetY(players[1].sprite.getY() - (GamePad.GetState(PlayerIndex.Two, GamePadDeadZone.Circular).ThumbSticks.Left.Y * (5 * (GamePad.GetState(PlayerIndex.Two).Triggers.Left / 5f))) * (float)Math.Sin(players[1].playerRotation), currentLevel);
-                                /*
-                                float addedX = GamePad.GetState(PlayerIndex.Two, GamePadDeadZone.Circular).ThumbSticks.Left.X;
-                                float multipliedX = (5 * (GamePad.GetState(PlayerIndex.Two).Triggers.Left / 5f));
-                                float addedY = GamePad.GetState(PlayerIndex.Two, GamePadDeadZone.Circular).ThumbSticks.Left.Y;
-                                float multipliedY = (5 * (GamePad.GetState(PlayerIndex.Two).Triggers.Left / 5f));
-                                float newX = players[1].sprite.getX();
-                                float newY = players[1].sprite.getY();
-                                float rotation = MathHelper.ToDegrees((float)Math.Atan2(addedY, addedX));
-                                rotation += players[1].playerRotation;
-                                //rotation += 300;
-                                while (rotation > 359)
-                                {
-                                    rotation -= 360;
-                                }
-                                while (rotation < 0)
-                                {
-                                    rotation += 360;
-                                }
-                                players[1].SetX(newX + (float)Math.Cos(MathHelper.ToRadians(rotation)), currentLevel);
-                                players[1].SetY(newY - (float)Math.Sin(MathHelper.ToRadians(rotation)), currentLevel);
-                                //players[1].SetX(players[1].sprite.getX() + GamePad.GetState(PlayerIndex.Two, GamePadDeadZone.Circular).ThumbSticks.Left.X * (5 * (GamePad.GetState(PlayerIndex.Two).Triggers.Left / 5f)), currentLevel);
-                                //players[1].SetY(players[1].sprite.getY() - GamePad.GetState(PlayerIndex.Two, GamePadDeadZone.Circular).ThumbSticks.Left.Y * (5 * (GamePad.GetState(PlayerIndex.Two).Triggers.Left / 5f)), currentLevel);
-                                */
                             }
                             else
                             {
                                 Vector2 positionChange = new Vector2(GamePad.GetState(PlayerIndex.Two, GamePadDeadZone.Circular).ThumbSticks.Left.X * 7, -(GamePad.GetState(PlayerIndex.Two, GamePadDeadZone.Circular).ThumbSticks.Left.Y * 7));
-                                //Vector2 rotationChange = new Vector2((float)Math.Cos(players[1].playerRotation), (float)Math.Sin(players[1].playerRotation));
-                                //positionChange = new Vector2(positionChange.X * (float)Math.Cos(players[1].playerRotation) - positionChange.Y * (float)Math.Sin(players[1].playerRotation), positionChange.X * (float)Math.Sin(players[1].playerRotation) + positionChange.Y * (float)Math.Cos(players[1].playerRotation));
-                                //Vector2 newPositionChange = RotateVector2(positionChange, MathHelper.ToRadians(players[1].playerRotation), Vector2.Zero);
                                 Vector2 newPos = RotateVector2(players[1].sprite.vector + positionChange, players[1].playerRotation, players[1].sprite.vector);
                                 players[1].SetX(newPos.X, currentLevel);
                                 players[1].SetY(newPos.Y, currentLevel);
-                                //players[1].SetX(players[1].sprite.getX() + newPositionChange.X, currentLevel);
-                                //players[1].SetY(players[1].sprite.getY() - newPositionChange.Y, currentLevel);
-                                /*
-                                float addedX = GamePad.GetState(PlayerIndex.Two, GamePadDeadZone.Circular).ThumbSticks.Left.X;
-                                float multipliedX = 7;
-                                float addedY = GamePad.GetState(PlayerIndex.Two, GamePadDeadZone.Circular).ThumbSticks.Left.Y;
-                                float multipliedY = 7;
-                                float newX = players[1].sprite.getX();
-                                float newY = players[1].sprite.getY();
-                                float rotation = MathHelper.ToDegrees((float)Math.Atan2(addedY, addedX));
-                                rotation += players[1].playerRotation;
-                                //rotation += 300;
-                                while (rotation > 359)
-                                {
-                                    rotation -= 360;
-                                }
-                                while (rotation < 0)
-                                {
-                                    rotation += 360;
-                                }
-                                players[1].SetX(newX + (float)Math.Cos(MathHelper.ToRadians(rotation)) * multipliedX, currentLevel);
-                                players[1].SetY(newY - (float)Math.Sin(MathHelper.ToRadians(rotation)) * multipliedY, currentLevel);
-                                //players[1].SetX(players[1].sprite.getX() + GamePad.GetState(PlayerIndex.Two, GamePadDeadZone.Circular).ThumbSticks.Left.X * 7, currentLevel);
-                                //players[1].SetY(players[1].sprite.getY() - GamePad.GetState(PlayerIndex.Two, GamePadDeadZone.Circular).ThumbSticks.Left.Y * 7, currentLevel);
-                                */
                             }
                         }
                         else
@@ -1128,15 +902,6 @@ namespace ConstantHeadshotsZ
                         {
                             if (currentLevel.basicWeaponBullets.Length != 0)
                             {
-                                /*
-                                List<BasicWeaponBullet> newBullets = new List<BasicWeaponBullet>();
-                                foreach (BasicWeaponBullet bullet in currentLevel.basicWeaponBullets)
-                                {
-                                    newBullets.Add(bullet);
-                                }
-                                newBullets.Add(new BasicWeaponBullet(Content, players[0].sprite.vector, players[0].playerRotation));
-                                currentLevel.basicWeaponBullets = newBullets.ToArray();
-                                */
                                 BasicWeaponBullet[] newBullets = new BasicWeaponBullet[currentLevel.basicWeaponBullets.Length + 1];
                                 int i;
                                 for (i = 0; i < currentLevel.basicWeaponBullets.Length; i++)
@@ -1145,15 +910,7 @@ namespace ConstantHeadshotsZ
                                 }
                                 newBullets[i] = new BasicWeaponBullet(Content, players[0].sprite.vector, players[0].playerRotation);
                                 currentLevel.basicWeaponBullets = newBullets;
-                                /*
-                                BasicWeaponBullet[] newBasicWeaponBullets = new BasicWeaponBullet[currentLevel.basicWeaponBullets.Length + 1];
-                                int i = 0;
-                                for (i = 0; i < currentLevel.basicWeaponBullets.Length; i++)
-                                {
-                                    newBasicWeaponBullets[i] = currentLevel.basicWeaponBullets[i];
-                                }
-                                newBasicWeaponBullets[newBasicWeaponBullets.Length - 1] = new BasicWeaponBullet(Content, players[0].sprite.vector, players[0].playerRotation);
-                                */
+
                                 players[0].delay = 20;
                             }
                             else
@@ -1190,9 +947,6 @@ namespace ConstantHeadshotsZ
                         if (players[0].aiming)
                         {
                             Vector2 positionChange = new Vector2(GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Left.X * (5 * (GamePad.GetState(PlayerIndex.One).Triggers.Left / 5f)), -(GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Left.Y * (5 * (GamePad.GetState(PlayerIndex.One).Triggers.Left / 5f))));
-                            //Vector2 rotationChange = new Vector2((float)Math.Cos(players[0].playerRotation), (float)Math.Sin(players[0].playerRotation));
-                            //positionChange = new Vector2(positionChange.X * (float)Math.Cos(players[0].playerRotation) - positionChange.Y * (float)Math.Sin(players[0].playerRotation), positionChange.X * (float)Math.Sin(players[0].playerRotation) + positionChange.Y * (float)Math.Cos(players[0].playerRotation));
-                            //Vector2 newPositionChange = RotateVector2(positionChange, MathHelper.ToRadians(players[0].playerRotation), Vector2.Zero);
                             Vector2 newPos = RotateVector2(players[0].sprite.vector + positionChange, players[0].playerRotation, players[0].sprite.vector);
                             players[0].SetX(newPos.X, currentLevel);
                             players[0].SetY(newPos.Y, currentLevel);
@@ -1200,9 +954,6 @@ namespace ConstantHeadshotsZ
                         else
                         {
                             Vector2 positionChange = new Vector2(GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Left.X * 7, -(GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Left.Y * 7));
-                            //Vector2 rotationChange = new Vector2((float)Math.Cos(players[0].playerRotation), (float)Math.Sin(players[0].playerRotation));
-                            //positionChange = new Vector2(positionChange.X * (float)Math.Cos(players[0].playerRotation) - positionChange.Y * (float)Math.Sin(players[0].playerRotation), positionChange.X * (float)Math.Sin(players[0].playerRotation) + positionChange.Y * (float)Math.Cos(players[0].playerRotation));
-                            //Vector2 newPositionChange = RotateVector2(positionChange, MathHelper.ToRadians(players[0].playerRotation), Vector2.Zero);
                             Vector2 newPos = RotateVector2(players[0].sprite.vector + positionChange, players[0].playerRotation, players[0].sprite.vector);
                             players[0].SetX(newPos.X, currentLevel);
                             players[0].SetY(newPos.Y, currentLevel);
@@ -1302,15 +1053,6 @@ namespace ConstantHeadshotsZ
                                 }
                                 newBullets[i] = new BasicWeaponBullet(Content, players[0].sprite.vector, players[0].playerRotation);
                                 currentLevel.basicWeaponBullets = newBullets;
-                                /*
-                                BasicWeaponBullet[] newBasicWeaponBullets = new BasicWeaponBullet[currentLevel.basicWeaponBullets.Length + 1];
-                                int i = 0;
-                                for (i = 0; i < currentLevel.basicWeaponBullets.Length; i++)
-                                {
-                                    newBasicWeaponBullets[i] = currentLevel.basicWeaponBullets[i];
-                                }
-                                newBasicWeaponBullets[newBasicWeaponBullets.Length - 1] = new BasicWeaponBullet(Content, players[0].sprite.vector, players[0].playerRotation);
-                                */
                                 players[0].delay = 20;
                             }
                             else
@@ -1342,27 +1084,6 @@ namespace ConstantHeadshotsZ
                             players[0].delay = RocketLauncher.delay;
                         }
                     }
-                    //float movementX = 0;
-                    //float movementY = 0;
-
-                    /*
-                    if (Keyboard.GetState().IsKeyDown(Keys.W))
-                    {
-                        movementY -= 1;
-                    }
-                    if (Keyboard.GetState().IsKeyDown(Keys.A))
-                    {
-                        movementX -= 1;
-                    }
-                    if (Keyboard.GetState().IsKeyDown(Keys.S))
-                    {
-                        movementY += 1;
-                    }
-                    if (Keyboard.GetState().IsKeyDown(Keys.D))
-                    {
-                        movementX += 1;
-                    }
-                    */
                     if (options.player1CameraRotation)
                     {
                         Vector2 toMove = Vector2.Zero;
@@ -1395,68 +1116,6 @@ namespace ConstantHeadshotsZ
                         Vector2 newPos = RotateVector2(players[0].sprite.vector + toMove, players[0].playerRotation, players[0].sprite.vector);
                         players[0].SetX(newPos.X, currentLevel);
                         players[0].SetY(newPos.Y, currentLevel);
-                        //players[0].SetX(players[0].sprite.getX() + toMove.X * speed, currentLevel);
-                        //players[0].SetY(players[0].sprite.getY() + toMove.Y * speed, currentLevel);
-                        //if (players[0].aiming)
-                        //{
-                        //    Vector2 positionChange = new Vector2(0, 0);
-                        //    if (Keyboard.GetState().IsKeyDown(Keys.W))
-                        //    {
-                        //        //movementY -= 1;
-                        //        positionChange.Y -= 5 * (1 / 5f);
-                        //    }
-                        //    if (Keyboard.GetState().IsKeyDown(Keys.A))
-                        //    {
-                        //        //movementX -= 1;
-                        //        positionChange.X -= 5 * (1 / 5f);
-                        //    }
-                        //    if (Keyboard.GetState().IsKeyDown(Keys.S))
-                        //    {
-                        //        //movementY += 1;
-                        //        positionChange.Y += 5 * (1 / 5f);
-                        //    }
-                        //    if (Keyboard.GetState().IsKeyDown(Keys.D))
-                        //    {
-                        //        //movementX += 1;
-                        //        positionChange.X += 5 * (1 / 5f);
-                        //    }
-                        //    //Vector2 rotationChange = new Vector2((float)Math.Cos(players[0].playerRotation), (float)Math.Sin(players[0].playerRotation));
-                        //    //positionChange = new Vector2(positionChange.X * (float)Math.Cos(players[0].playerRotation) - positionChange.Y * (float)Math.Sin(players[0].playerRotation), positionChange.X * (float)Math.Sin(players[0].playerRotation) + positionChange.Y * (float)Math.Cos(players[0].playerRotation));
-                        //    //Vector2 newPositionChange = RotateVector2(positionChange, MathHelper.ToRadians(players[0].playerRotation), Vector2.Zero);
-                        //    Vector2 newPos = RotateVector2(players[0].sprite.vector + positionChange, players[0].playerRotation, players[0].sprite.vector);
-                        //    players[0].SetX(newPos.X, currentLevel);
-                        //    players[0].SetY(newPos.Y, currentLevel);
-                        //}
-                        //else
-                        //{
-                        //    Vector2 positionChange = new Vector2(0, 0);
-                        //    if (Keyboard.GetState().IsKeyDown(Keys.W))
-                        //    {
-                        //        //movementY -= 1;
-                        //        positionChange.Y -= 7;
-                        //    }
-                        //    if (Keyboard.GetState().IsKeyDown(Keys.A))
-                        //    {
-                        //        //movementX -= 1;
-                        //        positionChange.X -= 7;
-                        //    }
-                        //    if (Keyboard.GetState().IsKeyDown(Keys.S))
-                        //    {
-                        //        //movementY += 1;
-                        //        positionChange.Y += 7;
-                        //    }
-                        //    if (Keyboard.GetState().IsKeyDown(Keys.D))
-                        //    {
-                        //        //movementX += 1;
-                        //        positionChange.X += 7;
-                        //    }
-                        //    //Vector2 rotationChange = new Vector2((float)Math.Cos(players[0].playerRotation), (float)Math.Sin(players[0].playerRotation));
-                        //    //positionChange = new Vector2(positionChange.X * (float)Math.Cos(players[0].playerRotation) - positionChange.Y * (float)Math.Sin(players[0].playerRotation), positionChange.X * (float)Math.Sin(players[0].playerRotation) + positionChange.Y * (float)Math.Cos(players[0].playerRotation));
-                        //    //Vector2 newPositionChange = RotateVector2(positionChange, MathHelper.ToRadians(players[0].playerRotation), Vector2.Zero);
-                        //    Vector2 newPos = RotateVector2(players[0].sprite.vector + positionChange, players[0].playerRotation, players[0].sprite.vector);
-                        //    players[0].SetX(newPos.X, currentLevel);
-                        //    players[0].SetY(newPos.Y, currentLevel);
-                        //}
                     }
                     else
                     {
@@ -1488,102 +1147,7 @@ namespace ConstantHeadshotsZ
                         }
                         players[0].SetX(players[0].sprite.getX() + toMove.X * speed, currentLevel);
                         players[0].SetY(players[0].sprite.getY() + toMove.Y * speed, currentLevel);
-                        //if (players[0].aiming)
-                        //{
-                        //    if (Keyboard.GetState().IsKeyDown(Keys.W))
-                        //    {
-                        //        //movementY -= 1;
-                        //        players[0].SetY(players[0].sprite.getY() + -1 * (5 * (1 / 5f)), currentLevel);
-                        //    }
-                        //    if (Keyboard.GetState().IsKeyDown(Keys.A))
-                        //    {
-                        //        //movementX -= 1;
-                        //        players[0].SetX(players[0].sprite.getX() + -1 * (5 * (1 / 5f)), currentLevel);
-                        //    }
-                        //    if (Keyboard.GetState().IsKeyDown(Keys.S))
-                        //    {
-                        //        //movementY += 1;
-                        //        players[0].SetY(players[0].sprite.getY() + 1 * (5 * (1 / 5f)), currentLevel);
-                        //    }
-                        //    if (Keyboard.GetState().IsKeyDown(Keys.D))
-                        //    {
-                        //        //movementX += 1;
-                        //        players[0].SetX(players[0].sprite.getX() + 1 * (5 * (1 / 5f)), currentLevel);
-                        //    }
-                        //}
-                        //else
-                        //{
-                        //    if (Keyboard.GetState().IsKeyDown(Keys.W))
-                        //    {
-                        //        //movementY -= 1;
-                        //        players[0].SetY(players[0].sprite.getY() + -1 * 7, currentLevel);
-                        //    }
-                        //    if (Keyboard.GetState().IsKeyDown(Keys.A))
-                        //    {
-                        //        //movementX -= 1;
-                        //        players[0].SetX(players[0].sprite.getX() + -1 * 7, currentLevel);
-                        //    }
-                        //    if (Keyboard.GetState().IsKeyDown(Keys.S))
-                        //    {
-                        //        //movementY += 1;
-                        //        players[0].SetY(players[0].sprite.getY() + 1 * 7, currentLevel);
-                        //    }
-                        //    if (Keyboard.GetState().IsKeyDown(Keys.D))
-                        //    {
-                        //        //movementX += 1;
-                        //        players[0].SetX(players[0].sprite.getX() + 1 * 7, currentLevel);
-                        //    }
-                        //}
                     }
-                    //float movementRotation = (float)Math.Atan2(movementX, -movementY);
-                    /*
-                    if (players[0].aiming)
-                    {
-                        players[0].SetX(players[0].sprite.getX() - (float)((5 * (1 / 5f)) * Math.Cos(movementRotation)), currentLevel);
-                        players[0].SetY(players[0].sprite.getY() - (float)((5 * (1 / 5f)) * Math.Sin(movementRotation)), currentLevel);
-                    }
-                    else
-                    {
-                        players[0].SetX(players[0].sprite.getX() - (float)(5 * Math.Cos(movementRotation)), currentLevel);
-                        players[0].SetX(players[0].sprite.getX() - (float)(5 * Math.Sin(movementRotation)), currentLevel);
-                    }
-                     */
-                    /*
-                    if (GamePad.GetState(PlayerIndex.One).ThumbSticks.Right != Vector2.Zero)
-                    {
-                        if (options.player1CameraRotation)
-                        {
-                            players[0].playerRotation += GamePad.GetState(PlayerIndex.One).ThumbSticks.Right.X * options.player1CameraRotationSpeed;
-                        }
-                        else
-                        {
-                            players[0].playerRotation = (float)Math.Atan2(GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Right.X, GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Right.Y);
-                        }
-                    }
-                    if (options.player1CameraRotation)
-                    {
-                        players[0].camera.UpdateWithRotation(players[0].playerRotation);
-                    }
-                    else
-                    {
-                        players[0].camera.Update2Player(currentLevel, new Vector2(screenWidth, screenHeight));
-                    }
-                    if (!options.player1CameraRotation)
-                    {
-                        Vector2 newVector = players[0].camera.getPosition();
-                        if (players[0].aiming)
-                        {
-                            newVector.X += GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Right.X * (150 * (GamePad.GetState(PlayerIndex.One).Triggers.Left / 2.1f));
-                            newVector.Y -= GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Right.Y * (150 * (GamePad.GetState(PlayerIndex.One).Triggers.Left / 2.1f));
-                        }
-                        else
-                        {
-                            newVector.X += GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Right.X * 7;
-                            newVector.Y -= GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Right.Y * 7;
-                        }
-                        players[0].camera.setPosition(newVector, currentLevel, new Vector2(screenWidth / 2, screenHeight));
-                    }
-                    */
                     Vector2 distance;
                     if (options.player1CameraRotation)
                     {
@@ -1601,7 +1165,6 @@ namespace ConstantHeadshotsZ
                     {
                         players[0].playerRotation = (float)Math.Atan2(distance.Y, distance.X) + 165;
                     }
-                    //players[0].playerRotation = (float)Math.Atan2(distance.Y, distance.X) + 165;
                     if (options.player1CameraRotation)
                     {
                         players[0].camera.UpdateWithRotation(players[0].playerRotation);
@@ -1610,22 +1173,7 @@ namespace ConstantHeadshotsZ
                     {
                         players[0].camera.Update(currentLevel, new Vector2(screenWidth, screenHeight));
                     }
-                    //players[0].camera.Update(currentLevel, new Vector2(screenWidth, screenHeight));
                     Vector2 newVector = players[0].camera.getPosition();
-                    /*
-                    if (players[0].aiming)
-                    {
-                        newVector.X += (Mouse.GetState().X + (players[0].camera.getPosition().X - screenWidth / 2)) - players[0].sprite.getX();
-                        newVector.Y += (Mouse.GetState().Y + (players[0].camera.getPosition().Y - screenWidth / 2)) - players[0].sprite.getY();
-                    }
-                    else
-                    {
-                        //newVector.X += ((Mouse.GetState().X + (players[0].camera.getPosition().X - screenWidth / 2)) - players[0].sprite.getX()) / 7;
-                        //newVector.Y += ((Mouse.GetState().Y + (players[0].camera.getPosition().Y - screenWidth / 2)) - players[0].sprite.getY()) / 7;
-                        //newVector.X += GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Right.X * 7;
-                        //newVector.Y -= GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Right.Y * 7;
-                    }
-                    */
                     if (!options.player1CameraRotation)
                     {
                         players[0].camera.setPosition(newVector, currentLevel, new Vector2(screenWidth, screenHeight));
@@ -1665,28 +1213,6 @@ namespace ConstantHeadshotsZ
             {
                 justPressedControllerButton = false;
             }
-
-            /*
-            if (GamePad.GetState(PlayerIndex.One).ThumbSticks.Right != Vector2.Zero)
-            {
-                Vector2 newVector = players[0].camera.getPosition();
-                newVector.X += GamePad.GetState(PlayerIndex.One).ThumbSticks.Right.X * 7;
-                newVector.Y -= GamePad.GetState(PlayerIndex.One).ThumbSticks.Right.Y * 7;
-                players[0].camera.setPosition(newVector);
-            }
-            if (GamePad.GetState(PlayerIndex.One).Triggers.Left != 0f)
-            {
-                players[0].camera.setZoom(players[0].camera.getZoom() - (GamePad.GetState(PlayerIndex.One).Triggers.Left / 3f));
-            }
-            if (GamePad.GetState(PlayerIndex.One).Triggers.Right != 0f)
-            {
-                players[0].camera.setZoom(players[0].camera.getZoom() + (GamePad.GetState(PlayerIndex.One).Triggers.Right / 3f));
-            }
-            */
-
-            // TODO: Add your update logic here
-
-            //GamerServicesDispatcher.Update();
 
             base.Update(gameTime);
         }
@@ -1768,29 +1294,21 @@ namespace ConstantHeadshotsZ
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
-            if (1 == 2)
-            {
-                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, players[0].camera.get_transformation(graphics.GraphicsDevice));
-            }
-            else if (CurrentGameState == GameState.PAUSE || CurrentGameState == GameState.LOSE || CurrentGameState == GameState.SINGLEPLAYER || CurrentGameState == GameState.TWOPLAYER || CurrentGameState == GameState.TWOPLAYERLOSE || CurrentGameState == GameState.TWOPLAYERPAUSE)
-            {
+            //Drawing code
 
-            }
-            else
+            if (!(CurrentGameState == GameState.PAUSE || CurrentGameState == GameState.LOSE || CurrentGameState == GameState.SINGLEPLAYER || CurrentGameState == GameState.TWOPLAYER || CurrentGameState == GameState.TWOPLAYERLOSE || CurrentGameState == GameState.TWOPLAYERPAUSE))
             {
                 spriteBatch.Begin();
             }
-            
-            
-            //spriteBatch.Draw(buttonPlay.sprite.getTexture(), buttonPlay.sprite.vector, buttonPlay.selectedTint);
+
 
             if (CurrentGameState == GameState.LOGO)
             {
-                spriteBatch.Draw(Content.Load<Texture2D>("White"), new Rectangle(0, 0, screenWidth, screenHeight), Color.Black);
-                float logoAlpha;
-                    logoAlpha = ((logoTime / 2) / (maxLogoTime / 2)) * 255;
-                spriteBatch.Draw(Content.Load<Texture2D>("jacketsjpresents"), new Rectangle(0, 0, screenWidth, screenHeight), new Color(255, 255, 255, logoAlpha));
+                float logoAlpha = (((float)logoTime.Milliseconds) / ((float)maxLogoTime.Milliseconds));
+                spriteBatch.Draw(Content.Load<Texture2D>("jacketsjpresents"), new Rectangle(0, 0, screenWidth, screenHeight), Color.White);
+                Color col = Color.Black;
+                col.A = (byte)(col.A * ((float)logoTime.Ticks / (float)maxLogoTime.Ticks));
+                spriteBatch.Draw(Content.Load<Texture2D>("Particle"), new Rectangle(0, 0, screenWidth, screenHeight), col);
             }
             else if (CurrentGameState == GameState.LOSE)
             {
@@ -2098,24 +1616,6 @@ namespace ConstantHeadshotsZ
             }
             else if (CurrentGameState == GameState.SINGLEPLAYER)
             {
-                /*
-                GraphicsDevice.Viewport = spView;
-
-                Matrix projection = Matrix.CreateOrthographicOffCenter(0, graphics.GraphicsDevice.Viewport.Width, graphics.GraphicsDevice.Viewport.Height, 0, 0, 1);
-                Matrix halfPixelOffset = Matrix.CreateTranslation(-0.5f, -0.5f, 0);
-
-                BasicEffect basicEffect = new BasicEffect(graphics.GraphicsDevice);
-
-                basicEffect.World = Matrix.Identity;
-                basicEffect.View = Matrix.Identity;
-                basicEffect.Projection = halfPixelOffset * projection;
-
-                basicEffect.TextureEnabled = true;
-                basicEffect.VertexColorEnabled = true;
-                 * */
-
-                //players[0].camera.updateEffect(graphics.GraphicsDevice);
-
                 spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, players[0].camera.get_transformation(graphics.GraphicsDevice));
                 if (!options.player13D)
                 {
@@ -2144,15 +1644,9 @@ namespace ConstantHeadshotsZ
                 }
                 spriteBatch.End();
             }
-            
 
-            //TEST spriteBatch.Draw(testBallTexture, new Vector2(10f, 10f), Color.White);
 
-            if (CurrentGameState == GameState.TWOPLAYER || CurrentGameState == GameState.TWOPLAYERLOSE || CurrentGameState == GameState.TWOPLAYERPAUSE || CurrentGameState == GameState.SINGLEPLAYER || CurrentGameState == GameState.PAUSE || CurrentGameState == GameState.LOSE)
-            {
-
-            }
-            else
+            if (!(CurrentGameState == GameState.TWOPLAYER || CurrentGameState == GameState.TWOPLAYERLOSE || CurrentGameState == GameState.TWOPLAYERPAUSE || CurrentGameState == GameState.SINGLEPLAYER || CurrentGameState == GameState.PAUSE || CurrentGameState == GameState.LOSE))
             {
                 spriteBatch.End();
             }

@@ -1,2 +1,3 @@
 C:\Users\jacketsj\Documents\Visual Studio 2010\Projects\Zombie Shooter\Zombie Shooter\Zombie ShooterContent\obj\x86\Release\ConstantHeadshotsZContent.contentprojResolveAssemblyReference.cache
 C:\Users\jacketsj\Documents\Visual Studio 2010\Projects\ConstantHeadshotsZ\ConstantHeadshotsZ\ConstantHeadshotsZContent\obj\x86\Release\ConstantHeadshotsZContent.contentprojResolveAssemblyReference.cache
+K:\content\cod\VS\VS2010\ConstantHeadshotsZ\ConstantHeadshotsZ\ConstantHeadshotsZContent\obj\x86\Release\ConstantHeadshotsZContent.contentprojResolveAssemblyReference.cache

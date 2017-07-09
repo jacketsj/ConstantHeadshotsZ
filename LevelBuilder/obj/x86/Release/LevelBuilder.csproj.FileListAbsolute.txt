@@ -10,3 +10,9 @@ C:\Users\jacketsj\Documents\Visual Studio 2010\Projects\ConstantHeadshotsZ\Level
 C:\Users\jacketsj\Documents\Visual Studio 2010\Projects\ConstantHeadshotsZ\LevelBuilder\obj\x86\Release\Microsoft.Xna.Framework.RuntimeProfile.txt
 C:\Users\jacketsj\Documents\Visual Studio 2010\Projects\ConstantHeadshotsZ\LevelBuilder\obj\x86\Release\LevelBuilder.dll
 C:\Users\jacketsj\Documents\Visual Studio 2010\Projects\ConstantHeadshotsZ\LevelBuilder\obj\x86\Release\LevelBuilder.pdb
+K:\content\cod\VS\VS2010\ConstantHeadshotsZ\LevelBuilder\bin\x86\Release\LevelBuilder.dll
+K:\content\cod\VS\VS2010\ConstantHeadshotsZ\LevelBuilder\bin\x86\Release\LevelBuilder.pdb
+K:\content\cod\VS\VS2010\ConstantHeadshotsZ\LevelBuilder\obj\x86\Release\LevelBuilder.csprojResolveAssemblyReference.cache
+K:\content\cod\VS\VS2010\ConstantHeadshotsZ\LevelBuilder\obj\x86\Release\Microsoft.Xna.Framework.RuntimeProfile.txt
+K:\content\cod\VS\VS2010\ConstantHeadshotsZ\LevelBuilder\obj\x86\Release\LevelBuilder.dll
+K:\content\cod\VS\VS2010\ConstantHeadshotsZ\LevelBuilder\obj\x86\Release\LevelBuilder.pdb

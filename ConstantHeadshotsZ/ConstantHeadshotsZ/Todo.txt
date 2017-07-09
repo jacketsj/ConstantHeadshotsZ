@@ -1,5 +1,4 @@
-﻿Alter SetX and SetY in Zombie to SetPos (unify)
+﻿Alter SetX and SetY in Zombie to SetPos (unify) - potentially no longer needed
 Change zombie to collide with solids normally
 do same for player
-put wave size in level
-change player movement to strict limit
+reset wave size in level
