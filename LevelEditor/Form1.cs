@@ -230,6 +230,34 @@ namespace LevelEditor
             levelPanel.Controls.Clear();
             levelPanel.AutoScrollPosition = levelPanelScrollPos;
             //levelPanel.Controls
+
+            if (checkBoxShowGrid.Checked)
+            {
+                //draw vertical lines
+                Bitmap lineImage = new Bitmap(1, 1);
+                lineImage.SetPixel(0, 0, System.Drawing.Color.Black);
+                for (int i = 0; i < level.levelWidth; i += (int)numericUpDownGrid.Value)
+                {
+                    PictureBox linePictureBox = new PictureBox();
+                    linePictureBox.Image = lineImage; //the black texture
+                    linePictureBox.Width = 2;
+                    linePictureBox.Height = level.levelHeight;
+                    linePictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+                    linePictureBox.Location = new System.Drawing.Point(i - 1, 0);
+                    levelPanel.Controls.Add(linePictureBox);
+                }
+                //draw horizontal lines
+                for (int i = 0; i < level.levelWidth; i += (int)numericUpDownGrid.Value)
+                {
+                    PictureBox linePictureBox = new PictureBox();
+                    linePictureBox.Image = lineImage; //the black texture
+                    linePictureBox.Width = level.levelWidth;
+                    linePictureBox.Height = 2;
+                    linePictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+                    linePictureBox.Location = new System.Drawing.Point(0, i - 1);
+                    levelPanel.Controls.Add(linePictureBox);
+                }
+            }
             
             foreach (SolidData solid in level.solids)
             {
@@ -551,19 +579,18 @@ namespace LevelEditor
             }
         }
 
-        /*
-        private void levelPanel_Scroll(object sender, ScrollEventArgs e)
+        private void numericUpDownGrid_ValueChanged(object sender, EventArgs e)
         {
-            if (e.ScrollOrientation == ScrollOrientation.HorizontalScroll)
+            if (numericUpDownGrid.Value < 1)
             {
-                levelPanelScrollPos.X = e.NewValue;
+                numericUpDownGrid.Value = 1;
             }
-
-            if (e.ScrollOrientation == ScrollOrientation.VerticalScroll)
-            {
-                levelPanelScrollPos.Y = e.NewValue;
-            }
+            numericUpDownGrid.Value = (int)numericUpDownGrid.Value;
         }
-        */
+
+        private void checkBoxShowGrid_CheckedChanged(object sender, EventArgs e)
+        {
+            PutPicturesInPanel();
+        }
     }
 }
