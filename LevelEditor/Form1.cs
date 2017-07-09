@@ -317,6 +317,7 @@ namespace LevelEditor
                 bgPictureBox.MouseUp += new MouseEventHandler(levelPanel_MouseUp);
             }
             levelPanel.AutoScrollPosition = levelPanelScrollPos;
+            levelPanel.Focus();
         }
 
         private void levelPanel_Paint(object sender, PaintEventArgs e)
@@ -345,12 +346,9 @@ namespace LevelEditor
                     System.Drawing.Point point = levelPanel.PointToClient(Cursor.Position);
                     point.X += levelPanel.HorizontalScroll.Value;
                     point.Y += levelPanel.VerticalScroll.Value;
+                    point.X -= textures[comboBoxSolidTexture.SelectedIndex].Image.Width / 2;
+                    point.Y -= textures[comboBoxSolidTexture.SelectedIndex].Image.Height / 2;
                     point = snap(point);
-                    if (!checkBoxSnap.Checked)
-                    {
-                        point.X -= textures[comboBoxSolidTexture.SelectedIndex].Image.Width / 2;
-                        point.Y -= textures[comboBoxSolidTexture.SelectedIndex].Image.Height / 2;
-                    }
                     newSolids[level.solids.Length] = new SolidData(new Vector2(point.X, point.Y), comboBoxSolidTexture.SelectedIndex, Microsoft.Xna.Framework.Color.White);
                     level.solids = newSolids;
                     PutPicturesInPanel();
@@ -436,12 +434,9 @@ namespace LevelEditor
                 System.Drawing.Point point = levelPanel.PointToClient(Cursor.Position);
                 //System.Drawing.Point point =  new System.Drawing.Point(levelPanel.PointToClient(Cursor.Position).X - textures[2].Image.Width / 2,
                 //                                                        levelPanel.PointToClient(Cursor.Position).Y - textures[2].Image.Height / 2);
+                point.X -= textures[2].Image.Width / 2;
+                point.Y -= textures[2].Image.Height / 2;
                 point = snap(point);
-                if (!checkBoxSnap.Checked)
-                {
-                    point.X -= textures[2].Image.Width / 2;
-                    point.Y -= textures[2].Image.Height / 2;
-                }
                 level.playerSpawn.X = point.X + levelPanel.HorizontalScroll.Value;
                 level.playerSpawn.Y = point.Y + levelPanel.VerticalScroll.Value;
                 PutPicturesInPanel();
@@ -456,12 +451,9 @@ namespace LevelEditor
                 System.Drawing.Point point = levelPanel.PointToClient(Cursor.Position);
                 point.X += levelPanel.HorizontalScroll.Value;
                 point.Y += levelPanel.VerticalScroll.Value;
+                point.X -= textures[2].Image.Width / 2;
+                point.Y -= textures[2].Image.Height / 2;
                 point = snap(point);
-                if (!checkBoxSnap.Checked)
-                {
-                    point.X -= textures[2].Image.Width / 2;
-                    point.Y -= textures[2].Image.Height / 2;
-                }
                 newSpawns[level.zombieSpawners.Length] = new Vector2(point.X, point.Y);
                 level.zombieSpawners = newSpawns;
                 PutPicturesInPanel();
@@ -592,6 +584,7 @@ namespace LevelEditor
                 numericUpDownGrid.Value = 1;
             }
             numericUpDownGrid.Value = (int)numericUpDownGrid.Value;
+            PutPicturesInPanel();
         }
 
         private void checkBoxShowGrid_CheckedChanged(object sender, EventArgs e)
@@ -605,8 +598,8 @@ namespace LevelEditor
             if (checkBoxSnap.Checked)
             {
                 int snap = (int)numericUpDownGrid.Value;
-                point.X = (int)(point.X / snap) * snap;
-                point.Y = (int)(point.Y / snap) * snap;
+                point.X = (int)(point.X / snap) * snap + ((float)point.X % snap > (float)snap / 2 ? snap : 0);
+                point.Y = (int)(point.Y / snap) * snap + ((float)point.Y % snap > (float)snap / 2 ? snap : 0);
             }
             return point;
         }
@@ -617,8 +610,8 @@ namespace LevelEditor
             if (checkBoxSnap.Checked)
             {
                 int snap = (int)numericUpDownGrid.Value;
-                point.X = (int)(point.X / snap) * snap;
-                point.Y = (int)(point.Y / snap) * snap;
+                point.X = (int)(point.X / snap) * snap + (point.X % snap > (float)snap / 2 ? snap : 0);
+                point.Y = (int)(point.Y / snap) * snap + (point.Y % snap > (float)snap / 2 ? snap : 0);
             }
             return point;
         }
