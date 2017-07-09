@@ -12,6 +12,8 @@ namespace ConstantHeadshotsZ
     public class Level
     {
         public Solid[] solids;
+        public Solid[] backSolids;
+        public Solid[] foreSolids;
         public int levelHeight;
         public int levelWidth;
         public Texture2D background;
@@ -44,11 +46,39 @@ namespace ConstantHeadshotsZ
         public Level(LevelData levelData, GraphicsDevice graphicsDevice)
         {
             solids = new Solid[levelData.solids.Length];
+            if (levelData.backSolids != null)
+            {
+                backSolids = new Solid[levelData.backSolids.Length];
+            }
+            else
+            {
+                backSolids = new Solid[0];
+            }
+            if (levelData.backSolids != null)
+            {
+                foreSolids = new Solid[levelData.foreSolids.Length];
+            }
+            else
+            {
+                foreSolids = new Solid[0];
+            }
             for (int i = 0; i < levelData.solids.Length; i++)
             {
                 Texture2D texture = new Texture2D(graphicsDevice, levelData.textures[levelData.solids[i].textureNo].Width, levelData.textures[levelData.solids[i].textureNo].Height);
                 texture.SetData(levelData.textures[levelData.solids[i].textureNo].Colors);
                 solids[i] = new Solid(new Sprite(texture, levelData.solids[i].position, levelData.solids[i].tint));
+            }
+            for (int i = 0; levelData.backSolids != null && i < levelData.backSolids.Length; i++)
+            {
+                Texture2D texture = new Texture2D(graphicsDevice, levelData.textures[levelData.backSolids[i].textureNo].Width, levelData.textures[levelData.backSolids[i].textureNo].Height);
+                texture.SetData(levelData.textures[levelData.backSolids[i].textureNo].Colors);
+                backSolids[i] = new Solid(new Sprite(texture, levelData.backSolids[i].position, levelData.backSolids[i].tint));
+            }
+            for (int i = 0; levelData.foreSolids != null && i < levelData.foreSolids.Length; i++)
+            {
+                Texture2D texture = new Texture2D(graphicsDevice, levelData.textures[levelData.foreSolids[i].textureNo].Width, levelData.textures[levelData.foreSolids[i].textureNo].Height);
+                texture.SetData(levelData.textures[levelData.foreSolids[i].textureNo].Colors);
+                foreSolids[i] = new Solid(new Sprite(texture, levelData.foreSolids[i].position, levelData.foreSolids[i].tint));
             }
             levelHeight = levelData.levelHeight;
             levelWidth = levelData.levelWidth;
@@ -69,9 +99,11 @@ namespace ConstantHeadshotsZ
             random = new Random();
         }
 
-        public Level(Solid[] newSolids, Vector2[] newZombieSpawners, ContentManager Content, Color newBackgroundColor, int newLevelWidth, int newLevelHeight, Vector2 newPlayerSpawn)
+        public Level(Solid[] newSolids, Solid[] newBackSolids, Solid[] newForeSolids, Vector2[] newZombieSpawners, ContentManager Content, Color newBackgroundColor, int newLevelWidth, int newLevelHeight, Vector2 newPlayerSpawn)
         {
             solids = newSolids;
+            backSolids = newBackSolids;
+            foreSolids = newForeSolids;
             levelWidth = newLevelWidth;
             levelHeight = newLevelHeight;
             background = Content.Load<Texture2D>("White");
@@ -90,9 +122,11 @@ namespace ConstantHeadshotsZ
             //drops[0] = new Drop(Player.Weapon.LAZERSWORD, new Sprite(Content.Load<Texture2D>("LazerSwordDrop"), new Vector2(600, 600)), Vector2.Zero, 1000);
         }
 
-        public Level(Solid[] newSolids, Vector2[] newZombieSpawners, ContentManager Content, Color newBackgroundColor, Vector2 newWidthAndHeight, Vector2 newPlayerSpawn)
+        public Level(Solid[] newSolids, Solid[] newBackSolids, Solid[] newForeSolids, Vector2[] newZombieSpawners, ContentManager Content, Color newBackgroundColor, Vector2 newWidthAndHeight, Vector2 newPlayerSpawn)
         {
             solids = newSolids;
+            backSolids = newBackSolids;
+            foreSolids = newForeSolids;
             levelWidth = (int)newWidthAndHeight.X;
             levelHeight = (int)newWidthAndHeight.Y;
             background = Content.Load<Texture2D>("White");
@@ -1058,6 +1092,11 @@ namespace ConstantHeadshotsZ
         {
             spriteBatch.Draw(background, new Rectangle(0, 0, levelWidth, levelHeight), backgroundColor);
 
+            foreach (Solid solid in backSolids)
+            {
+                solid.sprite.Draw(spriteBatch);
+            }
+
             foreach (Drop drop in drops)
             {
                 drop.Draw(spriteBatch, Content);
@@ -1133,12 +1172,22 @@ namespace ConstantHeadshotsZ
                     }
                 }
             }
+
+            foreach (Solid solid in foreSolids)
+            {
+                solid.sprite.Draw(spriteBatch);
+            }
         }
 
         public void DrawWithoutHealth(SpriteBatch spriteBatch, ContentManager Content)
         {
 
             spriteBatch.Draw(background, new Rectangle(0, 0, levelWidth, levelHeight), backgroundColor);
+
+            foreach (Solid solid in backSolids)
+            {
+                solid.sprite.Draw(spriteBatch);
+            }
             
             foreach (Drop drop in drops)
             {
@@ -1174,6 +1223,11 @@ namespace ConstantHeadshotsZ
             foreach (Rocket rocket in rockets)
             {
                 rocket.Draw(spriteBatch, Content);
+            }
+
+            foreach (Solid solid in foreSolids)
+            {
+                solid.sprite.Draw(spriteBatch);
             }
         }
     }

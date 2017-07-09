@@ -33,6 +33,10 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPageLevel = new System.Windows.Forms.TabPage();
             this.panelSolids = new System.Windows.Forms.Panel();
+            this.checkBoxSnap = new System.Windows.Forms.CheckBox();
+            this.checkBoxShowGrid = new System.Windows.Forms.CheckBox();
+            this.numericUpDownGrid = new System.Windows.Forms.NumericUpDown();
+            this.labelGrid = new System.Windows.Forms.Label();
             this.comboBoxClickMode = new System.Windows.Forms.ComboBox();
             this.labelClickMode = new System.Windows.Forms.Label();
             this.labelSolidTexture = new System.Windows.Forms.Label();
@@ -56,16 +60,12 @@
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.texturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.labelGrid = new System.Windows.Forms.Label();
-            this.numericUpDownGrid = new System.Windows.Forms.NumericUpDown();
-            this.checkBoxShowGrid = new System.Windows.Forms.CheckBox();
-            this.checkBoxSnap = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPageLevel.SuspendLayout();
             this.panelSolids.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownGrid)).BeginInit();
             this.tabPageProperties.SuspendLayout();
             this.menuStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownGrid)).BeginInit();
             this.SuspendLayout();
             // 
             // levelPanel
@@ -121,6 +121,49 @@
             this.panelSolids.Size = new System.Drawing.Size(197, 578);
             this.panelSolids.TabIndex = 3;
             // 
+            // checkBoxSnap
+            // 
+            this.checkBoxSnap.AutoSize = true;
+            this.checkBoxSnap.Location = new System.Drawing.Point(45, 148);
+            this.checkBoxSnap.Name = "checkBoxSnap";
+            this.checkBoxSnap.Size = new System.Drawing.Size(85, 17);
+            this.checkBoxSnap.TabIndex = 8;
+            this.checkBoxSnap.Text = "Snap to Grid";
+            this.checkBoxSnap.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxShowGrid
+            // 
+            this.checkBoxShowGrid.AutoSize = true;
+            this.checkBoxShowGrid.Location = new System.Drawing.Point(45, 125);
+            this.checkBoxShowGrid.Name = "checkBoxShowGrid";
+            this.checkBoxShowGrid.Size = new System.Drawing.Size(75, 17);
+            this.checkBoxShowGrid.TabIndex = 7;
+            this.checkBoxShowGrid.Text = "Show Grid";
+            this.checkBoxShowGrid.UseVisualStyleBackColor = true;
+            this.checkBoxShowGrid.CheckedChanged += new System.EventHandler(this.checkBoxShowGrid_CheckedChanged);
+            // 
+            // numericUpDownGrid
+            // 
+            this.numericUpDownGrid.Location = new System.Drawing.Point(45, 99);
+            this.numericUpDownGrid.Name = "numericUpDownGrid";
+            this.numericUpDownGrid.Size = new System.Drawing.Size(130, 20);
+            this.numericUpDownGrid.TabIndex = 6;
+            this.numericUpDownGrid.Value = new decimal(new int[] {
+            64,
+            0,
+            0,
+            0});
+            this.numericUpDownGrid.ValueChanged += new System.EventHandler(this.numericUpDownGrid_ValueChanged);
+            // 
+            // labelGrid
+            // 
+            this.labelGrid.AutoSize = true;
+            this.labelGrid.Location = new System.Drawing.Point(13, 101);
+            this.labelGrid.Name = "labelGrid";
+            this.labelGrid.Size = new System.Drawing.Size(26, 13);
+            this.labelGrid.TabIndex = 5;
+            this.labelGrid.Text = "Grid";
+            // 
             // comboBoxClickMode
             // 
             this.comboBoxClickMode.FormattingEnabled = true;
@@ -129,7 +172,9 @@
             "Delete",
             "Player Spawn",
             "Zombie Spawn",
-            "Pointer"});
+            "Pointer",
+            "Background",
+            "Foreground"});
             this.comboBoxClickMode.Location = new System.Drawing.Point(16, 70);
             this.comboBoxClickMode.Name = "comboBoxClickMode";
             this.comboBoxClickMode.Size = new System.Drawing.Size(159, 21);
@@ -344,49 +389,6 @@
             this.addToolStripMenuItem.Text = "Add";
             this.addToolStripMenuItem.Click += new System.EventHandler(this.addToolStripMenuItem_Click);
             // 
-            // labelGrid
-            // 
-            this.labelGrid.AutoSize = true;
-            this.labelGrid.Location = new System.Drawing.Point(13, 101);
-            this.labelGrid.Name = "labelGrid";
-            this.labelGrid.Size = new System.Drawing.Size(26, 13);
-            this.labelGrid.TabIndex = 5;
-            this.labelGrid.Text = "Grid";
-            // 
-            // numericUpDownGrid
-            // 
-            this.numericUpDownGrid.Location = new System.Drawing.Point(45, 99);
-            this.numericUpDownGrid.Name = "numericUpDownGrid";
-            this.numericUpDownGrid.Size = new System.Drawing.Size(130, 20);
-            this.numericUpDownGrid.TabIndex = 6;
-            this.numericUpDownGrid.Value = new decimal(new int[] {
-            64,
-            0,
-            0,
-            0});
-            this.numericUpDownGrid.ValueChanged += new System.EventHandler(this.numericUpDownGrid_ValueChanged);
-            // 
-            // checkBoxShowGrid
-            // 
-            this.checkBoxShowGrid.AutoSize = true;
-            this.checkBoxShowGrid.Location = new System.Drawing.Point(45, 125);
-            this.checkBoxShowGrid.Name = "checkBoxShowGrid";
-            this.checkBoxShowGrid.Size = new System.Drawing.Size(75, 17);
-            this.checkBoxShowGrid.TabIndex = 7;
-            this.checkBoxShowGrid.Text = "Show Grid";
-            this.checkBoxShowGrid.UseVisualStyleBackColor = true;
-            this.checkBoxShowGrid.CheckedChanged += new System.EventHandler(this.checkBoxShowGrid_CheckedChanged);
-            // 
-            // checkBoxSnap
-            // 
-            this.checkBoxSnap.AutoSize = true;
-            this.checkBoxSnap.Location = new System.Drawing.Point(45, 148);
-            this.checkBoxSnap.Name = "checkBoxSnap";
-            this.checkBoxSnap.Size = new System.Drawing.Size(85, 17);
-            this.checkBoxSnap.TabIndex = 8;
-            this.checkBoxSnap.Text = "Snap to Grid";
-            this.checkBoxSnap.UseVisualStyleBackColor = true;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -405,11 +407,11 @@
             this.tabPageLevel.ResumeLayout(false);
             this.panelSolids.ResumeLayout(false);
             this.panelSolids.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownGrid)).EndInit();
             this.tabPageProperties.ResumeLayout(false);
             this.tabPageProperties.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownGrid)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

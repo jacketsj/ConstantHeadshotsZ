@@ -22,6 +22,8 @@ namespace LevelBuilder
     public class LevelData
     {
         public SolidData[] solids;
+        public SolidData[] backSolids;
+        public SolidData[] foreSolids;
         public int levelHeight;
         public int levelWidth;
         public int backgroundReference;

@@ -42,6 +42,8 @@ namespace LevelEditor
             level.maxAmountOfZombies = 60;
             level.playerSpawn = new Vector2(0, 0);
             level.solids = new SolidData[0];
+            level.backSolids = new SolidData[0];
+            level.foreSolids = new SolidData[0];
             level.spawnTimer = 300;
             level.textures = new TextureData[0];
             level.zombieSpawners = new Vector2[0];
@@ -256,6 +258,11 @@ namespace LevelEditor
                 renderBoxOntoMap(g, textures[level.backgroundReference].Image, new System.Drawing.Point(0, 0), new Size(level.levelWidth, level.levelHeight));
             }
 
+            foreach (SolidData solid in level.backSolids)
+            {
+                renderBoxOntoMap(g, textures[solid.textureNo].Image, new System.Drawing.Point((int)solid.position.X, (int)solid.position.Y));
+            }
+
             renderBoxOntoMap(g, textures[2].Image, new System.Drawing.Point((int)level.playerSpawn.X, (int)level.playerSpawn.Y));
 
             foreach (Vector2 spawner in level.zombieSpawners)
@@ -264,6 +271,11 @@ namespace LevelEditor
             }
 
             foreach (SolidData solid in level.solids)
+            {
+                renderBoxOntoMap(g, textures[solid.textureNo].Image, new System.Drawing.Point((int)solid.position.X, (int)solid.position.Y));
+            }
+
+            foreach (SolidData solid in level.foreSolids)
             {
                 renderBoxOntoMap(g, textures[solid.textureNo].Image, new System.Drawing.Point((int)solid.position.X, (int)solid.position.Y));
             }
@@ -380,6 +392,81 @@ namespace LevelEditor
                 }
                 if (!deletedSomething)
                 {
+                    for (int i = 0; i < level.backSolids.Length; i++)
+                    {
+                        SolidData solid = level.backSolids[i];
+                        System.Drawing.Point mouse = levelPanel.PointToClient(Cursor.Position);
+                        mouse.X += levelPanel.HorizontalScroll.Value;
+                        mouse.Y += levelPanel.VerticalScroll.Value;
+                        if ((mouse.X >= solid.position.X) && (mouse.Y >= solid.position.Y) && (mouse.X <= solid.position.X + textures[solid.textureNo].Image.Width) && (mouse.Y <= solid.position.Y + textures[solid.textureNo].Image.Height))
+                        {
+                            int newLength = level.backSolids.Length - 1;
+                            SolidData[] newSolids = new SolidData[newLength];
+                            bool foundDeleted = false;
+                            for (int i2 = 0; i2 < level.backSolids.Length; i2++)
+                            {
+                                if (foundDeleted)
+                                {
+                                    newSolids[i2 - 1] = level.backSolids[i2];
+                                }
+                                else
+                                {
+                                    if (i == i2)
+                                    {
+                                        foundDeleted = true;
+                                    }
+                                    else
+                                    {
+                                        newSolids[i2] = level.backSolids[i2];
+                                    }
+                                }
+                            }
+                            level.backSolids = newSolids;
+                            deletedSomething = true;
+                            break;
+                        }
+                    }
+                }
+                
+                if (!deletedSomething)
+                {
+                    for (int i = 0; i < level.foreSolids.Length; i++)
+                    {
+                        SolidData solid = level.foreSolids[i];
+                        System.Drawing.Point mouse = levelPanel.PointToClient(Cursor.Position);
+                        mouse.X += levelPanel.HorizontalScroll.Value;
+                        mouse.Y += levelPanel.VerticalScroll.Value;
+                        if ((mouse.X >= solid.position.X) && (mouse.Y >= solid.position.Y) && (mouse.X <= solid.position.X + textures[solid.textureNo].Image.Width) && (mouse.Y <= solid.position.Y + textures[solid.textureNo].Image.Height))
+                        {
+                            int newLength = level.foreSolids.Length - 1;
+                            SolidData[] newSolids = new SolidData[newLength];
+                            bool foundDeleted = false;
+                            for (int i2 = 0; i2 < level.foreSolids.Length; i2++)
+                            {
+                                if (foundDeleted)
+                                {
+                                    newSolids[i2 - 1] = level.foreSolids[i2];
+                                }
+                                else
+                                {
+                                    if (i == i2)
+                                    {
+                                        foundDeleted = true;
+                                    }
+                                    else
+                                    {
+                                        newSolids[i2] = level.foreSolids[i2];
+                                    }
+                                }
+                            }
+                            level.foreSolids = newSolids;
+                            deletedSomething = true;
+                            break;
+                        }
+                    }
+                }
+                if (!deletedSomething)
+                {
                     for (int i2 = 0; i2 < level.zombieSpawners.Length; i2++)
                     {
                         Vector2 spawner = level.zombieSpawners[i2];
@@ -445,6 +532,46 @@ namespace LevelEditor
                 level.zombieSpawners = newSpawns;
                 PutPicturesInPanel();
             }
+            if (comboBoxClickMode.SelectedIndex == 5)
+            {
+                if (selectedSolidTexture)
+                {
+                    SolidData[] newSolids = new SolidData[level.backSolids.Length + 1];
+                    for (int i = 0; i < level.backSolids.Length; i++)
+                    {
+                        newSolids[i] = level.backSolids[i];
+                    }
+                    System.Drawing.Point point = levelPanel.PointToClient(Cursor.Position);
+                    point.X += levelPanel.HorizontalScroll.Value;
+                    point.Y += levelPanel.VerticalScroll.Value;
+                    point.X -= textures[comboBoxSolidTexture.SelectedIndex].Image.Width / 2;
+                    point.Y -= textures[comboBoxSolidTexture.SelectedIndex].Image.Height / 2;
+                    point = snap(point);
+                    newSolids[level.backSolids.Length] = new SolidData(new Vector2(point.X, point.Y), comboBoxSolidTexture.SelectedIndex, Microsoft.Xna.Framework.Color.White);
+                    level.backSolids = newSolids;
+                    PutPicturesInPanel();
+                }
+            }
+            if (comboBoxClickMode.SelectedIndex == 6)
+            {
+                if (selectedSolidTexture)
+                {
+                    SolidData[] newSolids = new SolidData[level.foreSolids.Length + 1];
+                    for (int i = 0; i < level.foreSolids.Length; i++)
+                    {
+                        newSolids[i] = level.foreSolids[i];
+                    }
+                    System.Drawing.Point point = levelPanel.PointToClient(Cursor.Position);
+                    point.X += levelPanel.HorizontalScroll.Value;
+                    point.Y += levelPanel.VerticalScroll.Value;
+                    point.X -= textures[comboBoxSolidTexture.SelectedIndex].Image.Width / 2;
+                    point.Y -= textures[comboBoxSolidTexture.SelectedIndex].Image.Height / 2;
+                    point = snap(point);
+                    newSolids[level.foreSolids.Length] = new SolidData(new Vector2(point.X, point.Y), comboBoxSolidTexture.SelectedIndex, Microsoft.Xna.Framework.Color.White);
+                    level.foreSolids = newSolids;
+                    PutPicturesInPanel();
+                }
+            }
         }
 
         private void comboBoxSolidTexture_SelectedIndexChanged(object sender, EventArgs e)
@@ -504,6 +631,7 @@ namespace LevelEditor
 
         private void levelPanel_MouseDown(object sender, MouseEventArgs e)
         {
+            /*
             if (comboBoxClickMode.SelectedIndex == 4)
             {
                 System.Drawing.Point mouse = levelPanel.PointToClient(Cursor.Position);
@@ -519,6 +647,7 @@ namespace LevelEditor
                     }
                 }
             }
+            */
         }
 
         private void levelPanel_MouseUp(object sender, MouseEventArgs e)
@@ -573,6 +702,30 @@ namespace LevelEditor
                         mouse.X += levelPanel.HorizontalScroll.Value;
                         mouse.Y += levelPanel.VerticalScroll.Value;
                         if ((mouse.X >= spawner.X) && (mouse.Y >= spawner.Y) && (mouse.X <= spawner.X + textures[2].Image.Width) && (mouse.Y <= spawner.Y + textures[2].Image.Height))
+                        {
+                            canDragPlace = false;
+                        }
+                    }
+                    for (int i = 0; i < level.backSolids.Length && canDragPlace && comboBoxClickMode.SelectedIndex == 5; i++)
+                    {
+                        SolidData solid = level.backSolids[i];
+                        System.Drawing.Point mouse = levelPanel.PointToClient(Cursor.Position);
+                        mouse.X += levelPanel.HorizontalScroll.Value;
+                        mouse.Y += levelPanel.VerticalScroll.Value;
+
+                        if ((mouse.X >= solid.position.X) && (mouse.Y >= solid.position.Y) && (mouse.X <= solid.position.X + textures[solid.textureNo].Image.Width) && (mouse.Y <= solid.position.Y + textures[solid.textureNo].Image.Height))
+                        {
+                            canDragPlace = false;
+                        }
+                    }
+                    for (int i = 0; i < level.foreSolids.Length && canDragPlace && comboBoxClickMode.SelectedIndex == 6; i++)
+                    {
+                        SolidData solid = level.foreSolids[i];
+                        System.Drawing.Point mouse = levelPanel.PointToClient(Cursor.Position);
+                        mouse.X += levelPanel.HorizontalScroll.Value;
+                        mouse.Y += levelPanel.VerticalScroll.Value;
+
+                        if ((mouse.X >= solid.position.X) && (mouse.Y >= solid.position.Y) && (mouse.X <= solid.position.X + textures[solid.textureNo].Image.Width) && (mouse.Y <= solid.position.Y + textures[solid.textureNo].Image.Height))
                         {
                             canDragPlace = false;
                         }

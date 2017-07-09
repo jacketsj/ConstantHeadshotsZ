@@ -55,6 +55,14 @@ namespace ConstantHeadshotsZ
                 sprite.Draw(quadDrawer, cameraPosition, view, projection);
             }
 
+            foreach (Solid solid in level.backSolids)
+            {
+                _3DSprite sprite = new _3DSprite();
+                sprite.Texture = solid.sprite.getTexture();
+                sprite.Position = new Vector3(solid.sprite.vector.X, 0, solid.sprite.vector.Y);
+                sprite.Draw(quadDrawer, cameraPosition, view, projection);
+            }
+
             foreach (Vector2 spawner in level.zombieSpawners)
             {
                 _3DSprite sprite = new _3DSprite();
@@ -111,6 +119,14 @@ namespace ConstantHeadshotsZ
                 _3DSprite sprite = new _3DSprite();
                 sprite.Texture = player.sprite.getTexture();
                 sprite.Position = new Vector3(player.sprite.vector.X, 0, player.sprite.vector.Y);
+                sprite.Draw(quadDrawer, cameraPosition, view, projection);
+            }
+
+            foreach (Solid solid in level.foreSolids)
+            {
+                _3DSprite sprite = new _3DSprite();
+                sprite.Texture = solid.sprite.getTexture();
+                sprite.Position = new Vector3(solid.sprite.vector.X, 0, solid.sprite.vector.Y);
                 sprite.Draw(quadDrawer, cameraPosition, view, projection);
             }
         }

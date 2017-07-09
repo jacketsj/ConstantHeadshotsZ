@@ -166,8 +166,6 @@
     <Content Include="Content\YButton.png" />
     <Content Include="Content\Zombies title page.png" />
     <Content Include="Content\ZombieSpawner.png" />
-    <Content Include="Game.ico" />
-    <Content Include="GameThumbnail.png" />
     <Content Include="Player.ico" />
     <Content Include="Player.png" />
     <Content Include="Todo.txt" />
