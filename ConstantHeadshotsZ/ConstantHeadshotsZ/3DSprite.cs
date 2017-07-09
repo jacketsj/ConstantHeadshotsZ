@@ -43,18 +43,6 @@ namespace ConstantHeadshotsZ
 
 
         /// <summary>
-        /// Gets or sets how fast this entity is moving.
-        /// </summary>
-        public Vector3 Velocity
-        {
-            get { return velocity; }
-            protected set { velocity = value; }
-        }
-
-        Vector3 velocity;
-
-
-        /// <summary>
         /// Gets or sets the texture used to display this entity.
         /// </summary>
         public Texture2D Texture
@@ -74,6 +62,19 @@ namespace ConstantHeadshotsZ
             Matrix world = Matrix.CreateTranslation(0, 1, 0) * Matrix.CreateScale(800) * Matrix.CreateConstrainedBillboard(Position, cameraPosition, Up, null, null);
 
             quadDrawer.DrawQuad(Texture, 1, world, view, projection);
+        }
+
+        /// <summary>
+        /// Draws the entity as a billboard sprite.
+        /// </summary>
+        public void Draw(QuadDrawer quadDrawer, Vector3 cameraPosition,
+                         Matrix view, Matrix projection, Matrix world)
+        {
+            quadDrawer.DrawQuad(Texture, 1,
+                world
+                    * Matrix.CreateRotationX(Up.X) * Matrix.CreateRotationY(Up.Y) * Matrix.CreateRotationZ(Up.Z)
+                    * (Matrix.CreateTranslation(position))
+                , view, projection);
         }
     }
 }

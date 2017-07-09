@@ -1289,7 +1289,7 @@ namespace ConstantHeadshotsZ
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
             //Drawing code
 
@@ -1613,14 +1613,12 @@ namespace ConstantHeadshotsZ
             }
             else if (CurrentGameState == GameState.SINGLEPLAYER)
             {
-                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, players[0].camera.get_transformation(graphics.GraphicsDevice));
                 if (!options.player13D)
                 {
+                    spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, players[0].camera.get_transformation(graphics.GraphicsDevice));
                     currentLevel.Draw(spriteBatch, Content, players[0], 1);
                     players[0].Draw(spriteBatch, Content);
                     spriteBatch.End();
-                    GraphicsDevice.Viewport = overlayView;
-                    spriteBatch.Begin();
                 }
                 else
                 {
@@ -1628,6 +1626,8 @@ namespace ConstantHeadshotsZ
                 }
 
 
+                GraphicsDevice.Viewport = overlayView;
+                spriteBatch.Begin();
                 SpriteFont Font = Content.Load<SpriteFont>("basic");
                 String health = "HP:" + players[0].health.ToString();
                 Vector2 healthOrigin = Font.MeasureString(health) / 2;
