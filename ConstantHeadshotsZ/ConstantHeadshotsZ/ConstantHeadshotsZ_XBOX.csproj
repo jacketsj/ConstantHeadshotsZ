@@ -125,9 +125,9 @@
     <Content Include="Todo.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\LevelBuilder\LevelBuilder_XBOX.csproj">
-      <Project>{7ca0bd3f-b5ae-4f7a-8668-89cc03dea496}</Project>
+  <ProjectReference Include="..\..\LevelBuilder\LevelBuilder_XBOX.csproj">
       <Name>Xbox 360 Copy of LevelBuilder</Name>
+      <Project>{7ca0bd3f-b5ae-4f7a-8668-89cc03dea496}</Project>
     </ProjectReference>
     <ProjectReference Include="..\ConstantHeadshotsZContent\ConstantHeadshotsZContent.contentproj">
       <Name>ConstantHeadshotsZContent %28Content%29</Name>

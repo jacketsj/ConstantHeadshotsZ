@@ -37,8 +37,8 @@ namespace LevelEditor
             level = new LevelData();
             level.backgroundColor = Microsoft.Xna.Framework.Color.White;
             level.backgroundReference = 0;
-            level.levelHeight = 1000;
-            level.levelWidth = 1000;
+            level.levelHeight = 1024;
+            level.levelWidth = 1024;
             level.maxAmountOfZombies = 60;
             level.playerSpawn = new Vector2(0, 0);
             level.solids = new SolidData[0];
@@ -345,8 +345,12 @@ namespace LevelEditor
                     System.Drawing.Point point = levelPanel.PointToClient(Cursor.Position);
                     point.X += levelPanel.HorizontalScroll.Value;
                     point.Y += levelPanel.VerticalScroll.Value;
-                    point.X -= textures[comboBoxSolidTexture.SelectedIndex].Image.Width / 2;
-                    point.Y -= textures[comboBoxSolidTexture.SelectedIndex].Image.Height / 2;
+                    point = snap(point);
+                    if (!checkBoxSnap.Checked)
+                    {
+                        point.X -= textures[comboBoxSolidTexture.SelectedIndex].Image.Width / 2;
+                        point.Y -= textures[comboBoxSolidTexture.SelectedIndex].Image.Height / 2;
+                    }
                     newSolids[level.solids.Length] = new SolidData(new Vector2(point.X, point.Y), comboBoxSolidTexture.SelectedIndex, Microsoft.Xna.Framework.Color.White);
                     level.solids = newSolids;
                     PutPicturesInPanel();
@@ -430,8 +434,16 @@ namespace LevelEditor
             if (comboBoxClickMode.SelectedIndex == 2)
             {
                 System.Drawing.Point point = levelPanel.PointToClient(Cursor.Position);
-                level.playerSpawn.X = (point.X - textures[2].Image.Width / 2) + levelPanel.HorizontalScroll.Value;
-                level.playerSpawn.Y = (point.Y - textures[2].Image.Height / 2) + levelPanel.VerticalScroll.Value;
+                //System.Drawing.Point point =  new System.Drawing.Point(levelPanel.PointToClient(Cursor.Position).X - textures[2].Image.Width / 2,
+                //                                                        levelPanel.PointToClient(Cursor.Position).Y - textures[2].Image.Height / 2);
+                point = snap(point);
+                if (!checkBoxSnap.Checked)
+                {
+                    point.X -= textures[2].Image.Width / 2;
+                    point.Y -= textures[2].Image.Height / 2;
+                }
+                level.playerSpawn.X = point.X + levelPanel.HorizontalScroll.Value;
+                level.playerSpawn.Y = point.Y + levelPanel.VerticalScroll.Value;
                 PutPicturesInPanel();
             }
             if (comboBoxClickMode.SelectedIndex == 3)
@@ -444,8 +456,12 @@ namespace LevelEditor
                 System.Drawing.Point point = levelPanel.PointToClient(Cursor.Position);
                 point.X += levelPanel.HorizontalScroll.Value;
                 point.Y += levelPanel.VerticalScroll.Value;
-                point.X -= textures[2].Image.Width / 2;
-                point.Y -= textures[2].Image.Height / 2;
+                point = snap(point);
+                if (!checkBoxSnap.Checked)
+                {
+                    point.X -= textures[2].Image.Width / 2;
+                    point.Y -= textures[2].Image.Height / 2;
+                }
                 newSpawns[level.zombieSpawners.Length] = new Vector2(point.X, point.Y);
                 level.zombieSpawners = newSpawns;
                 PutPicturesInPanel();
@@ -541,23 +557,13 @@ namespace LevelEditor
         {
             if (selected != -1)
             {
-                /*
-                if (newMouse != null)
-                {
-                    oldMouse = new System.Drawing.Point(newMouse.X, newMouse.Y);
-                }
-                else
-                {
-                    oldMouse = new System.Drawing.Point(newMouse.X, newMouse.Y);
-                    newMouse = levelPanel.PointToClient(Cursor.Position);
-                }
-                */
                 oldMouse = new System.Drawing.Point(newMouse.X, newMouse.Y);
                 newMouse = levelPanel.PointToClient(Cursor.Position);
                 newMouse.X += levelPanel.HorizontalScroll.Value;
                 newMouse.Y += levelPanel.VerticalScroll.Value;
 
                 level.solids[selected].position += new Vector2(newMouse.X - oldMouse.X, newMouse.Y - oldMouse.Y);
+                level.solids[selected].position = snap(level.solids[selected].position);
             }
             else
             {
@@ -591,6 +597,30 @@ namespace LevelEditor
         private void checkBoxShowGrid_CheckedChanged(object sender, EventArgs e)
         {
             PutPicturesInPanel();
+        }
+
+        private System.Drawing.Point snap(System.Drawing.Point inPoint)
+        {
+            System.Drawing.Point point = new System.Drawing.Point(inPoint.X, inPoint.Y);
+            if (checkBoxSnap.Checked)
+            {
+                int snap = (int)numericUpDownGrid.Value;
+                point.X = (int)(point.X / snap) * snap;
+                point.Y = (int)(point.Y / snap) * snap;
+            }
+            return point;
+        }
+
+        private Vector2 snap(Vector2 inPoint)
+        {
+            Vector2 point = new Vector2(inPoint.X, inPoint.Y);
+            if (checkBoxSnap.Checked)
+            {
+                int snap = (int)numericUpDownGrid.Value;
+                point.X = (int)(point.X / snap) * snap;
+                point.Y = (int)(point.Y / snap) * snap;
+            }
+            return point;
         }
     }
 }
