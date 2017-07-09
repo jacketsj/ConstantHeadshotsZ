@@ -10,7 +10,7 @@ namespace ConstantHeadshotsZ
 {
     public class _3DView
     {
-        Vector3 cameraPosition = new Vector3(0, 0, 20);
+        Vector3 cameraPosition = new Vector3(0, 0, 200);
         Vector3 cameraForward = new Vector3(0, 0, -1);
         Vector3 cameraUp = Vector3.Up;
         QuadDrawer quadDrawer;
@@ -37,11 +37,12 @@ namespace ConstantHeadshotsZ
             }
             Matrix view = players[playerNo - 1].camera.get_transformation_3d(device) * Matrix.CreateLookAt(cameraPosition, cameraPosition + cameraForward, cameraUp);//Matrix.CreateScale(1, -1, 1) * 
 
-            Matrix projection = Matrix.CreatePerspectiveFieldOfView((float)Math.PI * 63 / 65, device.Viewport.AspectRatio, 0.001f, 20);//Matrix.CreatePerspectiveFieldOfView(0.7853982f, device.Viewport.AspectRatio, 1, 2);
+            Matrix projection = Matrix.CreatePerspectiveFieldOfView((float)Math.PI * 48 / 65, device.Viewport.AspectRatio, 0.001f, 400);//Matrix.CreatePerspectiveFieldOfView(0.7853982f, device.Viewport.AspectRatio, 1, 2);
 
             Matrix groundTransform = Matrix.CreateScale(1, -1, 1) * Matrix.CreateRotationX(MathHelper.Pi);// *Matrix.CreateRotationY(MathHelper.Pi) * Matrix.CreateRotationZ(MathHelper.Pi);// *Matrix.CreateRotationY(MathHelper.Pi);//Matrix.CreateScale(level.levelWidth, level.levelHeight, 0);// *Matrix.CreateRotationX(MathHelper.PiOver2);// *Matrix.CreateRotationX(MathHelper.PiOver2);
 
-            quadDrawer.DrawQuad(level.background, 1, groundTransform * Matrix.CreateScale((float)level.levelWidth / level.background.Width, (float)level.levelHeight / level.background.Height, 0), view, projection);
+            quadDrawer.DrawQuad(level.background, 1, groundTransform * Matrix.CreateScale((float)level.levelWidth / 2, (float)level.levelHeight / 2, 0)
+                                            * Matrix.CreateTranslation((float)level.levelWidth / 2, (float)level.levelHeight / 2, 0), view, projection);
             //quadDrawer.DrawQuad(level.background, 1, Matrix.CreateScale(level.levelWidth, level.levelHeight, 0), view, projection);
             
             foreach (Drop drop in level.drops)
@@ -88,7 +89,7 @@ namespace ConstantHeadshotsZ
             {
                 _3DSprite sprite = new _3DSprite();
                 sprite.Texture = zombie.sprite.getTexture();
-                sprite.Position = new Vector3(zombie.sprite.vector.X, zombie.sprite.vector.Y, 0);
+                sprite.Position = new Vector3(zombie.sprite.vector - new Vector2(zombie.sprite.getTexture().Width / 2, zombie.sprite.getTexture().Height / 2), 0);
                 sprite.Up = new Vector3(0, 0, zombie.rotation);
                 sprite.Draw(quadDrawer, cameraPosition, view, projection, groundTransform);
             }
@@ -97,18 +98,21 @@ namespace ConstantHeadshotsZ
             {
                 _3DSprite sprite = new _3DSprite();
                 sprite.Texture = bullet.sprite.getTexture();
-                sprite.Position = new Vector3(bullet.sprite.vector.X, bullet.sprite.vector.Y, 0);
+                sprite.Position = new Vector3(bullet.sprite.vector, 0) - Vector3.Transform(new Vector3(bullet.origin, 0), Matrix.CreateRotationZ(bullet.rotation));
                 sprite.Up = new Vector3(0, 0, bullet.rotation);
                 sprite.Draw(quadDrawer, cameraPosition, view, projection, groundTransform);
             }
 
             foreach (Rocket bullet in level.rockets)
             {
-                _3DSprite sprite = new _3DSprite();
-                sprite.Texture = bullet.sprite.getTexture();
-                sprite.Position = new Vector3(bullet.sprite.vector.X, bullet.sprite.vector.Y, 0);
-                sprite.Up = new Vector3(0, 0, bullet.rotation);
-                sprite.Draw(quadDrawer, cameraPosition, view, projection, groundTransform);
+                if (bullet.exploding == 0)
+                {
+                    _3DSprite sprite = new _3DSprite();
+                    sprite.Texture = bullet.sprite.getTexture();
+                    sprite.Position = new Vector3(bullet.sprite.vector, 0) - Vector3.Transform(new Vector3(bullet.origin, 0), Matrix.CreateRotationZ(bullet.rotation));
+                    sprite.Up = new Vector3(0, 0, bullet.rotation);
+                    sprite.Draw(quadDrawer, cameraPosition, view, projection, groundTransform);
+                }
             }
 
             if (inTwoPlayer)
@@ -148,13 +152,13 @@ namespace ConstantHeadshotsZ
         {
             _3DSprite playerSprite = new _3DSprite();
             playerSprite.Texture = player.sprite.getTexture();
-            playerSprite.Position = new Vector3(player.sprite.vector, 0);
+            playerSprite.Position = new Vector3(player.sprite.vector - new Vector2(player.sprite.getTexture().Width / 2, player.sprite.getTexture().Height / 2), 0);
             playerSprite.Up = new Vector3(0, 0, player.playerRotation);
             playerSprite.Draw(quadDrawer, cameraPosition, view, projection, groundTransform);
             _3DSprite weaponSprite = new _3DSprite();
             Sprite weapon2DSprite = GetPlayerWeaponTexture(player, Content);
             weaponSprite.Texture = weapon2DSprite.getTexture();
-            weaponSprite.Position = new Vector3(weapon2DSprite.vector, 0);
+            weaponSprite.Position = new Vector3(weapon2DSprite.vector - new Vector2(player.sprite.getTexture().Width, player.sprite.getTexture().Height), 0);
             weaponSprite.Up = new Vector3(0, 0, player.playerRotation);
             weaponSprite.Draw(quadDrawer, cameraPosition, view, projection, groundTransform);
         }
