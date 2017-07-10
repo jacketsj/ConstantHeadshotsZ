@@ -50,9 +50,7 @@ namespace ConstantHeadshotsZ
 
         public void Draw(SpriteBatch spriteBatch, ContentManager Content)
         {
-            //spriteBatch.Draw(Content.Load<Texture2D>("White"), HitBox, Color.Red);
             spriteBatch.Draw(sprite.getTexture(), sprite.vector, null, sprite.getTint(), rotation, origin, 1f, SpriteEffects.None, 0f);
-            //HitBoxRot.TestDraw(spriteBatch, Content);
         }
     }
 }

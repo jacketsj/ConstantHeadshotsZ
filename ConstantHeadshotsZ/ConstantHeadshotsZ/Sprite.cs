@@ -109,7 +109,7 @@ namespace ConstantHeadshotsZ
                 return false;
             }
             Rectangle originalRec = new Rectangle((int)vector.X, (int)vector.Y, texture.Width, texture.Height);
-            //Rectangle intersectingRec = new Rectangle((int)intersectingSprite.vector.X, (int)intersectingSprite.vector.Y, intersectingSprite.texture.Width, intersectingSprite.texture.Height);
+
             Rectangle intersectingRec = new Rectangle((int)intersectingSprite.vector.X - (intersectingSprite.getTexture().Width / 2), (int)intersectingSprite.vector.Y - (intersectingSprite.getTexture().Height / 2), intersectingSprite.texture.Width, intersectingSprite.texture.Height);
             if (originalRec.Intersects(intersectingRec))
             {
@@ -125,7 +125,7 @@ namespace ConstantHeadshotsZ
                 return false;
             }
             Rectangle rec1 = new Rectangle((int)vector.X, (int)vector.Y, texture.Width, texture.Height);
-            //Rectangle rec2 = new Rectangle((int)intersectingSprite.vector.X, (int)intersectingSprite.vector.Y, intersectingSprite.texture.Width, intersectingSprite.texture.Height);
+
             Rectangle rec2 = new Rectangle((int)intersectingSprite.vector.X - (intersectingSprite.getTexture().Width / 2), (int)intersectingSprite.vector.Y - (intersectingSprite.getTexture().Height / 2), intersectingSprite.texture.Width, intersectingSprite.texture.Height);
 
             int top = Math.Max(rec1.Top, rec2.Top);
@@ -156,7 +156,7 @@ namespace ConstantHeadshotsZ
                 return false;
             }
             Rectangle rec1 = new Rectangle((int)vector.X, (int)vector.Y, texture.Width, texture.Height);
-            //Rectangle rec2 = new Rectangle((int)intersectingSprite.vector.X, (int)intersectingSprite.vector.Y, intersectingSprite.texture.Width, intersectingSprite.texture.Height);
+
             Rectangle rec2 = new Rectangle((int)intersectingSprite.vector.X, (int)intersectingSprite.vector.Y, intersectingSprite.texture.Width, intersectingSprite.texture.Height);
 
             int top = Math.Max(rec1.Top, rec2.Top);

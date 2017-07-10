@@ -32,8 +32,6 @@ namespace ConstantHeadshotsZ
             return;
             #endif
 
-            //StorageDevice device = GetDevice(data.result);
-            //IAsyncResult result = StorageDevice.BeginShowSelector(PlayerIndex.One, null, null);
             string fullpath = @"Content\" + filename;
 
             FileStream stream = File.Open(fullpath, FileMode.OpenOrCreate);

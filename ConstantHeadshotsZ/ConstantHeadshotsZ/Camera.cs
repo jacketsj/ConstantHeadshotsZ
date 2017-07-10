@@ -161,13 +161,15 @@ namespace ConstantHeadshotsZ
 
         public Matrix get_transformation(GraphicsDevice graphicsDevice)
         {
-            transform = Matrix.CreateTranslation(new Vector3(-position.X, -position.Y, 0)) * Matrix.CreateRotationZ(yaw) * Matrix.CreateScale(new Vector3(zoom, zoom, 1)) * Matrix.CreateTranslation(new Vector3(graphicsDevice.Viewport.Width * 0.5f, graphicsDevice.Viewport.Height * 0.5f, 0));                       
+            transform = Matrix.CreateTranslation(new Vector3(-position.X, -position.Y, 0)) * Matrix.CreateRotationZ(yaw)
+                * Matrix.CreateScale(new Vector3(zoom, zoom, 1))
+                * Matrix.CreateTranslation(new Vector3(graphicsDevice.Viewport.Width * 0.5f, graphicsDevice.Viewport.Height * 0.5f, 0));                       
             return transform;
         }
 
         public Matrix get_transformation_3d(GraphicsDevice graphicsDevice)
         {
-            transform = Matrix.CreateTranslation(new Vector3(-position.X, -position.Y, 0)) * Matrix.CreateRotationZ(yaw);// *Matrix.CreateTranslation(new Vector3(graphicsDevice.Viewport.Width * 0.5f, graphicsDevice.Viewport.Height * 0.5f, 0));
+            transform = Matrix.CreateTranslation(new Vector3(-position.X, -position.Y, 0)) * Matrix.CreateRotationZ(yaw);
             transform *= Matrix.CreateRotationX(pitch);
             transform *= Matrix.CreateScale(new Vector3(zoom, zoom, 1)) * Matrix.CreateScale(1, -1, 1);
             return transform;
@@ -178,7 +180,6 @@ namespace ConstantHeadshotsZ
             if (followedSprite != null)
             {
                 setPosition(new Vector2(followedSprite.getX(), followedSprite.getY()), level, screenWidthAndHeight);
-                //setPosition(new Vector2(followedSprite.getX() + (followedSprite.getTexture().Width / 2), followedSprite.getY() + (followedSprite.getTexture().Height / 2)));
             }
         }
 

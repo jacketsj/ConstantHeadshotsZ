@@ -118,8 +118,6 @@ namespace ConstantHeadshotsZ
             bloodParticles = new Particle[0];
             drops = new Drop[0];
             rockets = new Rocket[0];
-            //drops = new Drop[1];
-            //drops[0] = new Drop(Player.Weapon.LAZERSWORD, new Sprite(Content.Load<Texture2D>("LazerSwordDrop"), new Vector2(600, 600)), Vector2.Zero, 1000);
         }
 
         public Level(Solid[] newSolids, Solid[] newBackSolids, Solid[] newForeSolids, Vector2[] newZombieSpawners, ContentManager Content, Color newBackgroundColor, Vector2 newWidthAndHeight, Vector2 newPlayerSpawn)
@@ -141,8 +139,6 @@ namespace ConstantHeadshotsZ
             bloodParticles = new Particle[0];
             drops = new Drop[0];
             rockets = new Rocket[0];
-            //drops = new Drop[1];
-            //drops[0] = new Drop(Player.Weapon.BASIC, new Sprite(Content.Load<Texture2D>("BasicWeaponDrop"), new Vector2(600, 600)), Vector2.Zero, 1000);
         }
 
         public void Update2Player(Player[] players, ContentManager Content, TimeSpan elapsedTime)
@@ -325,8 +321,6 @@ namespace ConstantHeadshotsZ
                 {
                     //SPAWN NEW ZOMBIE
                     Zombie[] newZombies;
-                    //if (zombies.Length != 0)
-                    //{
                     newZombies = new Zombie[zombies.Length + 1];
                     int randomZombieSpawnerIndex = random.Next(0, zombieSpawners.Length);
                     Vector2 randomZombieSpawner = zombieSpawners[randomZombieSpawnerIndex];
@@ -342,17 +336,6 @@ namespace ConstantHeadshotsZ
                         }
                         zombies = newZombies;
                     }
-                    //}
-                    //else
-                    //{
-                    //    zombies = new Zombie[1];
-                    //    int randomZombieSpawnerIndex = random.Next(0, zombieSpawners.Length);
-                    //    Vector2 randomZombieSpawner = zombieSpawners[randomZombieSpawnerIndex];
-                    //    randomZombieSpawner.X += Content.Load<Texture2D>("Player").Width / 2;
-                    //    randomZombieSpawner.Y += Content.Load<Texture2D>("Player").Height / 2;
-                    //    Zombie newZombie = new Zombie(new Sprite(Content.Load<Texture2D>("Player"), randomZombieSpawner, Color.Green), 0, Content);
-                    //    zombies[0] = newZombie;
-                    //}
                     timesSpawned += 1;
                 }
                 if (zombieSpawnAcceleration)
@@ -527,7 +510,6 @@ namespace ConstantHeadshotsZ
                         int randomNum = random.Next(0, 7);
                         if (randomNum == 6)
                         {
-                            //Drop.DropWeapon(Player.Weapon.LAZERSWORD, zombies[i].sprite.vector, Content, drops);
                             drops = Drop.DropWeapon(Drop.GetRandomWeapon(), zombies[i].sprite.vector, Content, drops);
                         }
                         deleteThisZombie[i] = true;
@@ -565,8 +547,6 @@ namespace ConstantHeadshotsZ
                 {
                     //SPAWN NEW ZOMBIE
                     Zombie[] newZombies;
-                    //if (zombies.Length != 0)
-                    //{
                     newZombies = new Zombie[zombies.Length + 1];
                     int randomZombieSpawnerIndex = random.Next(0, zombieSpawners.Length);
                     Vector2 randomZombieSpawner = zombieSpawners[randomZombieSpawnerIndex];
@@ -582,17 +562,6 @@ namespace ConstantHeadshotsZ
                         }
                         zombies = newZombies;
                     }
-                    //}
-                    //else
-                    //{
-                    //    zombies = new Zombie[1];
-                    //    int randomZombieSpawnerIndex = random.Next(0, zombieSpawners.Length);
-                    //    Vector2 randomZombieSpawner = zombieSpawners[randomZombieSpawnerIndex];
-                    //    randomZombieSpawner.X += Content.Load<Texture2D>("Player").Width / 2;
-                    //    randomZombieSpawner.Y += Content.Load<Texture2D>("Player").Height / 2;
-                    //    Zombie newZombie = new Zombie(new Sprite(Content.Load<Texture2D>("Player"), randomZombieSpawner, Color.Green), 0, Content);
-                    //    zombies[0] = newZombie;
-                    //}
                     timesSpawned += 1;
                 }
                 if (zombieSpawnAcceleration)
@@ -679,50 +648,6 @@ namespace ConstantHeadshotsZ
                 }
             }
             return null;
-            /*
-            Vector2 currentVector = zombie.sprite.vector;
-            Vector2 difference = new Vector2();
-            Vector2 differencePositive = new Vector2();
-            difference.X = zombie.sprite.getX() - oldVector.X;
-            difference.Y = zombie.sprite.getY() - oldVector.Y;
-            difference.X = (int)difference.X;
-            difference.Y = (int)difference.Y;
-            differencePositive = difference;
-            if (differencePositive.X < 0)
-            {
-                differencePositive.X /= -1;
-            }
-            if (differencePositive.Y < 0)
-            {
-                differencePositive.Y /= -1;
-            }
-            if (difference.X == 0)
-            {
-                difference.X = 1;
-                differencePositive.X = 1;
-            }
-            if (difference.Y == 0)
-            {
-                difference.Y = 1;
-                differencePositive.Y = 1;
-            }
-            for (int y = 0; y != difference.Y; y += ((int)difference.Y / (int)differencePositive.Y))
-            {
-                for (int x = 0; x != difference.X; x += ((int)difference.X / (int)differencePositive.X))
-                {
-                    foreach (Solid solid in solids)
-                    {
-                        currentVector.X = zombie.sprite.getX() - x;
-                        currentVector.Y = zombie.sprite.getY() - y;
-                        if (solid.sprite.IntersectsPixel(new Sprite(zombie.sprite.getTexture(), currentVector)))
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-            return false;
-            */
         }
 
         public Sprite zombieCollidesWithUncollidablePixel(Zombie zombie, Vector2 oldVector)
@@ -777,89 +702,6 @@ namespace ConstantHeadshotsZ
                 }
             }
             return null;
-            //zombie.sprite.vector.X -= 32;
-            //zombie.sprite.vector.Y -= 32;
-            //Sprite sprite = zombie.sprite;
-            //Sprite sprite = new Sprite(zombie.sprite.getTexture(), new Vector2(zombie.sprite.vector.X + 32, zombie.sprite.vector.Y - 32));
-            /*
-            foreach (Zombie zombie2 in zombies)
-            {
-                if (sprite.Intersects(zombie2.sprite))
-                {
-                    Sprite sprite2 = new Sprite(zombie2.sprite.getTexture(), new Vector2(zombie2.sprite.vector.X, zombie2.sprite.vector.Y));
-                    if (sprite2 != null)
-                    {
-                        return sprite2;
-                    }
-                }
-            }
-            return null;
-             * */
-            /*
-            foreach (Solid solid in solids)
-            {
-                if (zombie.sprite.Intersects(solid.sprite))
-                {
-                    Sprite sprite = solid.sprite;
-                    if (sprite != null)
-                    {
-                        return sprite;
-                    }
-                }
-            }
-            return null;
-             * */
-            /*
-            Vector2 currentVector = zombie.sprite.vector;
-            Vector2 difference = new Vector2();
-            Vector2 differencePositive = new Vector2();
-            difference.X = zombie.sprite.getX() - oldVector.X;
-            difference.Y = zombie.sprite.getY() - oldVector.Y;
-            difference.X = (int)difference.X;
-            difference.Y = (int)difference.Y;
-            differencePositive = difference;
-            if (differencePositive.X < 0)
-            {
-                differencePositive.X /= -1;
-            }
-            if (differencePositive.Y < 0)
-            {
-                differencePositive.Y /= -1;
-            }
-            if (difference.X == 0)
-            {
-                difference.X = 1;
-                differencePositive.X = 1;
-            }
-            if (difference.Y == 0)
-            {
-                difference.Y = 1;
-                differencePositive.Y = 1;
-            }
-            for (int y = 0; y != difference.Y; y += ((int)difference.Y / (int)differencePositive.Y))
-            {
-                for (int x = 0; x != difference.X; x += ((int)difference.X / (int)differencePositive.X))
-                {
-                    foreach (Zombie currentZombie in zombies)
-                    {
-                        if (zombie.sprite != currentZombie.sprite)
-                        {
-                            currentVector.X = zombie.sprite.getX() - x;
-                            currentVector.Y = zombie.sprite.getY() - y;
-                            Sprite currentSprite = currentZombie.sprite;
-                            Sprite zombieSprite = new Sprite(zombie.sprite.getTexture(), currentVector);
-                            zombieSprite.vector.X -= zombieSprite.getTexture().Width / 2;
-                            zombieSprite.vector.Y -= zombieSprite.getTexture().Height / 2;
-                            if (currentSprite.IntersectsPixel(zombieSprite))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
-            return false;
-            */
         }
 
         public bool zombieCollidesWithUncollidablePixel(Zombie zombie)
@@ -897,10 +739,6 @@ namespace ConstantHeadshotsZ
                     {
                         return currentZombie;
                     }
-                    //if (currentZombie.sprite.IntersectsPixelZombie(zombie.sprite))
-                    //{
-                    //    return true;
-                    //}
                 }
             }
             return null;
@@ -917,58 +755,6 @@ namespace ConstantHeadshotsZ
             }
             return false;
         }
-
-        /*
-        public bool zombieCollidesWithZombiesPixel(int index, Vector2 oldVector)
-        {
-
-            Vector2 currentVector = zombies[index].sprite.vector;
-            Vector2 difference = new Vector2();
-            Vector2 differencePositive = new Vector2();
-            difference.X = zombies[index].sprite.getX() - oldVector.X;
-            difference.Y = zombies[index].sprite.getY() - oldVector.Y;
-            difference.X = (int)difference.X;
-            difference.Y = (int)difference.Y;
-            differencePositive = difference;
-            if (differencePositive.X < 0)
-            {
-                differencePositive.X /= -1;
-            }
-            if (differencePositive.Y < 0)
-            {
-                differencePositive.Y /= -1;
-            }
-            if (difference.X == 0)
-            {
-                difference.X = 1;
-                differencePositive.X = 1;
-            }
-            if (difference.Y == 0)
-            {
-                difference.Y = 1;
-                differencePositive.Y = 1;
-            }
-            for (int y = 0; y != difference.Y; y += ((int)difference.Y / (int)differencePositive.Y))
-            {
-                for (int x = 0; x != difference.X; x += ((int)difference.X / (int)differencePositive.X))
-                {
-                    for (int i = 0; i < zombies.Length; i++)
-                    {
-                        if (i != index)
-                        {
-                            currentVector.X = zombies[index].sprite.getX() - x;
-                            currentVector.Y = zombies[index].sprite.getY() - y;
-                            if (zombies[i].sprite.IntersectsPixel(new Sprite(zombies[index].sprite.getTexture(), currentVector)))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
-            return false;
-        }
-        */
 
         public bool playerCollidesWithZombiesPixel(Player player)
         {
@@ -1187,36 +973,20 @@ namespace ConstantHeadshotsZ
         public Particle[] GenerateBurst(Particle[] parts, Color color, Vector3 position, ContentManager Content, int minLife, int maxLife, int minNoParticles, int maxNoParticles,
                                                                                 float minVel, float maxVel, float minAngle, float maxAngle, float minPitch, float maxPitch)
         {
-            //minPitch = MathHelper.PiOver2 - minPitch;
-            //maxPitch = MathHelper.PiOver2 - maxPitch;
-
             int noParticles = random.Next(maxNoParticles - minNoParticles) + minNoParticles;
             Particle[] finalParts = new Particle[parts.Length + noParticles];
             for (int i = 0; i < noParticles; ++i)
             {
-                //float vel = (float)(random.NextDouble() * (Math.Sqrt(maxVel) - Math.Sqrt(minVel)) + Math.Sqrt(minVel));
                 float vel = (float)(random.NextDouble() * (maxVel - minVel) + minVel);
-                //vel *= vel;
+
                 float angle = (float)random.NextDouble() * (maxAngle - minAngle) + minAngle;
 
                 //get a uniform spherical distribution
-                float pitchHelper = (float)(random.NextDouble() * (Math.Cos(maxPitch) - Math.Cos(minPitch)) + Math.Cos(minPitch));//(float)random.NextDouble()*2-1;
+                float pitchHelper = (float)(random.NextDouble() * (Math.Cos(maxPitch) - Math.Cos(minPitch)) + Math.Cos(minPitch));
                 float pitch = (float)Math.Acos(pitchHelper);
-                //float pitch = (float)random.NextDouble() * (maxPitch - minPitch) + minPitch;
                 int life = random.Next(maxLife - minLife) + minLife;
                 Vector3 vVel = vel * (new Vector3((float)Math.Cos(angle) * (float)Math.Sin(pitch), (float)Math.Sin(angle) * (float)Math.Sin(pitch), (float)Math.Cos(pitch)));
-                if (angle > MathHelper.PiOver2 && angle < 3 * MathHelper.PiOver2)
-                {
-                    //vVel.X *= -1;
-                }
-                if (angle > MathHelper.Pi && angle < MathHelper.TwoPi)
-                {
-                    //vVel.Y *= -1;
-                }
-                if (pitch > MathHelper.Pi && pitch < MathHelper.TwoPi)
-                {
-                    //vVel.Z *= -1;
-                }
+
                 finalParts[i + parts.Length] = new Particle(color, position, vVel, Content, life);
             }
             for (int i = 0; i < parts.Length; ++i)

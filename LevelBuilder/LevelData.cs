@@ -40,19 +40,6 @@ namespace LevelBuilder
             //Do nothing
         }
 
-        /*
-        public LevelData(SolidData[] newSolids, int newLevelHeight, int newLevelWidth, Texture2D newBackground, Color newBackgroundColor, Vector2 newPlayerSpawn, Vector2[] newZombieSpawners)
-        {
-            solids = newSolids;
-            levelHeight = newLevelHeight;
-            levelWidth = newLevelWidth;
-            background = newBackground;
-            backgroundColor = newBackgroundColor;
-            playerSpawn = newPlayerSpawn;
-            zombieSpawners = newZombieSpawners;
-        }
-        */
-
         public static void SaveLevel(LevelData data)
         {
             #if WINDOWS

@@ -59,8 +59,6 @@ namespace ConstantHeadshotsZ
                 return true;
             }
             return false;
-            //SetX(sprite.vector.X + direction.X, level);
-            //SetY(sprite.vector.Y + direction.Y, level);
         }
 
         private bool isOutOfBounds(Level level)
@@ -77,67 +75,8 @@ namespace ConstantHeadshotsZ
             spriteBatch.Draw(sprite.getTexture(), sprite.vector, null, sprite.getTint(), rotation, origin, 1f, SpriteEffects.None, 0f);
         }
 
-        /*
-        private void SetX(float x, Level level)
-        {
-            Vector2 oldVector = sprite.vector;
-            float oldX = sprite.getX();
-            sprite.setX(x);
-            if (CollidesWithSolids(level.solids))
-            {
-                if (oldX > x)
-                {
-                    while (CollidesWithSolids(level.solids))
-                    {
-                        sprite.setX(sprite.getX() + 1);
-                    }
-                }
-                else if (oldX < x)
-                {
-                    while (CollidesWithSolids(level.solids))
-                    {
-                        sprite.setX(sprite.getX() - 1);
-                    }
-                }
-                else if (oldX == x)
-                {
-
-                }
-            }
-        }
-
-        private void SetY(float y, Level level)
-        {
-            Vector2 oldVector = sprite.vector;
-            float oldX = sprite.getY();
-            sprite.setX(y);
-            if (CollidesWithSolids(level.solids))
-            {
-                if (oldX > y)
-                {
-                    while (CollidesWithSolids(level.solids))
-                    {
-                        sprite.setY(sprite.getY() + 1);
-                    }
-                }
-                else if (oldX < y)
-                {
-                    while (CollidesWithSolids(level.solids))
-                    {
-                        sprite.setY(sprite.getY() - 1);
-                    }
-                }
-                else if (oldX == y)
-                {
-
-                }
-            }
-        }
-        */
-
         private bool CollidesWithSolids(Solid[] solids)
         {
-            //Texture2D rectangleTexture = Content.Load<Texture2D>("BasicWeaponBullet");
             Matrix bulletTransform = Matrix.CreateTranslation(new Vector3(-(origin), 0.0f)) * Matrix.CreateRotationZ(rotation) * Matrix.CreateTranslation(new Vector3(sprite.vector, 0.0f));
             Rectangle bulletRectangle = CalculateBoundingRectangle(new Rectangle(0, 0, sprite.getTexture().Width, sprite.getTexture().Height), bulletTransform);
             foreach (Solid solid in solids)
@@ -152,12 +91,6 @@ namespace ConstantHeadshotsZ
 
         private bool CollidesWithZombies(Level level)
         {
-            //Matrix bulletTransform = Matrix.CreateTranslation(new Vector3(-(new Vector2(sprite.getTexture().Width / 2, sprite.getTexture().Height / 2)), 0.0f)) * Matrix.CreateRotationZ(rotation) * Matrix.CreateTranslation(new Vector3(sprite.vector, 0.0f));
-            //Matrix bulletTransform = Matrix.CreateTranslation(new Vector3(-(origin), 0.0f)) * Matrix.CreateRotationZ(rotation) * Matrix.CreateTranslation(new Vector3(sprite.vector, 0.0f));
-            //Rectangle bulletRectangle = CalculateBoundingRectangle(new Rectangle(0, 0, rectangleTexture.Width, rectangleTexture.Height), bulletTransform);
-            //Texture2D rectangleTexture = Content.Load<Texture2D>("BasicWeaponBullet");
-            //Matrix bulletTransform = Matrix.CreateTranslation(new Vector3(-(origin), 0.0f)) * Matrix.CreateRotationZ(rotation) * Matrix.CreateTranslation(new Vector3(sprite.vector, 0.0f));
-            //Rectangle bulletRectangle = CalculateBoundingRectangle(new Rectangle(0, 0, sprite.getTexture().Width, sprite.getTexture().Height), bulletTransform);
             for (int i = 0; i < level.zombies.Length; i++)
             {
                 if (CollidesWithZombie(level.zombies[i], collisionRec))
@@ -165,99 +98,17 @@ namespace ConstantHeadshotsZ
                     level.zombies[i].health -= 34;
                     level.bloodParticles = level.GenerateBurst(level.bloodParticles, CHZ.options.bldCol, new Vector3(level.zombies[i].sprite.vector, 0), Content, 60, 360, 
                                                                     Options.GetInstance().minLParticles, Options.GetInstance().maxLParticles, 0.1f, 2.7f);
-                    /*
-                    Random random = new Random();
-                    int amountOfNewParticles = random.Next(230, 600);
-                    int amountOfOldParticles = level.bloodParticles.Length;
-                    Particle[] newParticles = new Particle[amountOfOldParticles + amountOfNewParticles];
-                    for (int i2 = 0; i2 < amountOfOldParticles; i2++)
-                    {
-                        newParticles[i2] = level.bloodParticles[i2];
-                    }
-                    for (int currentAmountOfNewParticles = 0; currentAmountOfNewParticles < amountOfNewParticles; currentAmountOfNewParticles++)
-                    {
-                        float randomDirectionRotation = rotation + (float)random.NextDouble() * MathHelper.PiOver4 * 10 / 4 - MathHelper.PiOver4 * 5 / 4;
-                        float randomDirectionRotation2 = rotation + (float)random.NextDouble() * MathHelper.PiOver4 * 10 / 4 - MathHelper.PiOver4 * 5 / 4;
-                        float directionX = (float)(Math.Cos(randomDirectionRotation));
-                        float directionY = (float)(Math.Sin(randomDirectionRotation));
-                        float directionZ = (float)Math.Abs(Math.Cos(randomDirectionRotation2));
-                        //float randomDirectionChange = (float)random.NextDouble() * (2.7f - 0.1f) + 0.1f;
-                        //Vector3 vectorDirection = new Vector3(directionX + ((float)Math.Cos(currentAmountOfNewParticles * amountOfNewParticles / MathHelper.TwoPi)),
-                        //                                        directionY + ((float)Math.Sin(currentAmountOfNewParticles * amountOfNewParticles / MathHelper.TwoPi)),
-                        //                                        );
-                        Vector3 vectorDirection = new Vector3(directionX, directionY, directionZ);
-                        newParticles[amountOfOldParticles + currentAmountOfNewParticles] = new Particle(CHZ.options.bldCol, level.zombies[i].sprite.vector, vectorDirection, Content, random.Next(60, 360));
-                        /*
-                        float randomDirectionRotation = rotation + random.Next(-55, 55);
-                        int directionY = (int)(Math.Sin(randomDirectionRotation));
-                        int directionX = (int)(Math.Cos(randomDirectionRotation));
-                        float randomDirectionChange = (float)random.NextDouble() * (2.7f - 0.1f) + 0.1f;
-                        Vector2 vectorDirection = new Vector2(randomDirectionChange * ((float)Math.Cos(currentAmountOfNewParticles * amountOfNewParticles / 360)), randomDirectionChange * ((float)Math.Sin(currentAmountOfNewParticles * amountOfNewParticles / 360)));
-                        newParticles[amountOfOldParticles + currentAmountOfNewParticles] = new Particle(CHZ.options.bldCol, level.zombies[i].sprite.vector, vectorDirection, Content, random.Next(60, 360));
-                         * 
-                    }
-                    level.bloodParticles = newParticles;
-                    */
-                    /*
-                    List<Particle> newBloodParticles = new List<Particle>();
-                    foreach (Particle particle in level.bloodParticles)
-                    {
-                        newBloodParticles.Add(particle);
-                    }
-                    Random random = new Random();
-                    int amountOfParticles = random.Next(230, 600);
-                    for (int currentAmountOfParticles = 0; currentAmountOfParticles < amountOfParticles; currentAmountOfParticles++)
-                    {
-                        float randomDirectionRotation = rotation + random.Next(-55, 55);
-                        int directionY = (int)(Math.Sin(randomDirectionRotation));
-                        int directionX = (int)(Math.Cos(randomDirectionRotation));
-                        float randomDirectionChange = (float)random.NextDouble() * (2.7f - 0.1f) + 0.1f;
-                        Vector2 vectorDirection = new Vector2(randomDirectionChange * ((float)Math.Cos(currentAmountOfParticles * amountOfParticles / 360)), randomDirectionChange * ((float)Math.Sin(currentAmountOfParticles * amountOfParticles / 360)));
-                        newBloodParticles.Add(new Particle(Color.DarkRed, level.zombies[i].sprite.vector, vectorDirection, Content, random.Next(60, 360)));
-                    }
-                    level.bloodParticles = newBloodParticles.ToArray();
-                    */
                     return true;
                 }
             }
             return false;
         }
 
-        /*
-        public Rectangle CalculatePixelRectangle(Matrix bulletTransform)
-        {
-            Rectangle returnRec;
-            float howFarInIsX = 0;
-            float howFarInIsY = 0;
-            sprite.UpdateTextureData();
-
-            for (int y = 0; y < sprite.getTexture().Height; y++)
-            {
-                for (int x = 0; x < sprite.getTexture().Width; x++)
-                {
-                        Color colorA = sprite.textureData[x + y * sprite.getTexture().Width];
-
-                        if (colorA.A != 0)
-                        {
-                            
-                        }
-                    }
-                }
-            }
-            return returnRec;
-        }
-        */
-
         public bool CollidesWithZombie(Zombie zombie, Matrix bulletTransform, Rectangle bulletRectangle)
         {
             Vector2 zombieOrigin = new Vector2(zombie.sprite.getTexture().Width / 2, zombie.sprite.getTexture().Height / 2);
-            //Matrix bulletTransform = Matrix.CreateTranslation(new Vector3(-(new Vector2(sprite.getTexture().Width / 2, sprite.getTexture().Height / 2)), 0.0f)) * Matrix.CreateRotationZ(rotation) * Matrix.CreateTranslation(new Vector3(sprite.vector, 0.0f));
-            //Rectangle bulletRectangle = CalculateBoundingRectangle(new Rectangle(0, 0, sprite.getTexture().Width, sprite.getTexture().Height), bulletTransform);
             Matrix zombieTransform = Matrix.CreateTranslation(new Vector3(-(zombieOrigin), 0.0f)) * Matrix.CreateTranslation(new Vector3(zombie.sprite.vector, 0.0f));
-            //Matrix zombieTransform = Matrix.CreateTranslation(new Vector3(zombie.sprite.vector, 0.0f));
-            //Matrix solidTransform = Matrix.CreateTranslation(new Vector3(-(new Vector2(solid.sprite.getTexture().Width / 2, solid.sprite.getTexture().Height / 2)), 0.0f)) * Matrix.CreateRotationZ(0) * Matrix.CreateTranslation(new Vector3(solid.sprite.vector, 0.0f));
             Rectangle zombieRectangle = new Rectangle((int)zombie.sprite.vector.X - zombie.sprite.getTexture().Width / 2, (int)zombie.sprite.vector.Y - zombie.sprite.getTexture().Height / 2, zombie.sprite.getTexture().Width, zombie.sprite.getTexture().Height);
-            //Rectangle zombieRectangle = new Rectangle((int)zombie.sprite.vector.X - zombie.sprite.getTexture().Width / 2, (int)zombie.sprite.vector.Y - zombie.sprite.getTexture().Height / 2, zombie.sprite.getTexture().Width, zombie.sprite.getTexture().Height);
 
             sprite.UpdateTextureData();
             zombie.sprite.UpdateTextureData();
@@ -279,16 +130,6 @@ namespace ConstantHeadshotsZ
             {
                 return true;
             }
-            /*
-            float bulletRadius = sprite.getTexture().Height / 2;
-            Circle bulletCircle = new Circle(sprite.vector, bulletRadius);
-            float zombieRadius = zombie.sprite.getTexture().Width / 2;
-            Circle zombieCircle = new Circle(zombie.sprite.vector, zombieRadius);
-            if (zombieCircle.Intersects(bulletCircle))
-            {
-                return true;
-            }
-            */
             return false;
         }
 
@@ -299,28 +140,19 @@ namespace ConstantHeadshotsZ
             {
                 return true;
             }
-            /*
-            float bulletRadius = sprite.getTexture().Height / 2;
-            Circle bulletCircle = new Circle(sprite.vector, bulletRadius);
-            Rectangle solidRectangle = new Rectangle((int)solid.sprite.getX(), (int)solid.sprite.getY(), solid.sprite.getTexture().Width, solid.sprite.getTexture().Height);
-            if (bulletCircle.Intersects(solidRectangle))
-            {
-                return true;
-            }
-            */
             return false;
         }
 
         private bool CollidesWithSolid(Solid solid)
         {
-            //Matrix bulletTransform = Matrix.CreateTranslation(new Vector3(-(new Vector2(sprite.getTexture().Width / 2, sprite.getTexture().Height / 2)), 0.0f)) * Matrix.CreateRotationZ(rotation) * Matrix.CreateTranslation(new Vector3(sprite.vector, 0.0f));
             Matrix bulletTransform = Matrix.CreateTranslation(new Vector3(-(origin), 0.0f)) * Matrix.CreateRotationZ(rotation) * Matrix.CreateTranslation(new Vector3(sprite.vector, 0.0f));
+            
             Rectangle bulletRectangle = CalculateBoundingRectangle(new Rectangle(0, 0, sprite.getTexture().Width, sprite.getTexture().Height), bulletTransform);
-            //Matrix solidTransform = Matrix.CreateTranslation(new Vector3(-(new Vector2(solid.sprite.getTexture().Width / 2, solid.sprite.getTexture().Height / 2)), 0.0f)) * Matrix.CreateTranslation(new Vector3(solid.sprite.vector, 0.0f));
+            
             Matrix solidTransform = Matrix.CreateTranslation(new Vector3(solid.sprite.vector, 0.0f));
-            //Matrix solidTransform = Matrix.CreateTranslation(new Vector3(-(new Vector2(solid.sprite.getTexture().Width / 2, solid.sprite.getTexture().Height / 2)), 0.0f)) * Matrix.CreateRotationZ(0) * Matrix.CreateTranslation(new Vector3(solid.sprite.vector, 0.0f));
+            
             Rectangle solidRectangle = new Rectangle((int)solid.sprite.vector.X, (int)solid.sprite.vector.Y, solid.sprite.getTexture().Width, solid.sprite.getTexture().Height);
-            //Rectangle solidRectangle = new Rectangle((int)solid.sprite.vector.X - solid.sprite.getTexture().Width / 2, (int)solid.sprite.vector.Y - solid.sprite.getTexture().Height / 2, solid.sprite.getTexture().Width, solid.sprite.getTexture().Height);
+            
 
             sprite.UpdateTextureData();
             solid.sprite.UpdateTextureData();

@@ -61,31 +61,6 @@ namespace ConstantHeadshotsZ
                                                 Options.GetInstance().minLParticles, Options.GetInstance().maxLParticles, 0.1f, 5f,
                                                 player.playerRotation - MathHelper.PiOver4 * 4 / 5 - MathHelper.PiOver2, player.playerRotation + MathHelper.PiOver4 * 4 / 5 - MathHelper.PiOver2,
                                                 MathHelper.PiOver2, MathHelper.PiOver2 - MathHelper.PiOver4 * 3 / 5);
-                        /*
-                        Random random = new Random();
-                        int amountOfNewParticles = random.Next(230, 600);
-                        int amountOfOldParticles = level.bloodParticles.Length;
-                        Particle[] newParticles = new Particle[amountOfOldParticles + amountOfNewParticles];
-                        for (int i2 = 0; i2 < amountOfOldParticles; i2++)
-                        {
-                            newParticles[i2] = level.bloodParticles[i2];
-                        }
-                        for (int currentAmountOfNewParticles = 0; currentAmountOfNewParticles < amountOfNewParticles; currentAmountOfNewParticles++)
-                        {
-                            float randomDirectionRotation = rotation + (float)random.NextDouble() * MathHelper.PiOver4 * 10 / 4 - MathHelper.PiOver4 * 5 / 4;
-                            float randomDirectionRotation2 = rotation + (float)random.NextDouble() * MathHelper.PiOver4 * 10 / 4 - MathHelper.PiOver4 * 5 / 4;
-                            float directionX = (float)(Math.Cos(randomDirectionRotation));
-                            float directionY = (float)(Math.Sin(randomDirectionRotation));
-                            float directionZ = (float)Math.Abs(Math.Cos(randomDirectionRotation2));
-                            //float randomDirectionChange = (float)random.NextDouble() * (2.7f - 0.1f) + 0.1f;
-                            //Vector3 vectorDirection = new Vector3(directionX + ((float)Math.Cos(currentAmountOfNewParticles * amountOfNewParticles / MathHelper.TwoPi)),
-                            //                                        directionY + ((float)Math.Sin(currentAmountOfNewParticles * amountOfNewParticles / MathHelper.TwoPi)),
-                            //                                        );
-                            Vector3 vectorDirection = new Vector3(directionX, directionY, directionZ);
-                            newParticles[amountOfOldParticles + currentAmountOfNewParticles] = new Particle(CHZ.options.bldCol, zombie.sprite.vector, vectorDirection, Content, random.Next(60, 360));
-                        }
-                        level.bloodParticles = newParticles;
-                        */
                     }
                 }
                 Attacking -= 1;
@@ -116,9 +91,7 @@ namespace ConstantHeadshotsZ
 
         public void Draw(SpriteBatch spriteBatch, ContentManager Content)
         {
-            //spriteBatch.Draw(Content.Load<Texture2D>("White"), HitBox, Color.Red);
             spriteBatch.Draw(sprite.getTexture(), sprite.vector, null, sprite.getTint(), rotation, origin, 1f, SpriteEffects.None, 0f);
-            //HitBoxRot.TestDraw(spriteBatch, Content);
         }
     }
 }

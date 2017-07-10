@@ -35,12 +35,6 @@ namespace ConstantHeadshotsZ
             sprite.vector.X += direction.X * 11 * elapsedTime.Milliseconds / 17;
             sprite.vector.Y += direction.Y * 11 * elapsedTime.Milliseconds / 17;
             posZ += direction.Z * 11 * elapsedTime.Milliseconds / 17;
-            //direction -= new Vector3(0, 0, 0.001f) * elapsedTime.Milliseconds / 17;
-            if (posZ <= 0)
-            {
-                //direction.Z = 0;
-                //direction -= Vector3.Normalize(direction) * 0.1f * elapsedTime.Milliseconds / 17;
-            }
             direction = (direction / 3) * 2;
             timeUntilDissapearance -= elapsedTime;
             if (timeUntilDissapearance <= TimeSpan.Zero)

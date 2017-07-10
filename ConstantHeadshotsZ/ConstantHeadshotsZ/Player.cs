@@ -49,85 +49,15 @@ namespace ConstantHeadshotsZ
 
             if (collisionSolid != null)
             {
-                /*
-                if (sprite.getY() <= collisionSolid.sprite.getY() - collisionSolid.sprite.getTexture().Height / 2 && sprite.getY() >= collisionSolid.sprite.getY() + collisionSolid.sprite.getTexture().Height / 2)
+                if (oldX < x)
                 {
-                */
-                /*
-                int space = 0;
-                if (sprite.getY() < collisionSolid.sprite.getY())
-                {
-                    space = (int)((collisionSolid.sprite.getY() - collisionSolid.sprite.getTexture().Height / 2) - sprite.getY());
+                    sprite.setX(collisionSolid.sprite.getX() - collisionSolid.sprite.getTexture().Width / 2);
                 }
-                if (sprite.getY() > collisionSolid.sprite.getY())
+                else if (oldX > x)
                 {
-                    space = (int)((collisionSolid.sprite.getY() + collisionSolid.sprite.getTexture().Height / 2) - sprite.getY());
-                }
-                */
-                    if (oldX < x)
-                    {
-                        //int thingy = ((int)Math.Sqrt(Math.Pow(sprite.getTexture().Width / 2, 2) - Math.Pow(space, 2)));
-                        //sprite.setX(collisionSolid.sprite.getX() - thingy);
-                        sprite.setX(collisionSolid.sprite.getX() - collisionSolid.sprite.getTexture().Width / 2);
-                        //sprite.setX(sprite.vector.X = collisionSolid.sprite.vector.X - (float)Math.Sqrt((float)Math.Pow(collisionSolid.sprite.getTexture().Width, 2) - (float)Math.Pow(collisionSolid.sprite.vector.Y - sprite.vector.Y, 2)) /*+ sprite.getTexture().Width / 2*/);
-                    }
-                    else if (oldX > x)
-                    {
-                        sprite.setX(collisionSolid.sprite.getX() + collisionSolid.sprite.getTexture().Width * 1.5f);
-                        //sprite.setX(sprite.vector.X = collisionSolid.sprite.vector.X + collisionSolid.sprite.getTexture().Width + (float)Math.Sqrt((float)Math.Pow(collisionSolid.sprite.getTexture().Width, 2) - (float)Math.Pow(collisionSolid.sprite.vector.Y - sprite.vector.Y, 2)) /*- sprite.getTexture().Width / 2*/);
-                    }
-                /*
-                }
-                else if (sprite.getY() > collisionSolid.sprite.getY() - collisionSolid.sprite.getTexture().Height / 2)
-                {
-                    if (oldX < x)
-                    {
-                        sprite.setX(collisionSolid.sprite.getX() - ((float)Math.Sqrt(Math.Pow(sprite.getTexture().Width / 2, 2) - Math.Pow((collisionSolid.sprite.getY() - collisionSolid.sprite.getTexture().Height / 2) - (sprite.getX()), 2))));
-                    }
-                    else if (oldX > x)
-                    {
-                        sprite.setX(collisionSolid.sprite.getX() + collisionSolid.sprite.getTexture().Width * 1.5f);
-                    }
-                }
-                else if (sprite.getY() < collisionSolid.sprite.getY() + collisionSolid.sprite.getTexture().Height / 2)
-                {
-                    if (oldX < x)
-                    {
-                        sprite.setX(collisionSolid.sprite.getX() - collisionSolid.sprite.getTexture().Width / 2);
-                    }
-                    else if (oldX > x)
-                    {
-                        sprite.setX(collisionSolid.sprite.getX() + collisionSolid.sprite.getTexture().Width * 1.5f);
-                    }
-                }
-                 * */
-
-                //collisionSolid = level.playerCollidesWithSolidsPixel(this);
-            }
-
-            /*
-            if (level.playerCollidesWithSolidsPixel(this))
-            {
-                if (oldX > x)
-                {
-                    while (level.playerCollidesWithSolidsPixel(this))
-                    {
-                        sprite.setX(sprite.getX() + 1);
-                    }
-                }
-                else if (oldX < x)
-                {
-                    while (level.playerCollidesWithSolidsPixel(this))
-                    {
-                        sprite.setX(sprite.getX() - 1);
-                    }
-                }
-                else if (oldX == x)
-                {
-
+                    sprite.setX(collisionSolid.sprite.getX() + collisionSolid.sprite.getTexture().Width * 1.5f);
                 }
             }
-             * */
         }
 
         public void SetY(float y, Level level)
@@ -143,40 +73,12 @@ namespace ConstantHeadshotsZ
                 if (oldY < y)
                 {
                     sprite.setY(collisionSolid.sprite.getY() - collisionSolid.sprite.getTexture().Height / 2);
-                    //sprite.setY(sprite.vector.Y = collisionSolid.sprite.vector.Y + (float)Math.Sqrt((float)Math.Pow(collisionSolid.sprite.getTexture().Width, 2) - (float)Math.Pow(collisionSolid.sprite.vector.X - sprite.vector.X, 2)) - sprite.getTexture().Width / 2);
                 }
                 else if (oldY > y)
                 {
                     sprite.setY(collisionSolid.sprite.getY() + collisionSolid.sprite.getTexture().Height * 1.5f);
-                    //sprite.setY(sprite.vector.Y = collisionSolid.sprite.vector.Y + collisionSolid.sprite.getTexture().Height + (float)Math.Sqrt((float)Math.Pow(collisionSolid.sprite.getTexture().Width, 2) - (float)Math.Pow(collisionSolid.sprite.vector.X - sprite.vector.X, 2)) /*- sprite.getTexture().Width / 2*/);
-                }
-
-                //collisionSolid = level.playerCollidesWithSolidsPixel(this);
-            }
-
-            /*
-            if (level.playerCollidesWithSolidsPixel(this))
-            {
-                if (oldY > y)
-                {
-                    while (level.playerCollidesWithSolidsPixel(this))
-                    {
-                        sprite.setY(sprite.getY() + 1);
-                    }
-                }
-                else if (oldY < y)
-                {
-                    while (level.playerCollidesWithSolidsPixel(this))
-                    {
-                        sprite.setY(sprite.getY() - 1);
-                    }
-                }
-                else if (oldY == y)
-                {
-
                 }
             }
-            */
         }
 
         public void Draw(SpriteBatch spriteBatch, ContentManager Content)

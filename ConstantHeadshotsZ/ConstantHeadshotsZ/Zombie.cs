@@ -66,8 +66,6 @@ namespace ConstantHeadshotsZ
         {
             float playerLocationX = player.sprite.getX();
             float playerLocationY = player.sprite.getY();
-            //float zombieLocationX = sprite.getX() + sprite.getTexture().Width / 2;
-            //float zombieLocationY = sprite.getY() + sprite.getTexture().Height / 2;
             float zombieLocationX = sprite.getX();
             float zombieLocationY = sprite.getY();
             rotation = (float)Math.Atan2(zombieLocationY - playerLocationY, zombieLocationX - playerLocationX);
@@ -82,29 +80,12 @@ namespace ConstantHeadshotsZ
             {
                 rotation += 360;
             }
-            //SetX(zombieLocationX - sprite.getTexture().Width / 2, level);
-            //SetY(zombieLocationY - sprite.getTexture().Height / 2, level);
             SetX(zombieLocationX, level);
             SetY(zombieLocationY, level);
         }
 
         public void SetX(float x, Level level)
         {
-            //Vector2 oldVector = sprite.vector;
-            //sprite.setX(x);
-            //Sprite uncollidable = level.zombieCollidesWithUncollidablePixel(this, oldVector);
-            //if (uncollidable != null)
-            //{
-            //    Sprite collisionSolid = (Sprite)uncollidable;
-            //    if (oldVector.X > x)
-            //    {
-            //        sprite.setX(collisionSolid.getX() + collisionSolid.getTexture().Width * 1.5f);
-            //    }
-            //    else if (oldVector.X < x)
-            //    {
-            //        sprite.setX(collisionSolid.getX() - collisionSolid.getTexture().Width / 2);
-            //    }
-            //}
             Vector2 oldVector = sprite.vector;
             sprite.setX(x);
             int ihat = (int)(Math.Abs(oldVector.X - x) / (oldVector.X - x));
@@ -129,7 +110,6 @@ namespace ConstantHeadshotsZ
                 }
             }
 
-            //sprite.setX(x);
             Solid uncollidableS = level.zombieCollidesWithSolidsPixel(this, oldVector);
             while (uncollidableS != null)
             {
@@ -173,7 +153,6 @@ namespace ConstantHeadshotsZ
                 }
             }
 
-            //sprite.setY(y);
             Solid uncollidableS = level.zombieCollidesWithSolidsPixel(this, oldVector);
             while (uncollidableS != null)
             {

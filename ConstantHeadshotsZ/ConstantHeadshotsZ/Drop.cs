@@ -74,14 +74,12 @@ namespace ConstantHeadshotsZ
         public void Draw(SpriteBatch spriteBatch, ContentManager Content)
         {
             spriteBatch.Draw(sprite.getTexture(), new Vector2(sprite.getX() - sprite.getTexture().Width / 2, sprite.getY() - sprite.getTexture().Height / 2), sprite.getTint());
-            //sprite.Draw(spriteBatch);
         }
 
         public static Player.Weapon GetRandomWeapon()
         {
             Player.Weapon weapon;
             int randomNum = (int)(random.NextDouble() * 4);
-            //return Player.Weapon.LAZERSWORD;
             if (randomNum == 1)
             {
                 weapon = Player.Weapon.LAZERSWORD;
