@@ -16,7 +16,7 @@ namespace ConstantHeadshotsZ
         public bool player2CameraRotation = false;
         public float player1CameraRotationSpeed = 0.02f;
         public float player2CameraRotationSpeed = 0.02f;
-        public bool player13D = true;
+        public bool player13D = false;
         public bool player23D = false;
         public Color bldCol = Color.MediumSeaGreen;
         public int minLParticles = 100;
