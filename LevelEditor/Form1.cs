@@ -193,15 +193,14 @@ namespace LevelEditor
                 {
                     TextureBaseData texture = new TextureBaseData(new Bitmap(openFileDialog1.FileName), openFileDialog1.SafeFileName);
 
-                    TextureBaseData[] newTextures = new TextureBaseData[textures.Length + 1];
-                    for (int i = 0; i < textures.Length; i++)
-                    {
-                        newTextures[i] = textures[i];
-                    }
-                    newTextures[textures.Length] = texture;
-                    textures = newTextures;
+                    List<TextureBaseData> newTextures = new List<TextureBaseData>();
+                    newTextures.AddRange(textures);
+
+                    newTextures.Add(texture);
+
+                    textures = newTextures.ToArray();
                     UpdateTextureLists();
-                    comboBoxSolidTexture.SelectedIndex = textures.Length - 1;
+                    comboBoxSolidTexture.SelectedIndex = newTextures.FindIndex((x) => x == texture);
                 }
                 catch (Exception ex)
                 {
@@ -217,14 +216,19 @@ namespace LevelEditor
             comboBoxSolidTexture.Items.Clear();
             foreach (TextureBaseData texture in textures)
             {
-                comboBoxBackground.Items.Add(texture.Name);
-                comboBoxSolidTexture.Items.Add(texture.Name);
+                string name = texture.Name;
+                if (name.EndsWith(".png"))
+                {
+                    name = name.Remove(name.Length - 4);
+                }
+                comboBoxBackground.Items.Add(name);
+                comboBoxSolidTexture.Items.Add(name);
             }
         }
 
         public void UpdatePanelWidthAndHeight()
         {
-            
+            //do nothing
         }
 
         public void renderBoxOntoMap(Graphics g, Image pBox, System.Drawing.Point location)
