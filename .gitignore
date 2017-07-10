@@ -1,0 +1,5 @@
+*.suo
+*.Release.cachefile
+[Bb]in/
+obj/
+*.suo.orig
