@@ -13,6 +13,7 @@ namespace ConstantHeadshotsZ
         public Vector2 vector;
         private Color tint = Color.White;
         public Color[] textureData;
+        private Texture2D tintedTexture;
 
         public Sprite(Texture2D newTexture, Vector2 newVector)
         {
@@ -33,6 +34,7 @@ namespace ConstantHeadshotsZ
         {
             textureData = new Color[getTexture().Width * getTexture().Height];
             texture.GetData(textureData);
+            tintedTexture = AddTint(texture, tint);
         }
 
         public void setTexture(Texture2D newTexture)
@@ -44,6 +46,11 @@ namespace ConstantHeadshotsZ
         public Texture2D getTexture()
         {
             return texture;
+        }
+
+        public Texture2D getTintedTexture()
+        {
+            return tintedTexture;
         }
 
         public void setX(float x)
@@ -69,6 +76,7 @@ namespace ConstantHeadshotsZ
         public void setTint(Color newTint)
         {
             tint = newTint;
+            tintedTexture = AddTint(texture, tint);
         }
 
         public Color getTint()
@@ -167,5 +175,32 @@ namespace ConstantHeadshotsZ
             }
             return false;
         }
+
+        private Texture2D AddTint(Texture2D texture, Color tint)
+        {
+            Tuple<Texture2D, Color> key = new Tuple<Texture2D, Color>(texture, tint);
+            Texture2D ret;
+            if (tints.TryGetValue(key, out ret))
+            {
+                return ret;
+            }
+            Color[] data = new Color[texture.Width * texture.Height];
+            texture.GetData<Color>(data);
+            data = data.ToList<Color>().ConvertAll<Color>(imgCol => ApplyTint(imgCol, tint)).ToArray();
+            ret = new Texture2D(texture.GraphicsDevice, texture.Width, texture.Height);
+            ret.SetData<Color>(data);
+            tints.Add(key, ret);
+            return ret;
+        }
+
+        private static Color ApplyTint(Color original, Color tint)
+        {
+            return new Color(original.R / 255f * tint.R / 255f,
+                                original.G / 255f * tint.G / 255f,
+                                original.B / 255f * tint.B / 255f,
+                                original.A / 255f * tint.A / 255f);
+        }
+
+        public static Dictionary<Tuple<Texture2D, Color>, Texture2D> tints = new Dictionary<Tuple<Texture2D, Color>, Texture2D>();
     }
 }

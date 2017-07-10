@@ -748,6 +748,7 @@ namespace ConstantHeadshotsZ
                             if (options.player1CameraRotation)
                             {
                                 players[0].playerRotation += GamePad.GetState(PlayerIndex.One).ThumbSticks.Right.X * options.player1CameraRotationSpeed;
+                                players[0].camera.setPitch(players[0].camera.getPitch() + GamePad.GetState(PlayerIndex.One).ThumbSticks.Right.Y * options.player1CameraRotationSpeed);
                             }
                             else
                             {
@@ -974,6 +975,7 @@ namespace ConstantHeadshotsZ
                         if (options.player1CameraRotation)
                         {
                             players[0].playerRotation += GamePad.GetState(PlayerIndex.One).ThumbSticks.Right.X * options.player1CameraRotationSpeed;
+                            players[0].camera.setPitch(players[0].camera.getPitch() + GamePad.GetState(PlayerIndex.One).ThumbSticks.Right.Y * options.player1CameraRotationSpeed);
                         }
                         else
                         {
@@ -1011,7 +1013,8 @@ namespace ConstantHeadshotsZ
                         options.player1CameraRotation = !options.player1CameraRotation;
                         if (!options.player1CameraRotation)
                         {
-                            players[0].camera.setRotation(0);
+                            players[0].camera.setYaw(0);
+                            players[0].camera.setPitch(0);
                         }
                     }
                     if (oldMouse.ScrollWheelValue > Mouse.GetState().ScrollWheelValue)
@@ -1157,6 +1160,7 @@ namespace ConstantHeadshotsZ
                     if (options.player1CameraRotation)
                     {
                         players[0].playerRotation += distance.X * options.player1CameraRotationSpeed / 3;
+                        players[0].camera.setPitch(players[0].camera.getPitch() + distance.Y * options.player1CameraRotationSpeed / 3);
                     }
                     else
                     {
