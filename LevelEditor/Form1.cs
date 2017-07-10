@@ -576,6 +576,7 @@ namespace LevelEditor
         private void comboBoxSolidTexture_SelectedIndexChanged(object sender, EventArgs e)
         {
             selectedSolidTexture = true;
+            pictureBoxTexturePreview.Image = textures[comboBoxSolidTexture.SelectedIndex].Image;
         }
 
         private void comboBoxSpawnAcceleration_SelectedIndexChanged(object sender, EventArgs e)
