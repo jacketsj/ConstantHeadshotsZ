@@ -874,7 +874,7 @@ namespace ConstantHeadshotsZ
             return false;
         }
 
-        public void Draw(SpriteBatch spriteBatch, ContentManager Content, Player player, int playerNo)
+        public void Draw(SpriteBatch spriteBatch, ContentManager Content, Player player, int playerNo, Player[] players)
         {
             spriteBatch.Draw(background, new Rectangle(0, 0, levelWidth, levelHeight), backgroundColor);
 
@@ -898,11 +898,6 @@ namespace ConstantHeadshotsZ
                 spriteBatch.Draw(Content.Load<Texture2D>("ZombieSpawner"), spawner, Color.White);
             }
 
-            foreach (Particle particle in bloodParticles)
-            {
-                particle.Draw(spriteBatch, Content);
-            }
-
             if (zombies != null)
             {
                 for (int i = 0; i < zombies.Length; i++)
@@ -910,6 +905,23 @@ namespace ConstantHeadshotsZ
                     Zombie currentZombie = zombies[i];
                     currentZombie.Draw(spriteBatch);
                 }
+            }
+
+            foreach (Player p in players)
+            {
+                if (p.isDead)
+                {
+                    spriteBatch.Draw(Content.Load<Texture2D>("GraveStone"), p.sprite.vector - new Vector2(p.sprite.getTexture().Width / 2, p.sprite.getTexture().Height / 2), Color.White);
+                }
+                else
+                {
+                    p.Draw(spriteBatch, Content);
+                }
+            }
+
+            foreach (Particle particle in bloodParticles)
+            {
+                particle.Draw(spriteBatch, Content);
             }
 
             foreach (BasicWeaponBullet bullet in basicWeaponBullets)
@@ -996,7 +1008,7 @@ namespace ConstantHeadshotsZ
             return finalParts;
         }
 
-        public void DrawWithoutHealth(SpriteBatch spriteBatch, ContentManager Content)
+        public void DrawWithoutHealth(SpriteBatch spriteBatch, ContentManager Content, Player[] players)
         {
 
             spriteBatch.Draw(background, new Rectangle(0, 0, levelWidth, levelHeight), backgroundColor);
@@ -1021,15 +1033,27 @@ namespace ConstantHeadshotsZ
                 spriteBatch.Draw(Content.Load<Texture2D>("ZombieSpawner"), spawner, Color.White);
             }
 
-            foreach (Particle particle in bloodParticles)
+            foreach (Player p in players)
             {
-                particle.Draw(spriteBatch, Content);
+                if (p.isDead)
+                {
+                    spriteBatch.Draw(Content.Load<Texture2D>("GraveStone"), p.sprite.vector - new Vector2(p.sprite.getTexture().Width / 2, p.sprite.getTexture().Height / 2), Color.White);
+                }
+                else
+                {
+                    p.Draw(spriteBatch, Content);
+                }
             }
 
             for (int i = 0; i < zombies.Length; i++)
             {
                 Zombie currentZombie = zombies[i];
                 currentZombie.Draw(spriteBatch);
+            }
+
+            foreach (Particle particle in bloodParticles)
+            {
+                particle.Draw(spriteBatch, Content);
             }
 
             foreach (BasicWeaponBullet bullet in basicWeaponBullets)

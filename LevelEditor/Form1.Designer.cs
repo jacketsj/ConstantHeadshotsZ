@@ -402,7 +402,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "CHZ: Level Editor";
             this.tabControl1.ResumeLayout(false);
             this.tabPageLevel.ResumeLayout(false);
             this.panelSolids.ResumeLayout(false);

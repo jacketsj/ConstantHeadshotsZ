@@ -1336,8 +1336,7 @@ namespace ConstantHeadshotsZ
                 if (!options.player13D)
                 {
                     spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, players[0].camera.get_transformation(graphics.GraphicsDevice));
-                    currentLevel.DrawWithoutHealth(spriteBatch, Content);
-                    spriteBatch.Draw(Content.Load<Texture2D>("GraveStone"), players[0].sprite.vector - new Vector2(players[0].sprite.getTexture().Width / 2, players[0].sprite.getTexture().Height / 2), Color.White);
+                    currentLevel.DrawWithoutHealth(spriteBatch, Content, new Player[]{players[0]});
                     spriteBatch.End();
                 }
                 else
@@ -1395,8 +1394,7 @@ namespace ConstantHeadshotsZ
                 if (!options.player13D)
                 {
                     spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, players[0].camera.get_transformation(graphics.GraphicsDevice));
-                    currentLevel.Draw(spriteBatch, Content, players[0], 1);
-                    players[0].Draw(spriteBatch, Content);
+                    currentLevel.Draw(spriteBatch, Content, players[0], 1, new Player[] { players[0] });
                     spriteBatch.End();
                 }
                 else
@@ -1429,7 +1427,7 @@ namespace ConstantHeadshotsZ
                 if (!options.player13D)
                 {
                     spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, players[0].camera.get_transformation(graphics.GraphicsDevice));
-                    currentLevel.Draw(spriteBatch, Content, players[0], 1);
+                    currentLevel.Draw(spriteBatch, Content, players[0], 1, players);
                     spriteBatch.Draw(Content.Load<Texture2D>("GraveStone"), players[0].sprite.vector - new Vector2(players[0].sprite.getTexture().Width / 2, players[0].sprite.getTexture().Height / 2), Color.White);
                     spriteBatch.Draw(Content.Load<Texture2D>("GraveStone"), players[1].sprite.vector - new Vector2(players[1].sprite.getTexture().Width / 2, players[1].sprite.getTexture().Height / 2), Color.White);
                     spriteBatch.End();
@@ -1445,7 +1443,7 @@ namespace ConstantHeadshotsZ
                 if (!options.player23D)
                 {
                     spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, players[1].camera.get_transformation(graphics.GraphicsDevice));
-                    currentLevel.Draw(spriteBatch, Content, players[1], 2);
+                    currentLevel.Draw(spriteBatch, Content, players[1], 2, players);
                     spriteBatch.Draw(Content.Load<Texture2D>("GraveStone"), players[1].sprite.vector - new Vector2(players[1].sprite.getTexture().Width / 2, players[1].sprite.getTexture().Height / 2), Color.White);
                     spriteBatch.Draw(Content.Load<Texture2D>("GraveStone"), players[0].sprite.vector - new Vector2(players[0].sprite.getTexture().Width / 2, players[0].sprite.getTexture().Height / 2), Color.White);
                     spriteBatch.End();
@@ -1476,23 +1474,7 @@ namespace ConstantHeadshotsZ
                 if (!options.player13D)
                 {
                     spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, players[0].camera.get_transformation(graphics.GraphicsDevice));
-                    currentLevel.Draw(spriteBatch, Content, players[0], 1);
-                    if (!players[0].isDead)
-                    {
-                        players[0].Draw(spriteBatch, Content);
-                    }
-                    else
-                    {
-                        spriteBatch.Draw(Content.Load<Texture2D>("GraveStone"), players[0].sprite.vector - new Vector2(players[0].sprite.getTexture().Width / 2, players[0].sprite.getTexture().Height / 2), Color.White);
-                    }
-                    if (!players[1].isDead)
-                    {
-                        players[1].Draw(spriteBatch, Content);
-                    }
-                    else
-                    {
-                        spriteBatch.Draw(Content.Load<Texture2D>("GraveStone"), players[1].sprite.vector - new Vector2(players[1].sprite.getTexture().Width / 2, players[1].sprite.getTexture().Height / 2), Color.White);
-                    }
+                    currentLevel.Draw(spriteBatch, Content, players[0], 1, players);
                     spriteBatch.End();
                 }
                 else
@@ -1506,23 +1488,7 @@ namespace ConstantHeadshotsZ
                 if (!options.player23D)
                 {
                     spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, players[1].camera.get_transformation(graphics.GraphicsDevice));
-                    currentLevel.Draw(spriteBatch, Content, players[1], 2);
-                    if (!players[1].isDead)
-                    {
-                        players[1].Draw(spriteBatch, Content);
-                    }
-                    else
-                    {
-                        spriteBatch.Draw(Content.Load<Texture2D>("GraveStone"), players[1].sprite.vector - new Vector2(players[1].sprite.getTexture().Width / 2, players[1].sprite.getTexture().Height / 2), Color.White);
-                    }
-                    if (!players[0].isDead)
-                    {
-                        players[0].Draw(spriteBatch, Content);
-                    }
-                    else
-                    {
-                        spriteBatch.Draw(Content.Load<Texture2D>("GraveStone"), players[0].sprite.vector - new Vector2(players[0].sprite.getTexture().Width / 2, players[0].sprite.getTexture().Height / 2), Color.White);
-                    }
+                    currentLevel.Draw(spriteBatch, Content, players[1], 2, players);
                     spriteBatch.End();
                 }
                 else
@@ -1550,23 +1516,7 @@ namespace ConstantHeadshotsZ
                 if (!options.player13D)
                 {
                     spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, players[0].camera.get_transformation(graphics.GraphicsDevice));
-                    currentLevel.Draw(spriteBatch, Content, players[0], 1);
-                    if (!players[0].isDead)
-                    {
-                        players[0].Draw(spriteBatch, Content);
-                    }
-                    else
-                    {
-                        spriteBatch.Draw(Content.Load<Texture2D>("GraveStone"), players[0].sprite.vector - new Vector2(players[0].sprite.getTexture().Width / 2, players[0].sprite.getTexture().Height / 2), Color.White);
-                    }
-                    if (!players[1].isDead)
-                    {
-                        players[1].Draw(spriteBatch, Content);
-                    }
-                    else
-                    {
-                        spriteBatch.Draw(Content.Load<Texture2D>("GraveStone"), players[1].sprite.vector - new Vector2(players[1].sprite.getTexture().Width / 2, players[1].sprite.getTexture().Height / 2), Color.White);
-                    }
+                    currentLevel.Draw(spriteBatch, Content, players[0], 1, players);
                     spriteBatch.End();
                 }
                 else
@@ -1590,23 +1540,7 @@ namespace ConstantHeadshotsZ
                 if (!options.player23D)
                 {
                     spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, players[1].camera.get_transformation(graphics.GraphicsDevice));
-                    currentLevel.Draw(spriteBatch, Content, players[1], 2);
-                    if (!players[1].isDead)
-                    {
-                        players[1].Draw(spriteBatch, Content);
-                    }
-                    else
-                    {
-                        spriteBatch.Draw(Content.Load<Texture2D>("GraveStone"), players[1].sprite.vector - new Vector2(players[1].sprite.getTexture().Width / 2, players[1].sprite.getTexture().Height / 2), Color.White);
-                    }
-                    if (!players[0].isDead)
-                    {
-                        players[0].Draw(spriteBatch, Content);
-                    }
-                    else
-                    {
-                        spriteBatch.Draw(Content.Load<Texture2D>("GraveStone"), players[0].sprite.vector - new Vector2(players[0].sprite.getTexture().Width / 2, players[0].sprite.getTexture().Height / 2), Color.White);
-                    }
+                    currentLevel.Draw(spriteBatch, Content, players[1], 2, players);
                     spriteBatch.End();
                 }
                 else
@@ -1639,8 +1573,7 @@ namespace ConstantHeadshotsZ
                 if (!options.player13D)
                 {
                     spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, players[0].camera.get_transformation(graphics.GraphicsDevice));
-                    currentLevel.Draw(spriteBatch, Content, players[0], 1);
-                    players[0].Draw(spriteBatch, Content);
+                    currentLevel.Draw(spriteBatch, Content, players[0], 1, new Player[] { players[0] });
                     spriteBatch.End();
                 }
                 else
