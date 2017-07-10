@@ -163,6 +163,8 @@ namespace ConstantHeadshotsZ
                 if (CollidesWithZombie(level.zombies[i], collisionRec))
                 {
                     level.zombies[i].health -= 34;
+                    level.bloodParticles = level.GenerateBurst(level.bloodParticles, CHZ.options.bldCol, new Vector3(level.zombies[i].sprite.vector, 0), Content, 60, 360, 600, 1100, 0.1f, 2.7f);
+                    /*
                     Random random = new Random();
                     int amountOfNewParticles = random.Next(230, 600);
                     int amountOfOldParticles = level.bloodParticles.Length;
@@ -173,14 +175,28 @@ namespace ConstantHeadshotsZ
                     }
                     for (int currentAmountOfNewParticles = 0; currentAmountOfNewParticles < amountOfNewParticles; currentAmountOfNewParticles++)
                     {
+                        float randomDirectionRotation = rotation + (float)random.NextDouble() * MathHelper.PiOver4 * 10 / 4 - MathHelper.PiOver4 * 5 / 4;
+                        float randomDirectionRotation2 = rotation + (float)random.NextDouble() * MathHelper.PiOver4 * 10 / 4 - MathHelper.PiOver4 * 5 / 4;
+                        float directionX = (float)(Math.Cos(randomDirectionRotation));
+                        float directionY = (float)(Math.Sin(randomDirectionRotation));
+                        float directionZ = (float)Math.Abs(Math.Cos(randomDirectionRotation2));
+                        //float randomDirectionChange = (float)random.NextDouble() * (2.7f - 0.1f) + 0.1f;
+                        //Vector3 vectorDirection = new Vector3(directionX + ((float)Math.Cos(currentAmountOfNewParticles * amountOfNewParticles / MathHelper.TwoPi)),
+                        //                                        directionY + ((float)Math.Sin(currentAmountOfNewParticles * amountOfNewParticles / MathHelper.TwoPi)),
+                        //                                        );
+                        Vector3 vectorDirection = new Vector3(directionX, directionY, directionZ);
+                        newParticles[amountOfOldParticles + currentAmountOfNewParticles] = new Particle(CHZ.options.bldCol, level.zombies[i].sprite.vector, vectorDirection, Content, random.Next(60, 360));
+                        /*
                         float randomDirectionRotation = rotation + random.Next(-55, 55);
                         int directionY = (int)(Math.Sin(randomDirectionRotation));
                         int directionX = (int)(Math.Cos(randomDirectionRotation));
                         float randomDirectionChange = (float)random.NextDouble() * (2.7f - 0.1f) + 0.1f;
                         Vector2 vectorDirection = new Vector2(randomDirectionChange * ((float)Math.Cos(currentAmountOfNewParticles * amountOfNewParticles / 360)), randomDirectionChange * ((float)Math.Sin(currentAmountOfNewParticles * amountOfNewParticles / 360)));
                         newParticles[amountOfOldParticles + currentAmountOfNewParticles] = new Particle(CHZ.options.bldCol, level.zombies[i].sprite.vector, vectorDirection, Content, random.Next(60, 360));
+                         * 
                     }
                     level.bloodParticles = newParticles;
+                    */
                     /*
                     List<Particle> newBloodParticles = new List<Particle>();
                     foreach (Particle particle in level.bloodParticles)

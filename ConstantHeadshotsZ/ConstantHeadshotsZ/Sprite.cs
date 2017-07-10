@@ -50,6 +50,10 @@ namespace ConstantHeadshotsZ
 
         public Texture2D getTintedTexture()
         {
+            if (tintedTexture == null)
+            {
+                UpdateTextureData();
+            }
             return tintedTexture;
         }
 
@@ -176,7 +180,7 @@ namespace ConstantHeadshotsZ
             return false;
         }
 
-        private Texture2D AddTint(Texture2D texture, Color tint)
+        public static Texture2D AddTint(Texture2D texture, Color tint)
         {
             Tuple<Texture2D, Color> key = new Tuple<Texture2D, Color>(texture, tint);
             Texture2D ret;

@@ -817,7 +817,7 @@ namespace ConstantHeadshotsZ
                         }
                     }
                 }
-                currentLevel.Update2Player(players, Content);
+                currentLevel.Update2Player(players, Content, gameTime.ElapsedGameTime);
                 if (players[0].health <= 0)
                 {
                     players[0].isDead = true;
@@ -1185,7 +1185,7 @@ namespace ConstantHeadshotsZ
                         Mouse.SetPosition(screenWidth / 2, screenHeight / 2);
                     }
                 }
-                currentLevel.Update(players[0], Content);
+                currentLevel.Update(players[0], Content, gameTime.ElapsedGameTime);
                 if (players[0].health <= 0)
                 {
                     CurrentGameState = GameState.LOSE;

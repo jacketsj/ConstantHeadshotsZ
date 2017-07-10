@@ -41,7 +41,7 @@ namespace ConstantHeadshotsZ
 
             Matrix groundTransform = Matrix.CreateScale(1, -1, 1) * Matrix.CreateRotationX(MathHelper.Pi);// *Matrix.CreateRotationY(MathHelper.Pi) * Matrix.CreateRotationZ(MathHelper.Pi);// *Matrix.CreateRotationY(MathHelper.Pi);//Matrix.CreateScale(level.levelWidth, level.levelHeight, 0);// *Matrix.CreateRotationX(MathHelper.PiOver2);// *Matrix.CreateRotationX(MathHelper.PiOver2);
 
-            quadDrawer.DrawQuad(level.background, 1, groundTransform * Matrix.CreateScale((float)level.levelWidth / 2, (float)level.levelHeight / 2, 0)
+            quadDrawer.DrawQuad(Sprite.AddTint(level.background, level.backgroundColor), 1, groundTransform * Matrix.CreateScale((float)level.levelWidth / 2, (float)level.levelHeight / 2, 0)
                                             * Matrix.CreateTranslation((float)level.levelWidth / 2, (float)level.levelHeight / 2, 0), view, projection);
             //quadDrawer.DrawQuad(level.background, 1, Matrix.CreateScale(level.levelWidth, level.levelHeight, 0), view, projection);
 
@@ -74,15 +74,6 @@ namespace ConstantHeadshotsZ
                 _3DSprite sprite = new _3DSprite();
                 sprite.Texture = Content.Load<Texture2D>("ZombieSpawner");
                 sprite.Position = new Vector3(spawner.X, spawner.Y, 0);
-                sprite.Draw(quadDrawer, cameraPosition, view, projection, groundTransform);
-            }
-
-            foreach (Particle particle in level.bloodParticles)
-            {
-                _3DSprite sprite = new _3DSprite();
-                //sprite.Texture = AddTint(particle.sprite.getTexture(), particle.sprite.getTint());
-                sprite.Texture = particle.sprite.getTintedTexture();
-                sprite.Position = new Vector3(particle.sprite.vector.X, particle.sprite.vector.Y, 0);
                 sprite.Draw(quadDrawer, cameraPosition, view, projection, groundTransform);
             }
 
@@ -147,6 +138,15 @@ namespace ConstantHeadshotsZ
                 _3DSprite sprite = new _3DSprite();
                 sprite.Texture = solid.sprite.getTexture();
                 sprite.Position = new Vector3(solid.sprite.vector.X, solid.sprite.vector.Y, 0);
+                sprite.Draw(quadDrawer, cameraPosition, view, projection, groundTransform);
+            }
+
+            foreach (Particle particle in level.bloodParticles)
+            {
+                _3DSprite sprite = new _3DSprite();
+                //sprite.Texture = AddTint(particle.sprite.getTexture(), particle.sprite.getTint());
+                sprite.Texture = particle.sprite.getTintedTexture();
+                sprite.Position = new Vector3(particle.sprite.vector.X, particle.sprite.vector.Y, particle.posZ * 0.003f);
                 sprite.Draw(quadDrawer, cameraPosition, view, projection, groundTransform);
             }
         }

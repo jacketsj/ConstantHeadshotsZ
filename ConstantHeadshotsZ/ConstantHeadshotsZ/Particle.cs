@@ -11,22 +11,33 @@ namespace ConstantHeadshotsZ
     public class Particle
     {
         public Sprite sprite;
-        public Vector2 direction;
-        public int timeUntilDissapearance;
+        public Vector3 direction;
+        public float posZ = 0;
+        public TimeSpan timeUntilDissapearance;
 
-        public Particle(Color color, Vector2 position, Vector2 newDirection, ContentManager Content, int timeUntilDissapearance)
+        public Particle(Color color, Vector2 position, Vector3 newDirection, ContentManager Content, int timeUntilDissapearance)
         {
             sprite = new Sprite(Content.Load<Texture2D>("Particle"), position, color);
-            this.timeUntilDissapearance = timeUntilDissapearance;
+            this.timeUntilDissapearance = new TimeSpan(0, 0, 0, 0, timeUntilDissapearance * 16);
             this.direction = newDirection;
         }
 
-        public bool Update()
+        public Particle(Color color, Vector3 position, Vector3 newDirection, ContentManager Content, int timeUntilDissapearance)
         {
-            sprite.vector += direction * 11;
+            sprite = new Sprite(Content.Load<Texture2D>("Particle"), new Vector2(position.X, position.Y), color);
+            posZ = position.Z;
+            this.timeUntilDissapearance = new TimeSpan(0, 0, 0, 0, timeUntilDissapearance * 16);
+            this.direction = newDirection;
+        }
+
+        public bool Update(TimeSpan elapsedTime)
+        {
+            sprite.vector.X += direction.X * 11 * elapsedTime.Milliseconds / 17;
+            sprite.vector.Y += direction.Y * 11 * elapsedTime.Milliseconds / 17;
+            posZ += direction.Z * 11 * elapsedTime.Milliseconds * 17;
             direction = (direction / 3) * 2;
-            timeUntilDissapearance -= 1;
-            if (timeUntilDissapearance <= 0)
+            timeUntilDissapearance -= elapsedTime;
+            if (timeUntilDissapearance <= TimeSpan.Zero)
             {
                 return true;
             }
