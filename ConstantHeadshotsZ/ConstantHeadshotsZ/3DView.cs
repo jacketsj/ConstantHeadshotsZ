@@ -10,7 +10,7 @@ namespace ConstantHeadshotsZ
 {
     public class _3DView
     {
-        Vector3 cameraPosition = new Vector3(0, 0, 200);
+        Vector3 cameraPosition = new Vector3(0, 0, 500);
         Vector3 cameraForward = new Vector3(0, 0, -1);
         Vector3 cameraUp = Vector3.Up;
         QuadDrawer quadDrawer;
@@ -22,7 +22,7 @@ namespace ConstantHeadshotsZ
 
         public void Draw(GraphicsDevice device, Level level, Player[] players, bool inTwoPlayer, int playerNo, ContentManager Content, Options options)
         {
-            device.Clear(Color.CornflowerBlue);
+            device.Clear(Color.BlueViolet);
 
             device.BlendState = BlendState.AlphaBlend;
 
@@ -37,7 +37,8 @@ namespace ConstantHeadshotsZ
             }
             Matrix view = players[playerNo - 1].camera.get_transformation_3d(device) * Matrix.CreateLookAt(cameraPosition, cameraPosition + cameraForward, cameraUp);//Matrix.CreateScale(1, -1, 1) * 
 
-            Matrix projection = Matrix.CreatePerspectiveFieldOfView((float)Math.PI * 48 / 65, device.Viewport.AspectRatio, 0.001f, 2000);//Matrix.CreatePerspectiveFieldOfView(0.7853982f, device.Viewport.AspectRatio, 1, 2);
+            Matrix projection = Matrix.CreatePerspectiveFieldOfView((float)Math.Atan(Math.Max(options.screenWidth, options.screenHeight)/cameraPosition.Z)*1.07f/*(float)Math.PI * 22.5f / 65*/,
+                                                                device.Viewport.AspectRatio, 0.001f, 3000);//Matrix.CreatePerspectiveFieldOfView(0.7853982f, device.Viewport.AspectRatio, 1, 2);
 
             Matrix groundTransform = Matrix.CreateScale(1, -1, 1) * Matrix.CreateRotationX(MathHelper.Pi);// *Matrix.CreateRotationY(MathHelper.Pi) * Matrix.CreateRotationZ(MathHelper.Pi);// *Matrix.CreateRotationY(MathHelper.Pi);//Matrix.CreateScale(level.levelWidth, level.levelHeight, 0);// *Matrix.CreateRotationX(MathHelper.PiOver2);// *Matrix.CreateRotationX(MathHelper.PiOver2);
 
@@ -146,7 +147,7 @@ namespace ConstantHeadshotsZ
                 _3DSprite sprite = new _3DSprite();
                 //sprite.Texture = AddTint(particle.sprite.getTexture(), particle.sprite.getTint());
                 sprite.Texture = particle.sprite.getTintedTexture();
-                sprite.Position = new Vector3(particle.sprite.vector.X, particle.sprite.vector.Y, particle.posZ * 0.003f);
+                sprite.Position = new Vector3(particle.sprite.vector.X, particle.sprite.vector.Y, particle.posZ);
                 sprite.Draw(quadDrawer, cameraPosition, view, projection, groundTransform);
             }
         }

@@ -163,7 +163,8 @@ namespace ConstantHeadshotsZ
                 if (CollidesWithZombie(level.zombies[i], collisionRec))
                 {
                     level.zombies[i].health -= 34;
-                    level.bloodParticles = level.GenerateBurst(level.bloodParticles, CHZ.options.bldCol, new Vector3(level.zombies[i].sprite.vector, 0), Content, 60, 360, 600, 1100, 0.1f, 2.7f);
+                    level.bloodParticles = level.GenerateBurst(level.bloodParticles, CHZ.options.bldCol, new Vector3(level.zombies[i].sprite.vector, 0), Content, 60, 360, 
+                                                                    Options.GetInstance().minLParticles, Options.GetInstance().maxLParticles, 0.1f, 2.7f);
                     /*
                     Random random = new Random();
                     int amountOfNewParticles = random.Next(230, 600);

@@ -91,7 +91,10 @@ namespace ConstantHeadshotsZ
 
         public void setPitch(float newPitch)
         {
-            pitch = newPitch;
+            if (Options.GetInstance().enablePitchChange)
+            {
+                pitch = newPitch;
+            }
         }
 
         public float getRotation()
@@ -112,29 +115,32 @@ namespace ConstantHeadshotsZ
         public void setPosition(Vector2 newPosition, Level level, Vector2 screenWidthAndHeight)
         {
             position = newPosition;
-            if (position.X - screenWidthAndHeight.X / 2 < 0)
+            if (!Options.GetInstance().player13D)
             {
-                position.X = screenWidthAndHeight.X / 2;
-            }
-            if (position.Y - screenWidthAndHeight.Y / 2 < 0)
-            {
-                position.Y = screenWidthAndHeight.Y / 2;
-            }
-            if (position.X + screenWidthAndHeight.X / 2 > level.levelWidth)
-            {
-                position.X = level.levelWidth - screenWidthAndHeight.X / 2;
-            }
-            if (position.Y + screenWidthAndHeight.Y / 2 > level.levelHeight)
-            {
-                position.Y = level.levelHeight - screenWidthAndHeight.Y / 2;
-            }
-            if (level.levelWidth < screenWidthAndHeight.X)
-            {
-                position.X = level.levelWidth / 2;
-            }
-            if (level.levelHeight < screenWidthAndHeight.Y)
-            {
-                position.Y = level.levelHeight / 2;
+                if (position.X - screenWidthAndHeight.X / 2 < 0)
+                {
+                    position.X = screenWidthAndHeight.X / 2;
+                }
+                if (position.Y - screenWidthAndHeight.Y / 2 < 0)
+                {
+                    position.Y = screenWidthAndHeight.Y / 2;
+                }
+                if (position.X + screenWidthAndHeight.X / 2 > level.levelWidth)
+                {
+                    position.X = level.levelWidth - screenWidthAndHeight.X / 2;
+                }
+                if (position.Y + screenWidthAndHeight.Y / 2 > level.levelHeight)
+                {
+                    position.Y = level.levelHeight - screenWidthAndHeight.Y / 2;
+                }
+                if (level.levelWidth < screenWidthAndHeight.X)
+                {
+                    position.X = level.levelWidth / 2;
+                }
+                if (level.levelHeight < screenWidthAndHeight.Y)
+                {
+                    position.Y = level.levelHeight / 2;
+                }
             }
         }
 
@@ -192,7 +198,10 @@ namespace ConstantHeadshotsZ
                 SetPositionRegardless(new Vector2(followedSprite.getX(), followedSprite.getY()));
             }
             setYaw(-newYaw);
-            setPitch(-newPitch);
+            if (Options.GetInstance().enablePitchChange)
+            {
+                setPitch(-newPitch);
+            }
         }
 
         public void Update2Player(Level level, Vector2 screenWidthAndHeight)

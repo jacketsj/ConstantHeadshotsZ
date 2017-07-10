@@ -57,8 +57,10 @@ namespace ConstantHeadshotsZ
                     {
                         zombie.health -= 100;
 
-                        level.bloodParticles = level.GenerateBurst(level.bloodParticles, CHZ.options.bldCol, new Vector3(zombie.sprite.vector, 0), Content, 20, 60, 600, 1100, 0.1f, 5f,
-                                                player.playerRotation - MathHelper.PiOver4 * 4 / 5 - MathHelper.PiOver2, player.playerRotation + MathHelper.PiOver4 * 4 / 5 - MathHelper.PiOver2, 0, MathHelper.PiOver4 * 3 / 5);
+                        level.bloodParticles = level.GenerateBurst(level.bloodParticles, CHZ.options.bldCol, new Vector3(zombie.sprite.vector, 0), Content, 20, 60,
+                                                Options.GetInstance().minLParticles, Options.GetInstance().maxLParticles, 0.1f, 5f,
+                                                player.playerRotation - MathHelper.PiOver4 * 4 / 5 - MathHelper.PiOver2, player.playerRotation + MathHelper.PiOver4 * 4 / 5 - MathHelper.PiOver2,
+                                                MathHelper.PiOver2, MathHelper.PiOver2 - MathHelper.PiOver4 * 3 / 5);
                         /*
                         Random random = new Random();
                         int amountOfNewParticles = random.Next(230, 600);

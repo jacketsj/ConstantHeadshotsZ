@@ -1181,21 +1181,22 @@ namespace ConstantHeadshotsZ
 
         public Particle[] GenerateBurst(Particle[] parts, Color color, Vector3 position, ContentManager Content, int minLife, int maxLife, int minNoParticles, int maxNoParticles, float minVel, float maxVel)
         {
-            return GenerateBurst(parts, color, position, Content, minLife, maxLife, minNoParticles, maxNoParticles, minVel, maxVel, 0, MathHelper.TwoPi, 0, MathHelper.Pi);
+            return GenerateBurst(parts, color, position, Content, minLife, maxLife, minNoParticles, maxNoParticles, minVel, maxVel, 0, MathHelper.TwoPi, 0, MathHelper.PiOver2);
         }
 
         public Particle[] GenerateBurst(Particle[] parts, Color color, Vector3 position, ContentManager Content, int minLife, int maxLife, int minNoParticles, int maxNoParticles,
                                                                                 float minVel, float maxVel, float minAngle, float maxAngle, float minPitch, float maxPitch)
         {
-            minPitch = MathHelper.PiOver2 - minPitch;
-            maxPitch = MathHelper.PiOver2 - maxPitch;
+            //minPitch = MathHelper.PiOver2 - minPitch;
+            //maxPitch = MathHelper.PiOver2 - maxPitch;
 
             int noParticles = random.Next(maxNoParticles - minNoParticles) + minNoParticles;
             Particle[] finalParts = new Particle[parts.Length + noParticles];
             for (int i = 0; i < noParticles; ++i)
             {
-                float vel = (float)(random.NextDouble() * (Math.Sqrt(maxVel) - Math.Sqrt(minVel)) + Math.Sqrt(minVel));
-                vel *= vel;
+                //float vel = (float)(random.NextDouble() * (Math.Sqrt(maxVel) - Math.Sqrt(minVel)) + Math.Sqrt(minVel));
+                float vel = (float)(random.NextDouble() * (maxVel - minVel) + minVel);
+                //vel *= vel;
                 float angle = (float)random.NextDouble() * (maxAngle - minAngle) + minAngle;
 
                 //get a uniform spherical distribution
