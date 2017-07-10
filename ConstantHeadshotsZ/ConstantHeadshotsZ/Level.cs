@@ -145,7 +145,7 @@ namespace ConstantHeadshotsZ
             //drops[0] = new Drop(Player.Weapon.BASIC, new Sprite(Content.Load<Texture2D>("BasicWeaponDrop"), new Vector2(600, 600)), Vector2.Zero, 1000);
         }
 
-        public void Update2Player(Player[] players, ContentManager Content)
+        public void Update2Player(Player[] players, ContentManager Content, TimeSpan elapsedTime)
         {
             if (drops.Length != 0)
             {
@@ -184,7 +184,7 @@ namespace ConstantHeadshotsZ
                 int numberOfDeletes = 0;
                 for (int i = 0; i < bloodParticles.Length; i++)
                 {
-                    if (bloodParticles[i].Update())
+                    if (bloodParticles[i].Update(elapsedTime))
                     {
                         numberOfDeletes += 1;
                         deleteThisParticle[i] = true;
@@ -384,7 +384,7 @@ namespace ConstantHeadshotsZ
             }
         }
 
-        public void Update(Player player, ContentManager Content)
+        public void Update(Player player, ContentManager Content, TimeSpan elapsedTime)
         {
             if (drops.Length != 0)
             {
@@ -423,7 +423,7 @@ namespace ConstantHeadshotsZ
                 int numberOfDeletes = 0;
                 for (int i = 0; i < bloodParticles.Length; i++)
                 {
-                    if (bloodParticles[i].Update())
+                    if (bloodParticles[i].Update(elapsedTime))
                     {
                         numberOfDeletes += 1;
                         deleteThisParticle[i] = true;
@@ -1177,6 +1177,53 @@ namespace ConstantHeadshotsZ
             {
                 solid.sprite.Draw(spriteBatch);
             }
+        }
+
+        public Particle[] GenerateBurst(Particle[] parts, Color color, Vector3 position, ContentManager Content, int minLife, int maxLife, int minNoParticles, int maxNoParticles, float minVel, float maxVel)
+        {
+            return GenerateBurst(parts, color, position, Content, minLife, maxLife, minNoParticles, maxNoParticles, minVel, maxVel, 0, MathHelper.TwoPi, 0, MathHelper.PiOver2);
+        }
+
+        public Particle[] GenerateBurst(Particle[] parts, Color color, Vector3 position, ContentManager Content, int minLife, int maxLife, int minNoParticles, int maxNoParticles,
+                                                                                float minVel, float maxVel, float minAngle, float maxAngle, float minPitch, float maxPitch)
+        {
+            //minPitch = MathHelper.PiOver2 - minPitch;
+            //maxPitch = MathHelper.PiOver2 - maxPitch;
+
+            int noParticles = random.Next(maxNoParticles - minNoParticles) + minNoParticles;
+            Particle[] finalParts = new Particle[parts.Length + noParticles];
+            for (int i = 0; i < noParticles; ++i)
+            {
+                //float vel = (float)(random.NextDouble() * (Math.Sqrt(maxVel) - Math.Sqrt(minVel)) + Math.Sqrt(minVel));
+                float vel = (float)(random.NextDouble() * (maxVel - minVel) + minVel);
+                //vel *= vel;
+                float angle = (float)random.NextDouble() * (maxAngle - minAngle) + minAngle;
+
+                //get a uniform spherical distribution
+                float pitchHelper = (float)(random.NextDouble() * (Math.Cos(maxPitch) - Math.Cos(minPitch)) + Math.Cos(minPitch));//(float)random.NextDouble()*2-1;
+                float pitch = (float)Math.Acos(pitchHelper);
+                //float pitch = (float)random.NextDouble() * (maxPitch - minPitch) + minPitch;
+                int life = random.Next(maxLife - minLife) + minLife;
+                Vector3 vVel = vel * (new Vector3((float)Math.Cos(angle) * (float)Math.Sin(pitch), (float)Math.Sin(angle) * (float)Math.Sin(pitch), (float)Math.Cos(pitch)));
+                if (angle > MathHelper.PiOver2 && angle < 3 * MathHelper.PiOver2)
+                {
+                    //vVel.X *= -1;
+                }
+                if (angle > MathHelper.Pi && angle < MathHelper.TwoPi)
+                {
+                    //vVel.Y *= -1;
+                }
+                if (pitch > MathHelper.Pi && pitch < MathHelper.TwoPi)
+                {
+                    //vVel.Z *= -1;
+                }
+                finalParts[i + parts.Length] = new Particle(color, position, vVel, Content, life);
+            }
+            for (int i = 0; i < parts.Length; ++i)
+            {
+                finalParts[i] = parts[i];
+            }
+            return finalParts;
         }
 
         public void DrawWithoutHealth(SpriteBatch spriteBatch, ContentManager Content)

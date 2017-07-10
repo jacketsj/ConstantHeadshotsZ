@@ -134,38 +134,6 @@
     <Compile Include="Zombie.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\2PlayerSplitscreenButton.png" />
-    <Content Include="Content\AButton.png" />
-    <Content Include="Content\BackButton.png" />
-    <Content Include="Content\Ball.png" />
-    <Content Include="Content\BasicWeapon.png" />
-    <Content Include="Content\BasicWeaponBullet.png" />
-    <Content Include="Content\BasicWeaponBulletSmall.png" />
-    <Content Include="Content\BButton.png" />
-    <Content Include="Content\Block.png" />
-    <Content Include="Content\ConstantHeadshotsZTitlePage.png" />
-    <Content Include="Content\ControllerFalse.png" />
-    <Content Include="Content\ControllerTrue.png" />
-    <Content Include="Content\Crosshair.png" />
-    <Content Include="Content\GraveStone.png" />
-    <Content Include="Content\jacketsj.png" />
-    <Content Include="Content\jacketsjpresents.png" />
-    <Content Include="Content\LoseBackground.png" />
-    <Content Include="Content\MainMenuButton.png" />
-    <Content Include="Content\OptionsButton.png" />
-    <Content Include="Content\Particle.png" />
-    <Content Include="Content\PauseBackground.png" />
-    <Content Include="Content\PlayButton.png" />
-    <Content Include="Content\Player.png" />
-    <Content Include="Content\QuitButton.png" />
-    <Content Include="Content\ResumeButton.png" />
-    <Content Include="Content\TestLevelHeight.png" />
-    <Content Include="Content\TestLevelWidth.png" />
-    <Content Include="Content\White.png" />
-    <Content Include="Content\XButton.png" />
-    <Content Include="Content\YButton.png" />
-    <Content Include="Content\Zombies title page.png" />
-    <Content Include="Content\ZombieSpawner.png" />
     <Content Include="Player.ico" />
     <Content Include="Player.png" />
     <Content Include="Todo.txt" />
@@ -209,9 +177,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup />
-  <ItemGroup>
-    <None Include="Content\basic.spritefont" />
-  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
   <!--

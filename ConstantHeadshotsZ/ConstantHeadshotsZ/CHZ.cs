@@ -28,10 +28,6 @@ namespace ConstantHeadshotsZ
         Button button2PlayerSplitscreen;
         Button buttonController;
         Button buttonLoadLevel;
-        int screenWidth = 800;
-        int windowedScreenWidth = 800;
-        int screenHeight = 600;
-        int windowedScreenHeight = 600;
         Player[] players;
         Level currentLevel;
         public static Options options;
@@ -112,7 +108,7 @@ namespace ConstantHeadshotsZ
 
             players = new Player[2];
 
-            options = new Options();
+            options = Options.GetInstance();
 
             currentLevel = new Level(new Solid[4], new Solid[0], new Solid[0], new Vector2[4], Content, Color.LightGreen, new Vector2(1000, 1000), new Vector2(150f, 150f));
             currentLevel.solids[0] = new Solid(new Sprite(Content.Load<Texture2D>("Block"), new Vector2(10, 7)));
@@ -141,8 +137,8 @@ namespace ConstantHeadshotsZ
             // Create a new SpriteBatch to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-             graphics.PreferredBackBufferHeight = screenHeight;
-            graphics.PreferredBackBufferWidth = screenWidth;
+            graphics.PreferredBackBufferHeight = options.screenHeight;
+            graphics.PreferredBackBufferWidth = options.screenWidth;
             graphics.ApplyChanges();
 
             currentLevel.ResetLevel();
@@ -160,30 +156,30 @@ namespace ConstantHeadshotsZ
         public void UpdateButtons()
         {
             buttonPlay = new Button(new Sprite(Content.Load<Texture2D>("PlayButton"), new Vector2()));
-            buttonPlay.sprite.vector = new Vector2(((screenWidth / 2) - (buttonPlay.sprite.getTexture().Width / 2)), (screenHeight / 3 + (screenHeight / 6)));
+            buttonPlay.sprite.vector = new Vector2(((options.screenWidth / 2) - (buttonPlay.sprite.getTexture().Width / 2)), (options.screenHeight / 3 + (options.screenHeight / 6)));
 
             button2PlayerSplitscreen = new Button(new Sprite(Content.Load<Texture2D>("2PlayerSplitscreenButton"), new Vector2()));
-            button2PlayerSplitscreen.sprite.vector = new Vector2(((screenWidth / 2) - (button2PlayerSplitscreen.sprite.getTexture().Width / 2)), (screenHeight / 3 + (screenHeight / 3)));
+            button2PlayerSplitscreen.sprite.vector = new Vector2(((options.screenWidth / 2) - (button2PlayerSplitscreen.sprite.getTexture().Width / 2)), (options.screenHeight / 3 + (options.screenHeight / 3)));
 
             buttonResume = new Button(new Sprite(Content.Load<Texture2D>("ResumeButton"), new Vector2()));
-            buttonResume.sprite.vector = new Vector2(((screenWidth / 2) - (buttonResume.sprite.getTexture().Width / 2)), (screenHeight / 3 + (screenHeight / 6)));
+            buttonResume.sprite.vector = new Vector2(((options.screenWidth / 2) - (buttonResume.sprite.getTexture().Width / 2)), (options.screenHeight / 3 + (options.screenHeight / 6)));
 
             buttonMainMenu = new Button(new Sprite(Content.Load<Texture2D>("MainMenuButton"), new Vector2()));
-            buttonMainMenu.sprite.vector = new Vector2(((screenWidth / 2) - (buttonMainMenu.sprite.getTexture().Width / 2)), (screenHeight / 3 + (screenHeight / 3)));
+            buttonMainMenu.sprite.vector = new Vector2(((options.screenWidth / 2) - (buttonMainMenu.sprite.getTexture().Width / 2)), (options.screenHeight / 3 + (options.screenHeight / 3)));
 
             buttonQuit = new Button(new Sprite(Content.Load<Texture2D>("QuitButton"), new Vector2()));
-            buttonQuit.sprite.vector = new Vector2(buttonQuit.sprite.getTexture().Width / 2, screenHeight - buttonQuit.sprite.getTexture().Height - buttonQuit.sprite.getTexture().Height / 2);
+            buttonQuit.sprite.vector = new Vector2(buttonQuit.sprite.getTexture().Width / 2, options.screenHeight - buttonQuit.sprite.getTexture().Height - buttonQuit.sprite.getTexture().Height / 2);
 
             buttonLoadLevel = new Button(new Sprite(Content.Load<Texture2D>("LoadLevelButton"), new Vector2()));
-            buttonLoadLevel.sprite.vector = new Vector2(buttonLoadLevel.sprite.getTexture().Width / 2, (screenHeight / 3 + (screenHeight / 6)));
+            buttonLoadLevel.sprite.vector = new Vector2(buttonLoadLevel.sprite.getTexture().Width / 2, (options.screenHeight / 3 + (options.screenHeight / 6)));
 
             if (options.usingController)
             {
-                buttonController = new Button(new Sprite(Content.Load<Texture2D>("ControllerTrue"), new Vector2(((screenWidth / 2) - (Content.Load<Texture2D>("ControllerTrue").Width / 2)), screenHeight - Content.Load<Texture2D>("ControllerFalse").Height - buttonQuit.sprite.getTexture().Height / 2)));
+                buttonController = new Button(new Sprite(Content.Load<Texture2D>("ControllerTrue"), new Vector2(((options.screenWidth / 2) - (Content.Load<Texture2D>("ControllerTrue").Width / 2)), options.screenHeight - Content.Load<Texture2D>("ControllerFalse").Height - buttonQuit.sprite.getTexture().Height / 2)));
             }
             else
             {
-                buttonController = new Button(new Sprite(Content.Load<Texture2D>("ControllerFalse"), new Vector2(((screenWidth / 2) - (Content.Load<Texture2D>("ControllerFalse").Width / 2)), screenHeight - Content.Load<Texture2D>("ControllerFalse").Height - buttonQuit.sprite.getTexture().Height / 2)));
+                buttonController = new Button(new Sprite(Content.Load<Texture2D>("ControllerFalse"), new Vector2(((options.screenWidth / 2) - (Content.Load<Texture2D>("ControllerFalse").Width / 2)), options.screenHeight - Content.Load<Texture2D>("ControllerFalse").Height - buttonQuit.sprite.getTexture().Height / 2)));
             }
         }
 
@@ -217,6 +213,7 @@ namespace ConstantHeadshotsZ
         bool justPressedControllerButton = false;
         bool justPressedRotationCameraButton = false;
         bool detectedRotationCameraButton = false;
+        bool detectedPitchEnableCameraButton = false;
 
         /// <summary>
         /// Allows the game to run logic such as updating the world,
@@ -244,6 +241,16 @@ namespace ConstantHeadshotsZ
                 justPressedRotationCameraButton = false;
             }
 
+            if (Keyboard.GetState().IsKeyDown(Keys.Q) && !detectedPitchEnableCameraButton)
+            {
+                options.enablePitchChange = !options.enablePitchChange;
+                detectedPitchEnableCameraButton = true;
+            }
+            else if (Keyboard.GetState().IsKeyUp(Keys.Q))
+            {
+                detectedPitchEnableCameraButton = false;
+            }
+
             if (Keyboard.GetState().IsKeyDown(Keys.F11))
             {
                 if (!justPressedFullscreenButton)
@@ -251,16 +258,16 @@ namespace ConstantHeadshotsZ
                     graphics.IsFullScreen = !graphics.IsFullScreen;
                     if (!graphics.IsFullScreen)
                     {
-                        graphics.PreferredBackBufferWidth = windowedScreenWidth;
-                        graphics.PreferredBackBufferHeight = windowedScreenHeight;
+                        graphics.PreferredBackBufferWidth = options.windowedScreenWidth;
+                        graphics.PreferredBackBufferHeight = options.windowedScreenHeight;
                     }
                     else
                     {
                         graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
                         graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
                     }
-                    screenWidth = graphics.PreferredBackBufferWidth;
-                    screenHeight = graphics.PreferredBackBufferHeight;
+                    options.screenWidth = graphics.PreferredBackBufferWidth;
+                    options.screenHeight = graphics.PreferredBackBufferHeight;
 
                     graphics.ApplyChanges();
                     UpdateViewports();
@@ -319,7 +326,7 @@ namespace ConstantHeadshotsZ
                 }
                 else
                 {
-                    players[0].camera.Update(currentLevel, new Vector2(screenWidth, screenHeight));
+                    players[0].camera.Update(currentLevel, new Vector2(options.screenWidth, options.screenHeight));
                 }
                 if (options.player2CameraRotation)
                 {
@@ -327,7 +334,7 @@ namespace ConstantHeadshotsZ
                 }
                 else
                 {
-                    players[1].camera.Update(currentLevel, new Vector2(screenWidth, screenHeight));
+                    players[1].camera.Update(currentLevel, new Vector2(options.screenWidth, options.screenHeight));
                 }
             }
             else if (CurrentGameState == GameState.LOSE)
@@ -353,7 +360,7 @@ namespace ConstantHeadshotsZ
                 }
                 else
                 {
-                    players[0].camera.Update(currentLevel, new Vector2(screenWidth, screenHeight));
+                    players[0].camera.Update(currentLevel, new Vector2(options.screenWidth, options.screenHeight));
                 }
             }
             else if (CurrentGameState == GameState.MAINMENU)
@@ -747,10 +754,15 @@ namespace ConstantHeadshotsZ
                         {
                             if (options.player1CameraRotation)
                             {
-                                players[0].playerRotation += GamePad.GetState(PlayerIndex.One).ThumbSticks.Right.X * options.player1CameraRotationSpeed;
+                                if (!justPressedRotationCameraButton)
+                                {
+                                    players[0].playerRotation += GamePad.GetState(PlayerIndex.One).ThumbSticks.Right.X * options.player1CameraRotationSpeed;
+                                    players[0].camera.setPitch(players[0].camera.getPitch() + GamePad.GetState(PlayerIndex.One).ThumbSticks.Right.Y * options.player1CameraRotationSpeed);
+                                }
                             }
                             else
                             {
+                                players[0].camera.setPitch(0);
                                 players[0].playerRotation = (float)Math.Atan2(GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Right.X, GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Right.Y);
                             }
                         }
@@ -760,7 +772,7 @@ namespace ConstantHeadshotsZ
                         }
                         else
                         {
-                            players[0].camera.Update2Player(currentLevel, new Vector2(screenWidth, screenHeight));
+                            players[0].camera.Update2Player(currentLevel, new Vector2(options.screenWidth, options.screenHeight));
                         }
                         if (!options.player1CameraRotation)
                         {
@@ -775,7 +787,7 @@ namespace ConstantHeadshotsZ
                                 newVector.X += GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Right.X * 7;
                                 newVector.Y -= GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Right.Y * 7;
                             }
-                            players[0].camera.setPosition(newVector, currentLevel, new Vector2(screenWidth / 2, screenHeight));
+                            players[0].camera.setPosition(newVector, currentLevel, new Vector2(options.screenWidth / 2, options.screenHeight));
                         }
                     }
                     if (!players[1].isDead)
@@ -797,7 +809,7 @@ namespace ConstantHeadshotsZ
                         }
                         else
                         {
-                            players[1].camera.Update2Player(currentLevel, new Vector2(screenWidth, screenHeight));
+                            players[1].camera.Update2Player(currentLevel, new Vector2(options.screenWidth, options.screenHeight));
                         }
                         if (!options.player2CameraRotation)
                         {
@@ -812,11 +824,11 @@ namespace ConstantHeadshotsZ
                                 newVector2.X += GamePad.GetState(PlayerIndex.Two, GamePadDeadZone.Circular).ThumbSticks.Right.X * 7;
                                 newVector2.Y -= GamePad.GetState(PlayerIndex.Two, GamePadDeadZone.Circular).ThumbSticks.Right.Y * 7;
                             }
-                            players[1].camera.setPosition(newVector2, currentLevel, new Vector2(screenWidth / 2, screenHeight));
+                            players[1].camera.setPosition(newVector2, currentLevel, new Vector2(options.screenWidth / 2, options.screenHeight));
                         }
                     }
                 }
-                currentLevel.Update2Player(players, Content);
+                currentLevel.Update2Player(players, Content, gameTime.ElapsedGameTime);
                 if (players[0].health <= 0)
                 {
                     players[0].isDead = true;
@@ -973,10 +985,15 @@ namespace ConstantHeadshotsZ
                     {
                         if (options.player1CameraRotation)
                         {
-                            players[0].playerRotation += GamePad.GetState(PlayerIndex.One).ThumbSticks.Right.X * options.player1CameraRotationSpeed;
+                            if (!justPressedRotationCameraButton)
+                            {
+                                players[0].playerRotation += GamePad.GetState(PlayerIndex.One).ThumbSticks.Right.X * options.player1CameraRotationSpeed;
+                                players[0].camera.setPitch(players[0].camera.getPitch() + GamePad.GetState(PlayerIndex.One).ThumbSticks.Right.Y * options.player1CameraRotationSpeed);
+                            }
                         }
                         else
                         {
+                            players[0].camera.setPitch(0);
                             players[0].playerRotation = (float)Math.Atan2(GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Right.X, GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Right.Y);
                         }
                     }
@@ -986,7 +1003,7 @@ namespace ConstantHeadshotsZ
                     }
                     else
                     {
-                        players[0].camera.Update2Player(currentLevel, new Vector2(screenWidth, screenHeight));
+                        players[0].camera.Update2Player(currentLevel, new Vector2(options.screenWidth, options.screenHeight));
                     }
                     if (!options.player1CameraRotation)
                     {
@@ -1001,7 +1018,7 @@ namespace ConstantHeadshotsZ
                             newVector.X += GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Right.X * 7;
                             newVector.Y -= GamePad.GetState(PlayerIndex.One, GamePadDeadZone.Circular).ThumbSticks.Right.Y * 7;
                         }
-                        players[0].camera.setPosition(newVector, currentLevel, new Vector2(screenWidth / 2, screenHeight));
+                        players[0].camera.setPosition(newVector, currentLevel, new Vector2(options.screenWidth / 2, options.screenHeight));
                     }
                 }
                 else
@@ -1011,8 +1028,9 @@ namespace ConstantHeadshotsZ
                         options.player1CameraRotation = !options.player1CameraRotation;
                         if (!options.player1CameraRotation)
                         {
-                            players[0].camera.setRotation(0);
+                            players[0].camera.setYaw(0);
                         }
+                        players[0].camera.setPitch(0);
                     }
                     if (oldMouse.ScrollWheelValue > Mouse.GetState().ScrollWheelValue)
                     {
@@ -1148,18 +1166,23 @@ namespace ConstantHeadshotsZ
                     Vector2 distance;
                     if (options.player1CameraRotation)
                     {
-                        distance = new Vector2(Mouse.GetState().X - screenWidth / 2, Mouse.GetState().Y - screenHeight / 2);
+                        distance = new Vector2(Mouse.GetState().X - options.screenWidth / 2, Mouse.GetState().Y - options.screenHeight / 2);
                     }
                     else
                     {
-                        distance = new Vector2((Mouse.GetState().X + (players[0].camera.getPosition().X - screenWidth / 2)) - players[0].sprite.getX(), (Mouse.GetState().Y + (players[0].camera.getPosition().Y - screenHeight / 2)) - players[0].sprite.getY());
+                        distance = new Vector2((Mouse.GetState().X + (players[0].camera.getPosition().X - options.screenWidth / 2)) - players[0].sprite.getX(), (Mouse.GetState().Y + (players[0].camera.getPosition().Y - options.screenHeight / 2)) - players[0].sprite.getY());
                     }
                     if (options.player1CameraRotation)
                     {
-                        players[0].playerRotation += distance.X * options.player1CameraRotationSpeed / 3;
+                        if (!justPressedRotationCameraButton)
+                        {
+                            players[0].playerRotation += distance.X * options.player1CameraRotationSpeed / 3;
+                            players[0].camera.setPitch(players[0].camera.getPitch() + distance.Y * options.player1CameraRotationSpeed / 3);
+                        }
                     }
                     else
                     {
+                        players[0].camera.setPitch(0);
                         players[0].playerRotation = (float)Math.Atan2(distance.Y, distance.X) + 165;
                     }
                     if (options.player1CameraRotation)
@@ -1168,20 +1191,20 @@ namespace ConstantHeadshotsZ
                     }
                     else
                     {
-                        players[0].camera.Update(currentLevel, new Vector2(screenWidth, screenHeight));
+                        players[0].camera.Update(currentLevel, new Vector2(options.screenWidth, options.screenHeight));
                     }
                     Vector2 newVector = players[0].camera.getPosition();
                     if (!options.player1CameraRotation)
                     {
-                        players[0].camera.setPosition(newVector, currentLevel, new Vector2(screenWidth, screenHeight));
+                        players[0].camera.setPosition(newVector, currentLevel, new Vector2(options.screenWidth, options.screenHeight));
                     }
 
                     if (options.player1CameraRotation)
                     {
-                        Mouse.SetPosition(screenWidth / 2, screenHeight / 2);
+                        Mouse.SetPosition(options.screenWidth / 2, options.screenHeight / 2);
                     }
                 }
-                currentLevel.Update(players[0], Content);
+                currentLevel.Update(players[0], Content, gameTime.ElapsedGameTime);
                 if (players[0].health <= 0)
                 {
                     CurrentGameState = GameState.LOSE;
@@ -1289,7 +1312,7 @@ namespace ConstantHeadshotsZ
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
             //Drawing code
 
@@ -1302,10 +1325,10 @@ namespace ConstantHeadshotsZ
             if (CurrentGameState == GameState.LOGO)
             {
                 float logoAlpha = (((float)logoTime.Milliseconds) / ((float)maxLogoTime.Milliseconds));
-                spriteBatch.Draw(Content.Load<Texture2D>("jacketsjpresents"), new Rectangle(0, 0, screenWidth, screenHeight), Color.White);
+                spriteBatch.Draw(Content.Load<Texture2D>("jacketsjpresents"), new Rectangle(0, 0, options.screenWidth, options.screenHeight), Color.White);
                 Color col = Color.Black;
                 col.A = (byte)(col.A * ((float)logoTime.Ticks / (float)maxLogoTime.Ticks));
-                spriteBatch.Draw(Content.Load<Texture2D>("Particle"), new Rectangle(0, 0, screenWidth, screenHeight), col);
+                spriteBatch.Draw(Content.Load<Texture2D>("Particle"), new Rectangle(0, 0, options.screenWidth, options.screenHeight), col);
             }
             else if (CurrentGameState == GameState.LOSE)
             {
@@ -1319,23 +1342,23 @@ namespace ConstantHeadshotsZ
                 }
                 else
                 {
-                    threeD.Draw(GraphicsDevice, currentLevel, players, false, 1, Content);
+                    threeD.Draw(GraphicsDevice, currentLevel, players, false, 1, Content, options);
                 }
                 GraphicsDevice.Viewport = overlayView;
                 spriteBatch.Begin();
-                spriteBatch.Draw(Content.Load<Texture2D>("LoseBackground"), new Rectangle(0, 0, screenWidth, screenHeight), Color.White);
+                spriteBatch.Draw(Content.Load<Texture2D>("LoseBackground"), new Rectangle(0, 0, options.screenWidth, options.screenHeight), Color.White);
                 spriteBatch.Draw(buttonMainMenu.sprite.getTexture(), new Vector2(buttonMainMenu.sprite.vector.X + (0), buttonMainMenu.sprite.vector.Y), buttonMainMenu.sprite.getTint());
                 spriteBatch.Draw(Content.Load<Texture2D>("BButton"), new Vector2((buttonMainMenu.sprite.vector.X + buttonMainMenu.sprite.getTexture().Width + Content.Load<Texture2D>("BButton").Width / 2) + (0), (buttonMainMenu.sprite.vector.Y + Content.Load<Texture2D>("BButton").Height / 2) + (0)), Color.White);
                 SpriteFont Font = Content.Load<SpriteFont>("basic");
                 string scoreToBeat = HighScores.LoadHighScores(highscoresFilename).Score[0].ToString();
                 String youScored = "You scored " + players[0].score.ToString() + "\nScore to beat:" + scoreToBeat;
                 Vector2 youScoredOrigin = new Vector2(Font.MeasureString(youScored).X / 2, 0);
-                spriteBatch.DrawString(Font, youScored, new Vector2(screenWidth / 2, screenHeight / 2), Color.Black, 0, youScoredOrigin, 2.0f, SpriteEffects.None, 0.5f);
+                spriteBatch.DrawString(Font, youScored, new Vector2(options.screenWidth / 2, options.screenHeight / 2), Color.Black, 0, youScoredOrigin, 2.0f, SpriteEffects.None, 0.5f);
                 spriteBatch.End();
             }
             else if (CurrentGameState == GameState.MAINMENU)
             {
-                spriteBatch.Draw(Content.Load<Texture2D>("ConstantHeadshotsZTitlePage"), new Rectangle(0, 0, screenWidth, screenHeight), Color.White);
+                spriteBatch.Draw(Content.Load<Texture2D>("ConstantHeadshotsZTitlePage"), new Rectangle(0, 0, options.screenWidth, options.screenHeight), Color.White);
                 buttonPlay.Draw(spriteBatch);
                 spriteBatch.Draw(Content.Load<Texture2D>("AButton"), new Vector2(buttonPlay.sprite.vector.X + buttonPlay.sprite.getTexture().Width + Content.Load<Texture2D>("AButton").Width / 2, buttonPlay.sprite.vector.Y + Content.Load<Texture2D>("AButton").Height / 2), Color.White);
                 button2PlayerSplitscreen.Draw(spriteBatch);
@@ -1361,7 +1384,7 @@ namespace ConstantHeadshotsZ
                         }
                         SpriteFont Font = Content.Load<SpriteFont>("basic");
                         Vector2 scoresOrigin = Font.MeasureString(scores);
-                        spriteBatch.DrawString(Font, scores, new Vector2(screenWidth - screenWidth / 200, screenHeight - screenHeight / 200), Color.Black, 0, scoresOrigin, 1.0f, SpriteEffects.None, 0.5f);
+                        spriteBatch.DrawString(Font, scores, new Vector2(options.screenWidth - options.screenWidth / 200, options.screenHeight - options.screenHeight / 200), Color.Black, 0, scoresOrigin, 1.0f, SpriteEffects.None, 0.5f);
                     }
                 }
             }
@@ -1378,7 +1401,7 @@ namespace ConstantHeadshotsZ
                 }
                 else
                 {
-                    threeD.Draw(GraphicsDevice, currentLevel, players, false, 1, Content);
+                    threeD.Draw(GraphicsDevice, currentLevel, players, false, 1, Content, options);
                 }
 
                 GraphicsDevice.Viewport = overlayView;
@@ -1386,11 +1409,11 @@ namespace ConstantHeadshotsZ
                 SpriteFont Font = Content.Load<SpriteFont>("basic");
                 String health = "HP:" + players[0].health.ToString();
                 Vector2 healthOrigin = Font.MeasureString(health) / 2;
-                spriteBatch.DrawString(Font, health, new Vector2(0 + Font.MeasureString(health).X, screenHeight - Font.MeasureString(health).Y), Color.Black, 0, healthOrigin, 2.0f, SpriteEffects.None, 0.5f);
+                spriteBatch.DrawString(Font, health, new Vector2(0 + Font.MeasureString(health).X, options.screenHeight - Font.MeasureString(health).Y), Color.Black, 0, healthOrigin, 2.0f, SpriteEffects.None, 0.5f);
                 String score = "SCORE:" + players[0].score.ToString();
                 Vector2 scoreOrigin = new Vector2(Font.MeasureString(score).X, 0);
-                spriteBatch.DrawString(Font, score, new Vector2(screenWidth - screenWidth / 300, 0 + screenHeight / 300), Color.Black, 0, scoreOrigin, 2.0f, SpriteEffects.None, 0.5f);
-                spriteBatch.Draw(Content.Load<Texture2D>("PauseBackground"), new Rectangle(0, 0, screenWidth, screenHeight), Color.White);
+                spriteBatch.DrawString(Font, score, new Vector2(options.screenWidth - options.screenWidth / 300, 0 + options.screenHeight / 300), Color.Black, 0, scoreOrigin, 2.0f, SpriteEffects.None, 0.5f);
+                spriteBatch.Draw(Content.Load<Texture2D>("PauseBackground"), new Rectangle(0, 0, options.screenWidth, options.screenHeight), Color.White);
                 spriteBatch.Draw(buttonResume.sprite.getTexture(), new Vector2(buttonResume.sprite.vector.X + (0), buttonResume.sprite.vector.Y + (0)), buttonResume.sprite.getTint());
                 spriteBatch.Draw(Content.Load<Texture2D>("AButton"), new Vector2((buttonResume.sprite.vector.X + buttonResume.sprite.getTexture().Width + Content.Load<Texture2D>("AButton").Width / 2) + (0), (buttonResume.sprite.vector.Y + Content.Load<Texture2D>("AButton").Height / 2) + (0)), Color.White);
                 spriteBatch.Draw(buttonMainMenu.sprite.getTexture(), new Vector2(buttonMainMenu.sprite.vector.X + (0), buttonMainMenu.sprite.vector.Y + (0)), buttonMainMenu.sprite.getTint());
@@ -1413,7 +1436,7 @@ namespace ConstantHeadshotsZ
                 }
                 else
                 {
-                    threeD.Draw(GraphicsDevice, currentLevel, players, true, 1, Content);
+                    threeD.Draw(GraphicsDevice, currentLevel, players, true, 1, Content, options);
                 }
 
 
@@ -1429,7 +1452,7 @@ namespace ConstantHeadshotsZ
                 }
                 else
                 {
-                    threeD.Draw(GraphicsDevice, currentLevel, players, true, 2, Content);
+                    threeD.Draw(GraphicsDevice, currentLevel, players, true, 2, Content, options);
                 }
 
 
@@ -1437,13 +1460,13 @@ namespace ConstantHeadshotsZ
 
                 spriteBatch.Begin();
                 SpriteFont Font = Content.Load<SpriteFont>("basic");
-                spriteBatch.Draw(Content.Load<Texture2D>("LoseBackground"), new Rectangle(0, 0, screenWidth, screenHeight), Color.White);
+                spriteBatch.Draw(Content.Load<Texture2D>("LoseBackground"), new Rectangle(0, 0, options.screenWidth, options.screenHeight), Color.White);
                 spriteBatch.Draw(buttonMainMenu.sprite.getTexture(), new Vector2(buttonMainMenu.sprite.vector.X + (0), buttonMainMenu.sprite.vector.Y + (0)), buttonMainMenu.sprite.getTint());
                 spriteBatch.Draw(Content.Load<Texture2D>("BButton"), new Vector2((buttonMainMenu.sprite.vector.X + buttonMainMenu.sprite.getTexture().Width + Content.Load<Texture2D>("BButton").Width / 2) + (0), (buttonMainMenu.sprite.vector.Y + Content.Load<Texture2D>("BButton").Height / 2) + (0)), Color.White);
                 string scoreToBeat = HighScores.LoadHighScores(highscoresFilename).Score[0].ToString();
                 String youScored = "You scored " + players[0].score.ToString() + "\nScore to beat:" + scoreToBeat;
                 Vector2 youScoredOrigin = new Vector2(Font.MeasureString(youScored).X / 2, 0);
-                spriteBatch.DrawString(Font, youScored, new Vector2(screenWidth / 2, screenHeight / 2), Color.Black, 0, youScoredOrigin, 2.0f, SpriteEffects.None, 0.5f);
+                spriteBatch.DrawString(Font, youScored, new Vector2(options.screenWidth / 2, options.screenHeight / 2), Color.Black, 0, youScoredOrigin, 2.0f, SpriteEffects.None, 0.5f);
                 spriteBatch.End();
             }
             else if (CurrentGameState == GameState.TWOPLAYERPAUSE)
@@ -1474,7 +1497,7 @@ namespace ConstantHeadshotsZ
                 }
                 else
                 {
-                    threeD.Draw(GraphicsDevice, currentLevel, players, true, 1, Content);
+                    threeD.Draw(GraphicsDevice, currentLevel, players, true, 1, Content, options);
                 }
 
 
@@ -1504,14 +1527,14 @@ namespace ConstantHeadshotsZ
                 }
                 else
                 {
-                    threeD.Draw(GraphicsDevice, currentLevel, players, true, 1, Content);
+                    threeD.Draw(GraphicsDevice, currentLevel, players, true, 1, Content, options);
                 }
 
 
                 GraphicsDevice.Viewport = overlayView;
 
                 spriteBatch.Begin();
-                spriteBatch.Draw(Content.Load<Texture2D>("PauseBackground"), new Rectangle((int)(0), (int)(0), screenWidth, screenHeight), Color.White);
+                spriteBatch.Draw(Content.Load<Texture2D>("PauseBackground"), new Rectangle((int)(0), (int)(0), options.screenWidth, options.screenHeight), Color.White);
                 spriteBatch.Draw(buttonResume.sprite.getTexture(), new Vector2(buttonResume.sprite.vector.X + (0), buttonResume.sprite.vector.Y + (0)), buttonResume.sprite.getTint());
                 spriteBatch.Draw(Content.Load<Texture2D>("AButton"), new Vector2((buttonResume.sprite.vector.X + buttonResume.sprite.getTexture().Width + Content.Load<Texture2D>("AButton").Width / 2) + (0), (buttonResume.sprite.vector.Y + Content.Load<Texture2D>("AButton").Height / 2) + (0)), Color.White);
                 spriteBatch.Draw(buttonMainMenu.sprite.getTexture(), new Vector2(buttonMainMenu.sprite.vector.X + (0), buttonMainMenu.sprite.vector.Y + (0)), buttonMainMenu.sprite.getTint());
@@ -1548,7 +1571,7 @@ namespace ConstantHeadshotsZ
                 }
                 else
                 {
-                    threeD.Draw(GraphicsDevice, currentLevel, players, true, 1, Content);
+                    threeD.Draw(GraphicsDevice, currentLevel, players, true, 1, Content, options);
                 }
 
                 GraphicsDevice.Viewport = leftOverlayView;
@@ -1558,7 +1581,7 @@ namespace ConstantHeadshotsZ
                 {
                     String health = "HP:" + players[0].health.ToString();
                     Vector2 healthOrigin = Font.MeasureString(health) / 2;
-                    spriteBatch.DrawString(Font, health, new Vector2(screenWidth / 4 - screenWidth / 4 + Font.MeasureString(health).X, screenHeight / 2 + screenHeight / 2 - Font.MeasureString(health).Y), Color.Black, 0, healthOrigin, 2.0f, SpriteEffects.None, 0.5f);
+                    spriteBatch.DrawString(Font, health, new Vector2(options.screenWidth / 4 - options.screenWidth / 4 + Font.MeasureString(health).X, options.screenHeight / 2 + options.screenHeight / 2 - Font.MeasureString(health).Y), Color.Black, 0, healthOrigin, 2.0f, SpriteEffects.None, 0.5f);
                 }
                 spriteBatch.End();
 
@@ -1588,7 +1611,7 @@ namespace ConstantHeadshotsZ
                 }
                 else
                 {
-                    threeD.Draw(GraphicsDevice, currentLevel, players, true, 2, Content);
+                    threeD.Draw(GraphicsDevice, currentLevel, players, true, 2, Content, options);
                 }
 
                 GraphicsDevice.Viewport = rightOverlayView;
@@ -1598,43 +1621,43 @@ namespace ConstantHeadshotsZ
                 {
                     String health2 = "HP:" + players[1].health.ToString();
                     Vector2 healthOrigin2 = Font.MeasureString(health2) / 2;
-                    spriteBatch.DrawString(Font, health2, new Vector2(screenWidth / 4 - screenWidth / 4 + Font.MeasureString(health2).X, screenHeight / 2 + screenHeight / 2 - Font.MeasureString(health2).Y), Color.Black, 0, healthOrigin2, 2.0f, SpriteEffects.None, 0.5f);
+                    spriteBatch.DrawString(Font, health2, new Vector2(options.screenWidth / 4 - options.screenWidth / 4 + Font.MeasureString(health2).X, options.screenHeight / 2 + options.screenHeight / 2 - Font.MeasureString(health2).Y), Color.Black, 0, healthOrigin2, 2.0f, SpriteEffects.None, 0.5f);
                 }
                 String score = "SCORE:" + players[0].score.ToString();
                 Vector2 scoreOrigin = new Vector2(Font.MeasureString(score).X, 0);
-                spriteBatch.DrawString(Font, score, new Vector2(screenWidth / 4 + screenWidth / 4 - screenWidth / 300, screenHeight / 2 - screenHeight / 2 - screenHeight / 300), Color.Black, 0, scoreOrigin, 2.0f, SpriteEffects.None, 0.5f);
+                spriteBatch.DrawString(Font, score, new Vector2(options.screenWidth / 4 + options.screenWidth / 4 - options.screenWidth / 300, options.screenHeight / 2 - options.screenHeight / 2 - options.screenHeight / 300), Color.Black, 0, scoreOrigin, 2.0f, SpriteEffects.None, 0.5f);
                 spriteBatch.End();
 
                 GraphicsDevice.Viewport = overlayView;
 
                 spriteBatch.Begin();
-                spriteBatch.Draw(Content.Load<Texture2D>("White"), new Rectangle(screenWidth / 2 - 1, 0, 2, screenHeight), Color.Black);
+                spriteBatch.Draw(Content.Load<Texture2D>("White"), new Rectangle(options.screenWidth / 2 - 1, 0, 2, options.screenHeight), Color.Black);
                 spriteBatch.End();
             }
             else if (CurrentGameState == GameState.SINGLEPLAYER)
             {
-                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, players[0].camera.get_transformation(graphics.GraphicsDevice));
                 if (!options.player13D)
                 {
+                    spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, players[0].camera.get_transformation(graphics.GraphicsDevice));
                     currentLevel.Draw(spriteBatch, Content, players[0], 1);
                     players[0].Draw(spriteBatch, Content);
                     spriteBatch.End();
-                    GraphicsDevice.Viewport = overlayView;
-                    spriteBatch.Begin();
                 }
                 else
                 {
-                    threeD.Draw(GraphicsDevice, currentLevel, players, false, 1, Content);
+                    threeD.Draw(GraphicsDevice, currentLevel, players, false, 1, Content, options);
                 }
 
 
+                GraphicsDevice.Viewport = overlayView;
+                spriteBatch.Begin();
                 SpriteFont Font = Content.Load<SpriteFont>("basic");
                 String health = "HP:" + players[0].health.ToString();
                 Vector2 healthOrigin = Font.MeasureString(health) / 2;
-                spriteBatch.DrawString(Font, health, new Vector2(Font.MeasureString(health).X, screenHeight - Font.MeasureString(health).Y), Color.Black, 0, healthOrigin, 2.0f, SpriteEffects.None, 0.5f);
+                spriteBatch.DrawString(Font, health, new Vector2(Font.MeasureString(health).X, options.screenHeight - Font.MeasureString(health).Y), Color.Black, 0, healthOrigin, 2.0f, SpriteEffects.None, 0.5f);
                 String score = "SCORE:" + players[0].score.ToString();
                 Vector2 scoreOrigin = new Vector2(Font.MeasureString(score).X, 0);
-                spriteBatch.DrawString(Font, score, new Vector2( screenWidth - screenWidth / 300, 0 + screenHeight / 300), Color.Black, 0, scoreOrigin, 2.0f, SpriteEffects.None, 0.5f);
+                spriteBatch.DrawString(Font, score, new Vector2( options.screenWidth - options.screenWidth / 300, 0 + options.screenHeight / 300), Color.Black, 0, scoreOrigin, 2.0f, SpriteEffects.None, 0.5f);
                 if (!options.usingController && !options.player1CameraRotation)
                 {
                     spriteBatch.Draw(Content.Load<Texture2D>("Crosshair"), new Vector2(Mouse.GetState().X - (Content.Load<Texture2D>("Crosshair").Width / 2), Mouse.GetState().Y - (Content.Load<Texture2D>("Crosshair").Height / 2)), Color.White);

@@ -43,18 +43,6 @@ namespace ConstantHeadshotsZ
 
 
         /// <summary>
-        /// Gets or sets how fast this entity is moving.
-        /// </summary>
-        public Vector3 Velocity
-        {
-            get { return velocity; }
-            protected set { velocity = value; }
-        }
-
-        Vector3 velocity;
-
-
-        /// <summary>
         /// Gets or sets the texture used to display this entity.
         /// </summary>
         public Texture2D Texture
@@ -71,9 +59,28 @@ namespace ConstantHeadshotsZ
         public void Draw(QuadDrawer quadDrawer, Vector3 cameraPosition,
                          Matrix view, Matrix projection)
         {
-            Matrix world = Matrix.CreateTranslation(0, 1, 0) * Matrix.CreateScale(800) * Matrix.CreateConstrainedBillboard(Position, cameraPosition, Up, null, null);
+            //Matrix world = Matrix.CreateTranslation(0, 1, 0) * Matrix.CreateScale(800) * Matrix.CreateConstrainedBillboard(Position, cameraPosition, Up, null, null);
 
-            quadDrawer.DrawQuad(Texture, 1, world, view, projection);
+            quadDrawer.DrawQuad(Texture, 1, Matrix.Identity, view, projection);
+        }
+
+        /// <summary>
+        /// Draws the entity as a billboard sprite.
+        /// </summary>
+        public void Draw(QuadDrawer quadDrawer, Vector3 cameraPosition,
+                         Matrix view, Matrix projection, Matrix world)
+        {
+            quadDrawer.DrawQuad(Texture, 1,
+                world
+                //* Matrix.CreateTranslation(texture.Width / 4, texture.Height / 4, 0)
+                //* Matrix.CreateTranslation(0.5f, 0.5f, 0)
+                * Matrix.CreateScale(texture.Width / 2, texture.Height / 2, 1)// * Matrix.CreateScale(texture.Width, texture.Height, 1)
+                    * Matrix.CreateRotationX(Up.X) * Matrix.CreateRotationY(Up.Y) * Matrix.CreateRotationZ(Up.Z) * Matrix.CreateRotationZ(MathHelper.Pi)
+                    //* Matrix.CreateTranslation(1f / 2, 1f / 2, 0)
+                    // * Matrix.CreateTranslation(texture.Width / 4, texture.Height / 4, 0)
+                    //* Matrix.CreateTranslation(texture.Width / 2, texture.Height / 2, 0)
+                    * (Matrix.CreateTranslation(position + new Vector3(texture.Width / 2, texture.Height / 2, 0)))
+                , view, projection);
         }
     }
 }

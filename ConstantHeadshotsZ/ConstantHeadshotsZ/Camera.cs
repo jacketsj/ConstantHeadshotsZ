@@ -12,7 +12,8 @@ namespace ConstantHeadshotsZ
         protected float zoom;
         public Matrix transform;
         public Vector2 position;
-        protected float rotation;
+        protected float yaw;
+        protected float pitch;
         public Sprite followedSprite = null;
         public BasicEffect effect;
         public float effectRotation = 0.02f;
@@ -20,7 +21,7 @@ namespace ConstantHeadshotsZ
         public Camera(GraphicsDevice graphics)
         {
             zoom = 1.0f;
-            rotation = 0.0f;
+            yaw = 0.0f;
             position = Vector2.Zero;
             effect = new BasicEffect(graphics);
 
@@ -37,7 +38,7 @@ namespace ConstantHeadshotsZ
         public Camera(Sprite newFollowedSprite, GraphicsDevice graphics)
         {
             zoom = 1.0f;
-            rotation = 0.0f;
+            yaw = 0.0f;
             position = Vector2.Zero;
             followedSprite = newFollowedSprite;
             effect = new BasicEffect(graphics);
@@ -80,40 +81,66 @@ namespace ConstantHeadshotsZ
 
         public void setRotation(float newRotation)
         {
-            rotation = newRotation;
+            yaw = newRotation;
+        }
+
+        public void setYaw(float newYaw)
+        {
+            yaw = newYaw;
+        }
+
+        public void setPitch(float newPitch)
+        {
+            if (Options.GetInstance().enablePitchChange)
+            {
+                pitch = newPitch;
+            }
         }
 
         public float getRotation()
         {
-            return rotation;
+            return yaw;
+        }
+
+        public float getYaw()
+        {
+            return yaw;
+        }
+
+        public float getPitch()
+        {
+            return pitch;
         }
 
         public void setPosition(Vector2 newPosition, Level level, Vector2 screenWidthAndHeight)
         {
             position = newPosition;
-            if (position.X - screenWidthAndHeight.X / 2 < 0)
+            if (!Options.GetInstance().player13D)
             {
-                position.X = screenWidthAndHeight.X / 2;
-            }
-            if (position.Y - screenWidthAndHeight.Y / 2 < 0)
-            {
-                position.Y = screenWidthAndHeight.Y / 2;
-            }
-            if (position.X + screenWidthAndHeight.X / 2 > level.levelWidth)
-            {
-                position.X = level.levelWidth - screenWidthAndHeight.X / 2;
-            }
-            if (position.Y + screenWidthAndHeight.Y / 2 > level.levelHeight)
-            {
-                position.Y = level.levelHeight - screenWidthAndHeight.Y / 2;
-            }
-            if (level.levelWidth < screenWidthAndHeight.X)
-            {
-                position.X = level.levelWidth / 2;
-            }
-            if (level.levelHeight < screenWidthAndHeight.Y)
-            {
-                position.Y = level.levelHeight / 2;
+                if (position.X - screenWidthAndHeight.X / 2 < 0)
+                {
+                    position.X = screenWidthAndHeight.X / 2;
+                }
+                if (position.Y - screenWidthAndHeight.Y / 2 < 0)
+                {
+                    position.Y = screenWidthAndHeight.Y / 2;
+                }
+                if (position.X + screenWidthAndHeight.X / 2 > level.levelWidth)
+                {
+                    position.X = level.levelWidth - screenWidthAndHeight.X / 2;
+                }
+                if (position.Y + screenWidthAndHeight.Y / 2 > level.levelHeight)
+                {
+                    position.Y = level.levelHeight - screenWidthAndHeight.Y / 2;
+                }
+                if (level.levelWidth < screenWidthAndHeight.X)
+                {
+                    position.X = level.levelWidth / 2;
+                }
+                if (level.levelHeight < screenWidthAndHeight.Y)
+                {
+                    position.Y = level.levelHeight / 2;
+                }
             }
         }
 
@@ -134,7 +161,15 @@ namespace ConstantHeadshotsZ
 
         public Matrix get_transformation(GraphicsDevice graphicsDevice)
         {
-            transform = Matrix.CreateTranslation(new Vector3(-position.X, -position.Y, 0)) * Matrix.CreateRotationZ(rotation) * Matrix.CreateScale(new Vector3(zoom, zoom, 1)) * Matrix.CreateTranslation(new Vector3(graphicsDevice.Viewport.Width * 0.5f, graphicsDevice.Viewport.Height * 0.5f, 0));                       
+            transform = Matrix.CreateTranslation(new Vector3(-position.X, -position.Y, 0)) * Matrix.CreateRotationZ(yaw) * Matrix.CreateScale(new Vector3(zoom, zoom, 1)) * Matrix.CreateTranslation(new Vector3(graphicsDevice.Viewport.Width * 0.5f, graphicsDevice.Viewport.Height * 0.5f, 0));                       
+            return transform;
+        }
+
+        public Matrix get_transformation_3d(GraphicsDevice graphicsDevice)
+        {
+            transform = Matrix.CreateTranslation(new Vector3(-position.X, -position.Y, 0)) * Matrix.CreateRotationZ(yaw);// *Matrix.CreateTranslation(new Vector3(graphicsDevice.Viewport.Width * 0.5f, graphicsDevice.Viewport.Height * 0.5f, 0));
+            transform *= Matrix.CreateRotationX(pitch);
+            transform *= Matrix.CreateScale(new Vector3(zoom, zoom, 1)) * Matrix.CreateScale(1, -1, 1);
             return transform;
         }
 
@@ -154,6 +189,19 @@ namespace ConstantHeadshotsZ
                 SetPositionRegardless(new Vector2(followedSprite.getX(), followedSprite.getY()));
             }
             setRotation(-newRotation);
+        }
+
+        public void UpdateWithRotation(float newYaw, float newPitch)
+        {
+            if (followedSprite != null)
+            {
+                SetPositionRegardless(new Vector2(followedSprite.getX(), followedSprite.getY()));
+            }
+            setYaw(-newYaw);
+            if (Options.GetInstance().enablePitchChange)
+            {
+                setPitch(-newPitch);
+            }
         }
 
         public void Update2Player(Level level, Vector2 screenWidthAndHeight)
