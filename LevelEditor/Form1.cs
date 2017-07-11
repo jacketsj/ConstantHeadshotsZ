@@ -30,6 +30,13 @@ namespace LevelEditor
         System.Drawing.Point oldMouse;
         System.Drawing.Point newMouse;
         bool textureMoved = false;
+        CLICK_MODE modeLeft = CLICK_MODE.PLACE;
+        CLICK_MODE modeRight = CLICK_MODE.DELETE;
+
+        public enum CLICK_MODE
+        {
+            PLACE, DELETE, PLAYER, ZOMBIE, POINTER, BACKGROUND, FOREGROUND
+        }
 
         public Form1()
         {
@@ -193,15 +200,14 @@ namespace LevelEditor
                 {
                     TextureBaseData texture = new TextureBaseData(new Bitmap(openFileDialog1.FileName), openFileDialog1.SafeFileName);
 
-                    TextureBaseData[] newTextures = new TextureBaseData[textures.Length + 1];
-                    for (int i = 0; i < textures.Length; i++)
-                    {
-                        newTextures[i] = textures[i];
-                    }
-                    newTextures[textures.Length] = texture;
-                    textures = newTextures;
+                    List<TextureBaseData> newTextures = new List<TextureBaseData>();
+                    newTextures.AddRange(textures);
+
+                    newTextures.Add(texture);
+
+                    textures = newTextures.ToArray();
                     UpdateTextureLists();
-                    comboBoxSolidTexture.SelectedIndex = textures.Length - 1;
+                    comboBoxSolidTexture.SelectedIndex = newTextures.FindIndex((x) => x == texture);
                 }
                 catch (Exception ex)
                 {
@@ -217,14 +223,19 @@ namespace LevelEditor
             comboBoxSolidTexture.Items.Clear();
             foreach (TextureBaseData texture in textures)
             {
-                comboBoxBackground.Items.Add(texture.Name);
-                comboBoxSolidTexture.Items.Add(texture.Name);
+                string name = texture.Name;
+                if (name.EndsWith(".png"))
+                {
+                    name = name.Remove(name.Length - 4);
+                }
+                comboBoxBackground.Items.Add(name);
+                comboBoxSolidTexture.Items.Add(name);
             }
         }
 
         public void UpdatePanelWidthAndHeight()
         {
-            
+            //do nothing
         }
 
         public void renderBoxOntoMap(Graphics g, Image pBox, System.Drawing.Point location)
@@ -322,18 +333,24 @@ namespace LevelEditor
             levelPanelScrollPos = new System.Drawing.Point(levelPanel.AutoScrollPosition.X / -1, levelPanel.AutoScrollPosition.Y / -1);
         }
 
-        private void levelPanel_Click(object sender, EventArgs e)
+        private void levelPanel_Click(object sender, MouseEventArgs e)
         {
             //levelPanel.AutoScrollPosition = levelPanelScrollPos;
             //movingScreen = true;
-
-            alterLevelElement(levelPanelScrollPos);
+            if (e.Button == System.Windows.Forms.MouseButtons.Left)
+            {
+                alterLevelElement(levelPanelScrollPos, modeLeft);
+            }
+            else if (e.Button == System.Windows.Forms.MouseButtons.Right)
+            {
+                alterLevelElement(levelPanelScrollPos, modeRight);
+            }
         }
 
-        private void alterLevelElement(System.Drawing.Point levelPanelScrollPos)
+        private void alterLevelElement(System.Drawing.Point levelPanelScrollPos, CLICK_MODE clickMode)
         {
             updateScrollPos();
-            if (comboBoxClickMode.SelectedIndex == 0)
+            if (clickMode == CLICK_MODE.PLACE)
             {
                 if (selectedSolidTexture)
                 {
@@ -353,7 +370,7 @@ namespace LevelEditor
                     PutPicturesInPanel();
                 }
             }
-            if (comboBoxClickMode.SelectedIndex == 1)
+            if (clickMode == CLICK_MODE.DELETE)
             {
                 bool deletedSomething = false;
                 for (int i = 0; i < level.solids.Length; i++)
@@ -502,7 +519,7 @@ namespace LevelEditor
                 }
                 PutPicturesInPanel();
             }
-            if (comboBoxClickMode.SelectedIndex == 2)
+            if (clickMode == CLICK_MODE.PLAYER)
             {
                 System.Drawing.Point point = levelPanel.PointToClient(Cursor.Position);
                 //System.Drawing.Point point =  new System.Drawing.Point(levelPanel.PointToClient(Cursor.Position).X - textures[2].Image.Width / 2,
@@ -514,7 +531,7 @@ namespace LevelEditor
                 level.playerSpawn.Y = point.Y + levelPanel.VerticalScroll.Value;
                 PutPicturesInPanel();
             }
-            if (comboBoxClickMode.SelectedIndex == 3)
+            if (clickMode == CLICK_MODE.ZOMBIE)
             {
                 Vector2[] newSpawns = new Vector2[level.zombieSpawners.Length + 1];
                 for (int i = 0; i < level.zombieSpawners.Length; i++)
@@ -531,7 +548,11 @@ namespace LevelEditor
                 level.zombieSpawners = newSpawns;
                 PutPicturesInPanel();
             }
-            if (comboBoxClickMode.SelectedIndex == 5)
+            if (clickMode == CLICK_MODE.POINTER)
+            {
+                //not implemented
+            }
+            if (clickMode == CLICK_MODE.BACKGROUND)
             {
                 if (selectedSolidTexture)
                 {
@@ -551,7 +572,7 @@ namespace LevelEditor
                     PutPicturesInPanel();
                 }
             }
-            if (comboBoxClickMode.SelectedIndex == 6)
+            if (clickMode == CLICK_MODE.FOREGROUND)
             {
                 if (selectedSolidTexture)
                 {
@@ -576,6 +597,7 @@ namespace LevelEditor
         private void comboBoxSolidTexture_SelectedIndexChanged(object sender, EventArgs e)
         {
             selectedSolidTexture = true;
+            pictureBoxTexturePreview.Image = textures[comboBoxSolidTexture.SelectedIndex].Image;
         }
 
         private void comboBoxSpawnAcceleration_SelectedIndexChanged(object sender, EventArgs e)
@@ -679,8 +701,14 @@ namespace LevelEditor
                 newMouse.Y += levelPanel.VerticalScroll.Value;
                 oldMouse = new System.Drawing.Point(newMouse.X, newMouse.Y);
 
-                if (checkBoxSnap.Checked && Mouse.GetState().LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
+                if (checkBoxSnap.Checked && (Mouse.GetState().LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed ||
+                                            Mouse.GetState().RightButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed))
                 {
+                    CLICK_MODE clickMode = modeRight;
+                    if (Mouse.GetState().LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
+                    {
+                        clickMode = modeLeft;
+                    }
                     bool canDragPlace = true;
                     for (int i = 0; i < level.solids.Length && canDragPlace; i++)
                     {
@@ -705,7 +733,7 @@ namespace LevelEditor
                             canDragPlace = false;
                         }
                     }
-                    for (int i = 0; i < level.backSolids.Length && canDragPlace && comboBoxClickMode.SelectedIndex == 5; i++)
+                    for (int i = 0; i < level.backSolids.Length && canDragPlace && comboBoxLeftClickMode.SelectedIndex == 5; i++)
                     {
                         SolidData solid = level.backSolids[i];
                         System.Drawing.Point mouse = levelPanel.PointToClient(Cursor.Position);
@@ -717,7 +745,7 @@ namespace LevelEditor
                             canDragPlace = false;
                         }
                     }
-                    for (int i = 0; i < level.foreSolids.Length && canDragPlace && comboBoxClickMode.SelectedIndex == 6; i++)
+                    for (int i = 0; i < level.foreSolids.Length && canDragPlace && comboBoxLeftClickMode.SelectedIndex == 6; i++)
                     {
                         SolidData solid = level.foreSolids[i];
                         System.Drawing.Point mouse = levelPanel.PointToClient(Cursor.Position);
@@ -729,13 +757,13 @@ namespace LevelEditor
                             canDragPlace = false;
                         }
                     }
-                    if (comboBoxClickMode.SelectedIndex == 1)
+                    if (clickMode == CLICK_MODE.DELETE)
                     {
                         canDragPlace = true;
                     }
                     if (canDragPlace)
                     {
-                        alterLevelElement(newMouse);
+                        alterLevelElement(newMouse, clickMode);
                     }
                 }
             }
@@ -790,6 +818,16 @@ namespace LevelEditor
                 point.Y = (int)(point.Y / snap) * snap + (point.Y % snap > (float)snap / 2 ? snap : 0);
             }
             return point;
+        }
+
+        private void comboBoxLeftClickMode_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            modeLeft = (CLICK_MODE)comboBoxLeftClickMode.SelectedIndex;
+        }
+
+        private void comboBoxRightClickMode_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            modeRight = (CLICK_MODE)comboBoxRightClickMode.SelectedIndex;
         }
     }
 }

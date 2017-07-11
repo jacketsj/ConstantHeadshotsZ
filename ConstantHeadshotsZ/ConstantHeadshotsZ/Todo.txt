@@ -14,7 +14,7 @@ Editor:
 -dual tool/tile (left and right mouse)
 -alphabetize textures
 -allow for mass texture addition/removal
--prompt for save on exit
+-prompt for save on exit/open
 -undo/redo system
 -refactor "selected index"
 -fix background scaling preview (currently gives "shadow" effect on small images)

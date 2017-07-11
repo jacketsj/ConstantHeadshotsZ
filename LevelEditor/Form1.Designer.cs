@@ -33,12 +33,13 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPageLevel = new System.Windows.Forms.TabPage();
             this.panelSolids = new System.Windows.Forms.Panel();
+            this.pictureBoxTexturePreview = new System.Windows.Forms.PictureBox();
             this.checkBoxSnap = new System.Windows.Forms.CheckBox();
             this.checkBoxShowGrid = new System.Windows.Forms.CheckBox();
             this.numericUpDownGrid = new System.Windows.Forms.NumericUpDown();
             this.labelGrid = new System.Windows.Forms.Label();
-            this.comboBoxClickMode = new System.Windows.Forms.ComboBox();
-            this.labelClickMode = new System.Windows.Forms.Label();
+            this.comboBoxLeftClickMode = new System.Windows.Forms.ComboBox();
+            this.labelLeftClickMode = new System.Windows.Forms.Label();
             this.labelSolidTexture = new System.Windows.Forms.Label();
             this.comboBoxSolidTexture = new System.Windows.Forms.ComboBox();
             this.tabPageProperties = new System.Windows.Forms.TabPage();
@@ -60,9 +61,12 @@
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.texturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.comboBoxRightClickMode = new System.Windows.Forms.ComboBox();
+            this.labelRightClickMode = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPageLevel.SuspendLayout();
             this.panelSolids.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxTexturePreview)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownGrid)).BeginInit();
             this.tabPageProperties.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -108,12 +112,15 @@
             // panelSolids
             // 
             this.panelSolids.BackColor = System.Drawing.Color.Gray;
+            this.panelSolids.Controls.Add(this.comboBoxRightClickMode);
+            this.panelSolids.Controls.Add(this.labelRightClickMode);
+            this.panelSolids.Controls.Add(this.pictureBoxTexturePreview);
             this.panelSolids.Controls.Add(this.checkBoxSnap);
             this.panelSolids.Controls.Add(this.checkBoxShowGrid);
             this.panelSolids.Controls.Add(this.numericUpDownGrid);
             this.panelSolids.Controls.Add(this.labelGrid);
-            this.panelSolids.Controls.Add(this.comboBoxClickMode);
-            this.panelSolids.Controls.Add(this.labelClickMode);
+            this.panelSolids.Controls.Add(this.comboBoxLeftClickMode);
+            this.panelSolids.Controls.Add(this.labelLeftClickMode);
             this.panelSolids.Controls.Add(this.labelSolidTexture);
             this.panelSolids.Controls.Add(this.comboBoxSolidTexture);
             this.panelSolids.Location = new System.Drawing.Point(834, 6);
@@ -121,10 +128,19 @@
             this.panelSolids.Size = new System.Drawing.Size(197, 578);
             this.panelSolids.TabIndex = 3;
             // 
+            // pictureBoxTexturePreview
+            // 
+            this.pictureBoxTexturePreview.Location = new System.Drawing.Point(16, 53);
+            this.pictureBoxTexturePreview.Name = "pictureBoxTexturePreview";
+            this.pictureBoxTexturePreview.Size = new System.Drawing.Size(128, 128);
+            this.pictureBoxTexturePreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBoxTexturePreview.TabIndex = 9;
+            this.pictureBoxTexturePreview.TabStop = false;
+            // 
             // checkBoxSnap
             // 
             this.checkBoxSnap.AutoSize = true;
-            this.checkBoxSnap.Location = new System.Drawing.Point(45, 148);
+            this.checkBoxSnap.Location = new System.Drawing.Point(45, 326);
             this.checkBoxSnap.Name = "checkBoxSnap";
             this.checkBoxSnap.Size = new System.Drawing.Size(85, 17);
             this.checkBoxSnap.TabIndex = 8;
@@ -134,7 +150,7 @@
             // checkBoxShowGrid
             // 
             this.checkBoxShowGrid.AutoSize = true;
-            this.checkBoxShowGrid.Location = new System.Drawing.Point(45, 125);
+            this.checkBoxShowGrid.Location = new System.Drawing.Point(45, 303);
             this.checkBoxShowGrid.Name = "checkBoxShowGrid";
             this.checkBoxShowGrid.Size = new System.Drawing.Size(75, 17);
             this.checkBoxShowGrid.TabIndex = 7;
@@ -144,7 +160,7 @@
             // 
             // numericUpDownGrid
             // 
-            this.numericUpDownGrid.Location = new System.Drawing.Point(45, 99);
+            this.numericUpDownGrid.Location = new System.Drawing.Point(45, 277);
             this.numericUpDownGrid.Name = "numericUpDownGrid";
             this.numericUpDownGrid.Size = new System.Drawing.Size(130, 20);
             this.numericUpDownGrid.TabIndex = 6;
@@ -158,16 +174,16 @@
             // labelGrid
             // 
             this.labelGrid.AutoSize = true;
-            this.labelGrid.Location = new System.Drawing.Point(13, 101);
+            this.labelGrid.Location = new System.Drawing.Point(13, 279);
             this.labelGrid.Name = "labelGrid";
             this.labelGrid.Size = new System.Drawing.Size(26, 13);
             this.labelGrid.TabIndex = 5;
             this.labelGrid.Text = "Grid";
             // 
-            // comboBoxClickMode
+            // comboBoxLeftClickMode
             // 
-            this.comboBoxClickMode.FormattingEnabled = true;
-            this.comboBoxClickMode.Items.AddRange(new object[] {
+            this.comboBoxLeftClickMode.FormattingEnabled = true;
+            this.comboBoxLeftClickMode.Items.AddRange(new object[] {
             "Place",
             "Delete",
             "Player Spawn",
@@ -175,19 +191,20 @@
             "Pointer",
             "Background",
             "Foreground"});
-            this.comboBoxClickMode.Location = new System.Drawing.Point(16, 70);
-            this.comboBoxClickMode.Name = "comboBoxClickMode";
-            this.comboBoxClickMode.Size = new System.Drawing.Size(159, 21);
-            this.comboBoxClickMode.TabIndex = 4;
+            this.comboBoxLeftClickMode.Location = new System.Drawing.Point(16, 204);
+            this.comboBoxLeftClickMode.Name = "comboBoxLeftClickMode";
+            this.comboBoxLeftClickMode.Size = new System.Drawing.Size(159, 21);
+            this.comboBoxLeftClickMode.TabIndex = 4;
+            this.comboBoxLeftClickMode.SelectedIndexChanged += new System.EventHandler(this.comboBoxLeftClickMode_SelectedIndexChanged);
             // 
-            // labelClickMode
+            // labelLeftClickMode
             // 
-            this.labelClickMode.AutoSize = true;
-            this.labelClickMode.Location = new System.Drawing.Point(13, 54);
-            this.labelClickMode.Name = "labelClickMode";
-            this.labelClickMode.Size = new System.Drawing.Size(60, 13);
-            this.labelClickMode.TabIndex = 3;
-            this.labelClickMode.Text = "Click Mode";
+            this.labelLeftClickMode.AutoSize = true;
+            this.labelLeftClickMode.Location = new System.Drawing.Point(13, 188);
+            this.labelLeftClickMode.Name = "labelLeftClickMode";
+            this.labelLeftClickMode.Size = new System.Drawing.Size(81, 13);
+            this.labelLeftClickMode.TabIndex = 3;
+            this.labelLeftClickMode.Text = "Left Click Mode";
             // 
             // labelSolidTexture
             // 
@@ -389,6 +406,32 @@
             this.addToolStripMenuItem.Text = "Add";
             this.addToolStripMenuItem.Click += new System.EventHandler(this.addToolStripMenuItem_Click);
             // 
+            // comboBoxRightClickMode
+            // 
+            this.comboBoxRightClickMode.FormattingEnabled = true;
+            this.comboBoxRightClickMode.Items.AddRange(new object[] {
+            "Place",
+            "Delete",
+            "Player Spawn",
+            "Zombie Spawn",
+            "Pointer",
+            "Background",
+            "Foreground"});
+            this.comboBoxRightClickMode.Location = new System.Drawing.Point(16, 244);
+            this.comboBoxRightClickMode.Name = "comboBoxRightClickMode";
+            this.comboBoxRightClickMode.Size = new System.Drawing.Size(159, 21);
+            this.comboBoxRightClickMode.TabIndex = 11;
+            this.comboBoxRightClickMode.SelectedIndexChanged += new System.EventHandler(this.comboBoxRightClickMode_SelectedIndexChanged);
+            // 
+            // labelRightClickMode
+            // 
+            this.labelRightClickMode.AutoSize = true;
+            this.labelRightClickMode.Location = new System.Drawing.Point(13, 228);
+            this.labelRightClickMode.Name = "labelRightClickMode";
+            this.labelRightClickMode.Size = new System.Drawing.Size(88, 13);
+            this.labelRightClickMode.TabIndex = 10;
+            this.labelRightClickMode.Text = "Right Click Mode";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -407,6 +450,7 @@
             this.tabPageLevel.ResumeLayout(false);
             this.panelSolids.ResumeLayout(false);
             this.panelSolids.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxTexturePreview)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownGrid)).EndInit();
             this.tabPageProperties.ResumeLayout(false);
             this.tabPageProperties.PerformLayout();
@@ -438,8 +482,8 @@
         private System.Windows.Forms.Label labelSolidTexture;
         private System.Windows.Forms.ComboBox comboBoxSolidTexture;
         private System.Windows.Forms.Panel panelSolids;
-        private System.Windows.Forms.ComboBox comboBoxClickMode;
-        private System.Windows.Forms.Label labelClickMode;
+        private System.Windows.Forms.ComboBox comboBoxLeftClickMode;
+        private System.Windows.Forms.Label labelLeftClickMode;
         private System.Windows.Forms.ComboBox comboBoxSpawnAcceleration;
         private System.Windows.Forms.Label labelSpawnAcceleration;
         private System.Windows.Forms.TextBox textBoxZombieMax;
@@ -450,6 +494,9 @@
         private System.Windows.Forms.Label labelGrid;
         private System.Windows.Forms.CheckBox checkBoxSnap;
         private System.Windows.Forms.CheckBox checkBoxShowGrid;
+        private System.Windows.Forms.PictureBox pictureBoxTexturePreview;
+        private System.Windows.Forms.ComboBox comboBoxRightClickMode;
+        private System.Windows.Forms.Label labelRightClickMode;
 
     }
 }
