@@ -37,6 +37,9 @@ namespace ConstantHeadshotsZ
             quadDrawer.DrawQuad(Sprite.AddTint(level.background, level.backgroundColor), 1, groundTransform * Matrix.CreateScale((float)level.levelWidth / 2, (float)level.levelHeight / 2, 0)
                                             * Matrix.CreateTranslation((float)level.levelWidth / 2, (float)level.levelHeight / 2, 0), view, projection);
 
+            quadDrawer.DrawQuad(Sprite.AddTint(level.background, level.backgroundColor), 1, groundTransform * Matrix.CreateRotationY(MathHelper.Pi) * Matrix.CreateScale((float)level.levelWidth / 2, (float)level.levelHeight / 2, 0)
+                                            * Matrix.CreateTranslation((float)level.levelWidth / 2, (float)level.levelHeight / 2, 0), view, projection);
+
             foreach (Solid solid in level.backSolids)
             {
                 _3DSprite sprite = new _3DSprite();
@@ -126,7 +129,10 @@ namespace ConstantHeadshotsZ
                 _3DSprite sprite = new _3DSprite();
                 sprite.Texture = particle.sprite.getTintedTexture();
                 sprite.Position = new Vector3(particle.sprite.vector.X, particle.sprite.vector.Y, particle.posZ);
+                //six sided drawing
                 sprite.Draw(quadDrawer, cameraPosition, view, projection, groundTransform);
+                sprite.Draw(quadDrawer, cameraPosition, view, projection, groundTransform * Matrix.CreateRotationX(MathHelper.PiOver2));
+                sprite.Draw(quadDrawer, cameraPosition, view, projection, groundTransform * Matrix.CreateRotationY(MathHelper.PiOver2));
             }
         }
 

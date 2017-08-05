@@ -69,12 +69,11 @@ namespace ConstantHeadshotsZ
         public void Draw(QuadDrawer quadDrawer, Vector3 cameraPosition,
                          Matrix view, Matrix projection, Matrix world)
         {
-            quadDrawer.DrawQuad(Texture, 1,
-                world
-                * Matrix.CreateScale(texture.Width / 2, texture.Height / 2, 1)
+            Matrix worldModifiers = Matrix.CreateScale(texture.Width / 2, texture.Height / 2, 1)
                     * Matrix.CreateRotationX(Up.X) * Matrix.CreateRotationY(Up.Y) * Matrix.CreateRotationZ(Up.Z) * Matrix.CreateRotationZ(MathHelper.Pi)
-                    * (Matrix.CreateTranslation(position + new Vector3(texture.Width / 2, texture.Height / 2, 0)))
-                , view, projection);
+                    * (Matrix.CreateTranslation(position + new Vector3(texture.Width / 2, texture.Height / 2, 0)));
+            quadDrawer.DrawQuad(Texture, 1, world * worldModifiers, view, projection);
+            quadDrawer.DrawQuad(Texture, 1, world * Matrix.CreateRotationY(MathHelper.Pi) * worldModifiers, view, projection);
         }
     }
 }
