@@ -12,7 +12,7 @@ namespace ConstantHeadshotsZ
         private static Options options = new Options();
 
         public bool usingController = false;
-        public bool player1CameraRotation = false;
+        public bool player1CameraRotation = true;
         public bool player2CameraRotation = false;
         public float player1CameraRotationSpeed = 0.02f;
         public float player2CameraRotationSpeed = 0.02f;

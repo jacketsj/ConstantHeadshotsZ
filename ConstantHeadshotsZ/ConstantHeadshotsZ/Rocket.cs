@@ -14,6 +14,8 @@ namespace ConstantHeadshotsZ
         public float rotation = 0f;
         private ContentManager Content;
         public Vector2 origin;
+        public Vector2 spriteOrigin;
+        public Vector2 centrepos;
         Rectangle collisionRec;
         Vector2 realToCollisionDifference;
         public int exploding = 0;
@@ -23,6 +25,8 @@ namespace ConstantHeadshotsZ
             sprite = new Sprite(Content.Load<Texture2D>("RocketSmall"), newVector);
             this.Content = Content;
             origin = new Vector2(0, 58);
+            spriteOrigin = new Vector2(64, 58);
+            centrepos = new Vector2(1, 2);
             Matrix bulletTransform = Matrix.CreateTranslation(new Vector3(-(origin), 0.0f)) * Matrix.CreateRotationZ(rotation) * Matrix.CreateTranslation(new Vector3(sprite.vector, 0.0f));
             collisionRec = CalculateBoundingRectangle(new Rectangle(0, 0, sprite.getTexture().Width, sprite.getTexture().Height), bulletTransform);
             realToCollisionDifference = new Vector2(newVector.X - collisionRec.X, newVector.Y - collisionRec.Y);
@@ -34,6 +38,8 @@ namespace ConstantHeadshotsZ
             rotation = newRotation;
             this.Content = Content;
             origin = new Vector2(0, 58);
+            spriteOrigin = new Vector2(64, 58);
+            centrepos = new Vector2(1, 2);
             Matrix bulletTransform = Matrix.CreateTranslation(new Vector3(-(origin), 0.0f)) * Matrix.CreateRotationZ(rotation) * Matrix.CreateTranslation(new Vector3(sprite.vector, 0.0f));
             collisionRec = CalculateBoundingRectangle(new Rectangle(0, 0, sprite.getTexture().Width, sprite.getTexture().Height), bulletTransform);
             realToCollisionDifference = new Vector2(newVector.X - collisionRec.X, newVector.Y - collisionRec.Y);
@@ -74,7 +80,7 @@ namespace ConstantHeadshotsZ
                 Vector2 location = sprite.vector;
                 location.X += 64 * (float)Math.Cos(rotation - Math.PI / 2);
                 location.Y += 64 * (float)Math.Sin(rotation - Math.PI / 2);
-                level.bloodParticles = level.GenerateBurst(level.bloodParticles, Color.Yellow, new Vector3(location, 0), Content, 50, 50,
+                level.bloodParticles = level.GenerateBurst(level.bloodParticles, Color.Yellow, new Vector3(location - centrepos, 0), Content, 50, 50,
                                                             Options.GetInstance().minLParticles, Options.GetInstance().maxLParticles, 2.6f, 2.7f);
             }
             else if (exploding == 0)
@@ -82,7 +88,7 @@ namespace ConstantHeadshotsZ
                 Vector2 location = sprite.vector;
                 location.X += 64 * (float)Math.Cos(rotation - Math.PI / 2);
                 location.Y += 64 * (float)Math.Sin(rotation - Math.PI / 2);
-                level.bloodParticles = level.GenerateBurst(level.bloodParticles, Color.Yellow, new Vector3(location, 0), Content, 14, 14, 10, 20, 1, 1,
+                level.bloodParticles = level.GenerateBurst(level.bloodParticles, Color.Yellow, new Vector3(location - centrepos, 0), Content, 14, 14, 10, 20, 1, 1,
                                                                         rotation - MathHelper.PiOver4 / 2 - MathHelper.PiOver2, rotation + MathHelper.PiOver4 / 2 - MathHelper.PiOver2, 0, 0);
             }
             if (exploding == 1)
@@ -110,7 +116,7 @@ namespace ConstantHeadshotsZ
             if (exploding == 0)
             {
                 spriteBatch.Draw(Content.Load<Texture2D>("Rocket"), sprite.vector, null, sprite.getTint(), rotation,
-                                 new Vector2(sprite.getTexture().Width / 2, sprite.getTexture().Height / 2), 1f, SpriteEffects.None, 0f);
+                                 spriteOrigin,/*new Vector2(16 * sprite.getTexture().Width / 2, 16 * sprite.getTexture().Height / 2),*/ 1f, SpriteEffects.None, 0f);
             }
         }
 
