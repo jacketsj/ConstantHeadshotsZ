@@ -14,7 +14,7 @@ namespace ConstantHeadshotsZ
         public float playerRotation;
         public Camera camera;
         public bool aiming = false;
-        public Weapon weapon = Weapon.ROCKETLAUNCHER;
+        public Weapon weapon = Weapon.BASIC;
         public int delay = 0;
         public int health = 100;
         public int delayUntilHit = 0;

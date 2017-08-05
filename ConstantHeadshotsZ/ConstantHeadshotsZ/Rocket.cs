@@ -80,7 +80,7 @@ namespace ConstantHeadshotsZ
                 Vector2 location = sprite.vector;
                 location.X += 64 * (float)Math.Cos(rotation - Math.PI / 2);
                 location.Y += 64 * (float)Math.Sin(rotation - Math.PI / 2);
-                level.bloodParticles = level.GenerateBurst(level.bloodParticles, Color.Yellow, new Vector3(location - centrepos, 0), Content, 50, 50,
+                level.bloodParticles = level.GenerateBurst(level.bloodParticles, Color.Yellow, new Vector3(location - centrepos, 0), Content, 25, 45,
                                                             Options.GetInstance().minLParticles, Options.GetInstance().maxLParticles, 2.6f, 2.7f);
             }
             else if (exploding == 0)
